@@ -1,0 +1,13 @@
+FROM node:20-bookworm-slim
+
+# Set working directory
+WORKDIR /app/frontend
+
+# Copy package files first (for caching)
+COPY frontend/package*.json ./
+
+# Expose the Vite default port
+EXPOSE 5173
+
+# Start the development server
+CMD ["sh", "-c", "npm install && npm run dev -- --host"]

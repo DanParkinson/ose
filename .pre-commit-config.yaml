@@ -1,0 +1,33 @@
+repos:
+  # -----------------------------
+  # General file hygiene
+  # -----------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-toml
+
+  # -----------------------------
+  # Python linting (auto-fix)
+  # -----------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.1
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # -----------------------------
+  # Frontend linting (auto-fix via Docker)
+  # -----------------------------
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
+        entry: bash -c 'docker exec -w /app/frontend ose-devcontainer-frontend npx eslint . --fix'

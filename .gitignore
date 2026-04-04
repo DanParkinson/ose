@@ -1,0 +1,76 @@
+.venv
+.env
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+frontend/.env
+frontend/.env.*
+
+# =========================
+# uv
+# =========================
+.uv/
+
+# =========================
+# Django
+# =========================
+db.sqlite3
+models.dot
+# =========================
+# Environment variables
+# =========================
+.env
+
+# =========================
+# VS Code / Devcontainers
+# =========================
+.vscode/
+
+# =========================
+# Pytest / Coverage
+# =========================
+.pytest_cache/
+.coverage
+
+# =========================
+# Ruff / Linting
+# =========================
+.ruff_cache/
+
+# =========================
+# Node / React / Vite
+# =========================
+node_modules/
+dist/
+build/
+
+# Vite specific
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# =========================
+# Optional (if using TS)
+# =========================
+*.tsbuildinfo
+
+# =======
+# other
+# =======
+api.htttp

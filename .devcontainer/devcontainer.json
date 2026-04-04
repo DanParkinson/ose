@@ -1,0 +1,26 @@
+{
+	"name": "OSE",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "backend",
+	"workspaceFolder": "/app",
+	"features": {
+    	"ghcr.io/devcontainers/features/docker-outside-of-docker:1.9.1": {}
+  	},
+	"remoteEnv": {
+		"VIRTUAL_ENV": ""
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.jupyter",
+				"charliermarsh.ruff",
+				"humao.rest-client"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/app/backend/.venv/bin/python"
+			}
+		}
+	}
+}
