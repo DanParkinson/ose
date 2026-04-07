@@ -1,0 +1,59 @@
+Open Source Education
+A website for teachers to share and access resources and curriculums so they dont have to make them
+
+Tech stack:
+    uv - pytohn mangement
+    vite - react management
+    Django:
+        API design
+    postgresql:
+        for relational database
+    Docker:
+        containerisation:
+            Backend
+            Frontend
+    VSCODE:
+        devcontainers:
+
+Requirements:
+    Extensions:
+        Dev containers - for loading local dev environment
+
+StartUp:
+    Setting up:
+        Docker installed
+        VSCODE installed
+        run ` DEV CONTAINERS: rebuild and reopen in container
+    Setting up Django
+        Create super user with:
+            cd backend
+            uv run python manage.py createsuperuser
+            access localhost:8000 and login to access Django admin
+
+Docker:
+    Containers:
+        Devcontainer linked to backend
+        backend to host Django Api
+        frontend to host react frontend
+    Volumes:
+        Postgres Database
+
+backend:
+    Django:
+        Config:
+            Project setup
+        Accounts:
+            for custom user model
+        Core:
+            core functionality of teacher resources
+
+Database:
+    Postgres:
+
+Frontend:
+    React:
+
+Useful commands:
+    populate database:
+        cd backend
+        uv run python manage.py populate_db
