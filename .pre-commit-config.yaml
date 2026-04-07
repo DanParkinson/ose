@@ -11,14 +11,23 @@ repos:
       - id: check-toml
 
   # -----------------------------
-  # Python linting (auto-fix)
+  # Python linting/formatting via backend container + uv
   # -----------------------------
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.1
+  - repo: local
     hooks:
       - id: ruff
-        args: [--fix]
+        name: ruff
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+        entry: bash -c 'docker exec -w /app/backend backend uv run ruff check . --fix'
+
       - id: ruff-format
+        name: ruff-format
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+        entry: bash -c 'docker exec -w /app/backend backend uv run ruff format .'
 
   # -----------------------------
   # Frontend linting (auto-fix via Docker)
@@ -30,4 +39,4 @@ repos:
         language: system
         files: ^frontend/.*\.(js|jsx|ts|tsx)$
         pass_filenames: false
-        entry: bash -c 'docker exec -w /app/frontend ose-devcontainer-frontend npx eslint . --fix'
+        entry: bash -c 'docker exec -w /app/frontend frontend npx eslint . --fix'
