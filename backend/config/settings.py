@@ -25,6 +25,16 @@ CSRF_TRUSTED_ORIGINS = [
 # Authentication
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+# Filtering
+REST_FRAMEWORK = {
+    "DATETIME_FORMAT": "%d %b %Y",
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+}
+
+# Silk
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -34,8 +44,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Authentication and COnnections
+    # Django stuff
     "rest_framework",
+    "django_filters",
+    "silk",
     "corsheaders",
     # Extensions
     "django_extensions",
@@ -54,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "silk.middleware.SilkyMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

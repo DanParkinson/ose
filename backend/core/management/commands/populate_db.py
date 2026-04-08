@@ -40,11 +40,13 @@ class Command(BaseCommand):
                 "curriculums": [
                     {
                         "title": "Secondary Setted Curriculum",
+                        "is_published": True,
                         "units": [
                             {
                                 "year_group": "year_7",
                                 "level": "red",
                                 "order": 1,
+                                "is_published": True,
                                 "lessons": [
                                     "Nth Term Basics",
                                     "Finding the Rule",
@@ -56,6 +58,7 @@ class Command(BaseCommand):
                                 "year_group": "year_7",
                                 "level": "amber",
                                 "order": 1,
+                                "is_published": True,
                                 "lessons": [
                                     "Nth Term Basics",
                                     "Using the Rule",
@@ -67,6 +70,7 @@ class Command(BaseCommand):
                                 "year_group": "year_7",
                                 "level": "green",
                                 "order": 1,
+                                "is_published": False,
                                 "lessons": [
                                     "Using the Rule",
                                     "Mixed Sequence Practice",
@@ -78,6 +82,7 @@ class Command(BaseCommand):
                                 "year_group": "year_8",
                                 "level": "red",
                                 "order": 2,
+                                "is_published": True,
                                 "lessons": [
                                     "One Step Equations",
                                     "Two Step Equations",
@@ -89,6 +94,7 @@ class Command(BaseCommand):
                                 "year_group": "year_8",
                                 "level": "amber",
                                 "order": 2,
+                                "is_published": True,
                                 "lessons": [
                                     "Two Step Equations",
                                     "Equation Problem Solving",
@@ -100,6 +106,7 @@ class Command(BaseCommand):
                                 "year_group": "year_9",
                                 "level": "blue",
                                 "order": 3,
+                                "is_published": False,
                                 "lessons": [
                                     "Expanding One Bracket",
                                     "Expanding Two Brackets",
@@ -111,6 +118,7 @@ class Command(BaseCommand):
                                 "year_group": "year_10",
                                 "level": "core",
                                 "order": 4,
+                                "is_published": True,
                                 "lessons": [
                                     "Percentage of an Amount",
                                     "Percentage Increase",
@@ -122,6 +130,7 @@ class Command(BaseCommand):
                                 "year_group": "year_10",
                                 "level": "mixed_ability",
                                 "order": 5,
+                                "is_published": True,
                                 "lessons": [
                                     "Perimeter Basics",
                                     "Area of Rectangles and Triangles",
@@ -133,11 +142,13 @@ class Command(BaseCommand):
                     },
                     {
                         "title": "Secondary Mixed Ability Curriculum",
+                        "is_published": False,
                         "units": [
                             {
                                 "year_group": "year_7",
                                 "level": "mixed_ability",
                                 "order": 1,
+                                "is_published": False,
                                 "lessons": [
                                     "Nth Term Basics",
                                     "Finding the Rule",
@@ -149,6 +160,7 @@ class Command(BaseCommand):
                                 "year_group": "year_8",
                                 "level": "mixed_ability",
                                 "order": 2,
+                                "is_published": False,
                                 "lessons": [
                                     "One Step Equations",
                                     "Two Step Equations",
@@ -160,6 +172,7 @@ class Command(BaseCommand):
                                 "year_group": "year_9",
                                 "level": "mixed_ability",
                                 "order": 3,
+                                "is_published": False,
                                 "lessons": [
                                     "Expanding One Bracket",
                                     "Factorising Simple Expressions",
@@ -213,11 +226,13 @@ class Command(BaseCommand):
                 "curriculums": [
                     {
                         "title": "Secondary Core Curriculum",
+                        "is_published": True,
                         "units": [
                             {
                                 "year_group": "year_10",
                                 "level": "core",
                                 "order": 1,
+                                "is_published": True,
                                 "lessons": [
                                     "Identifying Language Features",
                                     "Analysing Word Choice",
@@ -229,6 +244,7 @@ class Command(BaseCommand):
                                 "year_group": "year_10",
                                 "level": "core",
                                 "order": 2,
+                                "is_published": True,
                                 "lessons": [
                                     "Reading Between the Lines",
                                     "Using Evidence",
@@ -240,6 +256,7 @@ class Command(BaseCommand):
                                 "year_group": "year_11",
                                 "level": "core",
                                 "order": 3,
+                                "is_published": False,
                                 "lessons": [
                                     "Building Setting Description",
                                     "Using Sensory Detail",
@@ -251,6 +268,7 @@ class Command(BaseCommand):
                                 "year_group": "year_11",
                                 "level": "core",
                                 "order": 4,
+                                "is_published": False,
                                 "lessons": [
                                     "Writing to Argue",
                                     "Writing to Persuade",
@@ -290,11 +308,13 @@ class Command(BaseCommand):
                 "curriculums": [
                     {
                         "title": "Secondary Science Curriculum",
+                        "is_published": True,
                         "units": [
                             {
                                 "year_group": "year_9",
                                 "level": "core",
                                 "order": 1,
+                                "is_published": True,
                                 "lessons": [
                                     "Animal and Plant Cells",
                                     "Specialised Cells",
@@ -306,6 +326,7 @@ class Command(BaseCommand):
                                 "year_group": "year_9",
                                 "level": "core",
                                 "order": 2,
+                                "is_published": True,
                                 "lessons": [
                                     "Atoms Basics",
                                     "Elements and Compounds",
@@ -317,6 +338,7 @@ class Command(BaseCommand):
                                 "year_group": "year_10",
                                 "level": "core",
                                 "order": 3,
+                                "is_published": False,
                                 "lessons": [
                                     "Contact and Non Contact Forces",
                                     "Resultant Force",
@@ -358,7 +380,6 @@ class Command(BaseCommand):
 
         all_lessons = {}
 
-        # Create subjects, topics, lessons, resources
         for subject_title, subject_info in curriculum_data.items():
             subject = Subject.objects.create(
                 title=subject_title,
@@ -381,7 +402,7 @@ class Command(BaseCommand):
                         title=lesson_title,
                         variant="base",
                         description=f"Lesson covering {lesson_title.lower()}.",
-                        is_active=True,
+                        is_published=self.is_lesson_published(lesson_title),
                     )
                     all_lessons[(subject_title, lesson_title)] = lesson
 
@@ -397,12 +418,12 @@ class Command(BaseCommand):
                             order=resource_order,
                         )
 
-            # Create curriculums and units for this subject
             for curriculum_info in subject_info["curriculums"]:
                 curriculum = Curriculum.objects.create(
                     title=curriculum_info["title"],
                     subject=subject,
                     description=f"{curriculum_info['title']} for {subject_title}.",
+                    is_published=curriculum_info["is_published"],
                 )
 
                 for unit_info in curriculum_info["units"]:
@@ -417,6 +438,7 @@ class Command(BaseCommand):
                             f"{unit_info['level']} - "
                             f"half term {unit_info['order']}."
                         ),
+                        is_published=unit_info["is_published"],
                     )
 
                     for lesson_order, lesson_title in enumerate(
@@ -441,6 +463,23 @@ class Command(BaseCommand):
                 "Database successfully populated with readable curriculum sample data."
             )
         )
+
+    def is_lesson_published(self, lesson_title):
+        unpublished_lessons = {
+            "Mixed Sequence Practice",
+            "Expanding Two Brackets",
+            "Factorising Harder Expressions",
+            "Percentage Decrease",
+            "Reverse Percentages",
+            "Sentence Variety",
+            "Descriptive Writing Practice",
+            "Writing to Argue",
+            "Writing to Persuade",
+            "Writing for Audience",
+            "Transactional Writing Practice",
+            "Velocity Time Graphs",
+        }
+        return lesson_title not in unpublished_lessons
 
     def build_resources_for_lesson(self, lesson_title):
         resources = [
@@ -493,7 +532,6 @@ class Command(BaseCommand):
             title=resource_data["title"],
             category=resource_data["category"],
             description=resource_data["description"],
-            is_active=True,
         )
 
         if resource_data["category"] in {"video", "link"}:

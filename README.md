@@ -18,6 +18,8 @@ Tech stack:
 Requirements:
     Extensions:
         Dev containers - for loading local dev environment
+    Optimising API querues time and load:
+        Django-silk
 
 StartUp:
     Setting up:
@@ -57,3 +59,12 @@ Useful commands:
     populate database:
         cd backend
         uv run python manage.py populate_db
+
+    Creating ERD:
+        uv run manage.py graph_models core > models.dot
+        copy contents of file at https://graph.flyte.org/
+
+    Prior to commiting:
+        cd ..
+        git add .
+        uv run pre-commit run

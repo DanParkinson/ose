@@ -23,7 +23,7 @@ class TopicInline(admin.TabularInline):
 class LessonInline(admin.TabularInline):
     model = Lesson
     extra = 1
-    fields = ("title", "variant", "description", "is_active")
+    fields = ("title", "variant", "description", "is_published")
 
 
 class LessonResourceInline(admin.TabularInline):
@@ -42,7 +42,7 @@ class UnitLessonInline(admin.TabularInline):
 class UnitInLine(admin.TabularInline):
     model = Unit
     extra = 1
-    fields = ("year_group", "level", "order", "description")
+    fields = ("year_group", "level", "order", "description", "is_published")
 
 
 # ==================================
@@ -70,19 +70,32 @@ class TopicAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title", "variant", "topic", "is_active", "lesson_id")
+    list_display = (
+        "title",
+        "variant",
+        "topic",
+        "is_published",
+        "created_at",
+        "updated_at",
+        "lesson_id",
+    )
     search_fields = ("title", "description", "topic__title")
-    list_filter = ("is_active", "topic", "title")
-    readonly_fields = ("slug",)
+    list_filter = ("is_published", "topic", "title")
+    readonly_fields = ("slug", "created_at", "updated_at")
     inlines = [LessonResourceInline]
 
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "is_active", "created_at", "updated_at")
+    list_display = (
+        "title",
+        "category",
+        "created_at",
+        "updated_at",
+    )
     search_fields = ("title", "description", "category")
-    list_filter = ("category", "is_active")
-    readonly_fields = ("slug",)
+    list_filter = ("category",)
+    readonly_fields = ("slug", "created_at", "updated_at")
 
 
 @admin.register(LessonResource)
@@ -97,10 +110,17 @@ class LessonResourceAdmin(admin.ModelAdmin):
 # ==================================
 @admin.register(Curriculum)
 class CurriculumAdmin(admin.ModelAdmin):
-    list_display = ("title", "subject", "created_at", "updated_on", "curriculum_id")
+    list_display = (
+        "title",
+        "subject",
+        "is_published",
+        "created_at",
+        "updated_at",
+        "curriculum_id",
+    )
     search_fields = ("title", "subject__title", "description", "curriculum_id")
-    list_filter = ("subject",)
-    readonly_fields = ("slug",)
+    list_filter = ("subject", "is_published")
+    readonly_fields = ("slug", "created_at", "updated_at")
     inlines = [UnitInLine]
 
 
@@ -111,17 +131,20 @@ class UnitAdmin(admin.ModelAdmin):
         "year_group",
         "level",
         "order",
+        "is_published",
+        "created_at",
+        "updated_at",
     )
     search_fields = ("curriculum__title", "description")
-    list_filter = ("curriculum", "year_group", "level")
-    readonly_fields = ("slug",)
+    list_filter = ("curriculum", "year_group", "level", "is_published")
+    readonly_fields = ("slug", "created_at", "updated_at")
     inlines = [UnitLessonInline]
 
 
 @admin.register(UnitLesson)
 class UnitLessonAdmin(admin.ModelAdmin):
     list_display = ("unit", "lesson", "order")
-    search_fields = ("unit__curriculum", "lesson__title")
+    search_fields = ("unit__curriculum__title", "lesson__title")
     list_filter = (
         "unit__curriculum",
         "unit__year_group",

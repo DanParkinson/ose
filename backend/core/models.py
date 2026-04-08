@@ -86,7 +86,9 @@ class Lesson(models.Model):
         through="LessonResource",
         related_name="lessons",
     )
-    is_active = models.BooleanField(default=True)
+    is_published = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["title"]
@@ -122,7 +124,6 @@ class Resource(models.Model):
     description = models.TextField(blank=True)
     file = models.FileField(upload_to="resources/", blank=True, null=True)
     url = models.URLField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -165,8 +166,9 @@ class Curriculum(models.Model):
     )
     description = models.TextField(blank=True)
     slug = models.SlugField(blank=True, max_length=200, unique=True)
+    is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["subject", "title"]
@@ -202,6 +204,8 @@ class Unit(models.Model):
         ("green", "Green"),
         ("blue", "Blue"),
         ("mixed_ability", "Mixed Ability"),
+        ("general", "General"),
+        ("no_level_assigned", "No Level Assigned"),
     ]
 
     unit_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -212,10 +216,7 @@ class Unit(models.Model):
     )
     year_group = models.CharField(max_length=20, choices=YEAR_GROUP_CHOICES)
     level = models.CharField(
-        max_length=20,
-        choices=LEVEL_CHOICES,
-        blank=True,
-        null=True,
+        max_length=20, choices=LEVEL_CHOICES, default="no_level_assigned"
     )
     order = models.PositiveSmallIntegerField()
     lessons = models.ManyToManyField(
@@ -225,7 +226,9 @@ class Unit(models.Model):
     )
     slug = models.SlugField(blank=True, max_length=100)
     description = models.TextField(blank=True)
-    updated_on = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = [
@@ -247,9 +250,8 @@ class Unit(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            level_value = self.level if self.level else "general"
             self.slug = slugify(
-                f"{self.curriculum.title}-{self.year_group}-{level_value}-{self.order}"
+                f"{self.curriculum.title}-{self.year_group}-{self.level}-{self.order}"
             )
         super().save(*args, **kwargs)
 
@@ -263,6 +265,9 @@ class Unit(models.Model):
         )
 
 
+# ===================================
+# Organisation
+# ==================================
 class UnitLesson(models.Model):
     unit = models.ForeignKey(
         Unit,
@@ -293,9 +298,6 @@ class UnitLesson(models.Model):
         return f"{self.unit.year_group}-{self.unit.level}-{self.unit.order}-{self.lesson.title}-({self.order})"
 
 
-# ===================================
-# Organisation
-# ==================================
 class LessonResource(models.Model):
     lesson = models.ForeignKey(
         Lesson,
