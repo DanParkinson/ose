@@ -16,7 +16,8 @@
 				"ms-python.vscode-pylance",
 				"ms-toolsai.jupyter",
 				"charliermarsh.ruff",
-				"humao.rest-client"
+				"humao.rest-client",
+				"njpwerner.autodocstring"
 			],
 			"settings": {
 				"python.defaultInterpreterPath": "/app/backend/.venv/bin/python"

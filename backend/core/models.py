@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
-from django.core.exceptions import ValidationError
 import uuid
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class Subject(models.Model):
@@ -16,8 +18,8 @@ class Subject(models.Model):
     slug = models.SlugField(blank=True, max_length=500)
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES)
     language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES)
-    description = models.TextField(blank=True)  # REMOVE
-    icon = models.CharField(max_length=100, blank=True)  # REMOVE
+    is_published = models.BooleanField(default=False)
+    is_protected = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
@@ -40,7 +42,9 @@ class Subject(models.Model):
 class Topic(models.Model):
     topic_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=50)
+    subjects = models.ManyToManyField(Subject, related_name="topics")
     slug = models.SlugField(blank=True, max_length=500)
+    is_protected = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
@@ -65,7 +69,9 @@ class LessonName(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False
     )
     title = models.CharField(max_length=100)
+    subjects = models.ManyToManyField(Subject, related_name="lesson_names")
     slug = models.SlugField(blank=True, max_length=100)
+    is_protected = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
@@ -85,19 +91,20 @@ class LessonName(models.Model):
         return f"{self.title}"
 
 
-class TeachingStyle(models.Model):
-    teaching_style_id = models.UUIDField(
+class Variation(models.Model):
+    variation_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False
     )
     title = models.CharField(max_length=100)
     slug = models.SlugField(blank=True, max_length=100)
+    is_protected = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
         constraints = [
             models.UniqueConstraint(
                 fields=["title"],
-                name="unique_teaching_style_title",
+                name="unique_variation_title",
             )
         ]
 
@@ -110,19 +117,20 @@ class TeachingStyle(models.Model):
         return f"{self.title}"
 
 
-class Variation(models.Model):
-    variation_id = models.UUIDField(
+class TeachingStyle(models.Model):
+    teaching_style_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False
     )
     title = models.CharField(max_length=100)
     slug = models.SlugField(blank=True, max_length=100)
+    is_protected = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
         constraints = [
             models.UniqueConstraint(
                 fields=["title"],
-                name="unique_variation_title",
+                name="unique_teaching_style_title",
             )
         ]
 
@@ -151,22 +159,18 @@ class Resource(models.Model):
     description = models.TextField(blank=True)
     file = models.FileField(upload_to="resources/", blank=True, null=True)
     url = models.URLField(blank=True, null=True)
+    is_protected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="resources",
+    )
+    subjects = models.ManyToManyField(Subject, related_name="resources")
 
     class Meta:
         ordering = ["title", "category"]
-
-    def clean(self):
-        super().clean()
-        if self.category in {"video", "link"}:
-            if not self.url:
-                raise ValidationError({"url": "This resource must have a URL."})
-            if self.file:
-                raise ValidationError({"file": "This resource should not have a file."})
-        else:
-            if not self.file and not self.url:
-                raise ValidationError("This resource must have either a file or a URL.")
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -181,6 +185,12 @@ class Resource(models.Model):
 class LessonVariant(models.Model):
     lesson_variant_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False
+    )
+    subject = models.ForeignKey(
+        Subject, on_delete=models.CASCADE, related_name="lesson_variants"
+    )
+    topic = models.ForeignKey(
+        Topic, on_delete=models.CASCADE, related_name="lesson_variants"
     )
     lesson_name = models.ForeignKey(
         LessonName,
@@ -197,19 +207,19 @@ class LessonVariant(models.Model):
         on_delete=models.CASCADE,
         related_name="lesson_variants",
     )
-    topic = models.ForeignKey(
-        Topic, on_delete=models.CASCADE, related_name="lesson_variants"
-    )
-    subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name="lesson_variants"
-    )
     resources = models.ManyToManyField(
         "Resource", through="LessonVariantResource", related_name="lesson_variants"
     )
     slug = models.SlugField(blank=True, max_length=300)
     is_published = models.BooleanField(default=False)
+    is_protected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="lesson_variants",
+    )
 
     class Meta:
         ordering = ["subject", "topic", "lesson_name", "teaching_style", "variation"]

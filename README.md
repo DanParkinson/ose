@@ -68,3 +68,28 @@ Useful commands:
         cd ..
         git add .
         uv run pre-commit run
+
+
+filters for the lessonvariant page:
+- Topics
+- LessonName
+- Variant
+- TeachingStyle
+
+# Still to implement
+
+lessonVariant Resources
+- testing + permissions
+
+filters
+- lessonvarianttopic testing
+- lessonvariantlessonname + testing
+- lessonvariantvariant + testing
+- lessonvariantteachingstyle + testing
+- lessonvariant filtereset for applying frotnend requests
+
+subject detail upgrade to show:
+- intro video
+- templates to get started
+- respurce templates
++ revamp of test permissions

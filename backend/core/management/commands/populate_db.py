@@ -1,5 +1,6 @@
 import random
 
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
@@ -14,6 +15,8 @@ from core.models import (
     LessonVariantResource,
 )
 
+User = get_user_model()
+
 
 class Command(BaseCommand):
     help = "Populate the database with readable curriculum sample data"
@@ -22,20 +25,20 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING("Clearing existing data..."))
 
         LessonVariantResource.objects.all().delete()
-        Resource.objects.all().delete()
         LessonVariant.objects.all().delete()
+        Resource.objects.all().delete()
         LessonName.objects.all().delete()
+        Topic.objects.all().delete()
         TeachingStyle.objects.all().delete()
         Variation.objects.all().delete()
-        Topic.objects.all().delete()
         Subject.objects.all().delete()
 
         self.stdout.write(self.style.SUCCESS("Existing data cleared."))
 
+        author = self.get_or_create_seed_user()
+
         curriculum_data = {
             "Mathematics": {
-                "description": "GCSE mathematics curriculum covering key number, algebra, geometry and data skills.",
-                "icon": "calculate",
                 "topics": {
                     "Algebra": [
                         "Nth Term Basics",
@@ -74,8 +77,6 @@ class Command(BaseCommand):
                 },
             },
             "English Language": {
-                "description": "GCSE English Language curriculum focused on reading and writing skills.",
-                "icon": "menu_book",
                 "topics": {
                     "Reading Skills": [
                         "Identifying Language Features",
@@ -100,8 +101,6 @@ class Command(BaseCommand):
                 },
             },
             "Combined Science": {
-                "description": "GCSE combined science curriculum covering biology, chemistry and physics topics.",
-                "icon": "science",
                 "topics": {
                     "Biology": [
                         "Animal and Plant Cells",
@@ -131,25 +130,37 @@ class Command(BaseCommand):
             )
         )
 
-        teaching_style, _ = TeachingStyle.objects.get_or_create(title="Standard")
-        variation, _ = Variation.objects.get_or_create(title="Base")
+        teaching_style, _ = TeachingStyle.objects.get_or_create(
+            title="Standard",
+            defaults={"is_protected": False},
+        )
+        variation, _ = Variation.objects.get_or_create(
+            title="Base",
+            defaults={"is_protected": False},
+        )
 
         for subject_title, subject_info in curriculum_data.items():
             subject = Subject.objects.create(
                 title=subject_title,
                 level="gcse",
                 language="en",
-                description=subject_info["description"],
-                icon=subject_info["icon"],
+                is_published=True,
+                is_protected=False,
             )
 
             for topic_title, lesson_titles in subject_info["topics"].items():
-                topic, _ = Topic.objects.get_or_create(title=topic_title)
+                topic, _ = Topic.objects.get_or_create(
+                    title=topic_title,
+                    defaults={"is_protected": False},
+                )
+                topic.subjects.add(subject)
 
                 for lesson_title in lesson_titles:
                     lesson_name, _ = LessonName.objects.get_or_create(
-                        title=lesson_title
+                        title=lesson_title,
+                        defaults={"is_protected": False},
                     )
+                    lesson_name.subjects.add(subject)
 
                     lesson_variant = LessonVariant.objects.create(
                         subject=subject,
@@ -158,6 +169,8 @@ class Command(BaseCommand):
                         teaching_style=teaching_style,
                         variation=variation,
                         is_published=self.is_lesson_published(lesson_title),
+                        is_protected=False,
+                        author=author,
                     )
 
                     lesson_resources = self.build_resources_for_lesson(lesson_title)
@@ -165,7 +178,11 @@ class Command(BaseCommand):
                     for resource_order, resource_data in enumerate(
                         lesson_resources, start=1
                     ):
-                        resource = self.create_resource(resource_data)
+                        resource = self.create_resource(
+                            resource_data=resource_data,
+                            author=author,
+                            subject=subject,
+                        )
                         LessonVariantResource.objects.create(
                             lesson_variant=lesson_variant,
                             resource=resource,
@@ -177,6 +194,20 @@ class Command(BaseCommand):
                 "Database successfully populated with readable curriculum sample data."
             )
         )
+
+    def get_or_create_seed_user(self):
+        user, created = User.objects.get_or_create(
+            email="seed@example.com",
+            defaults={
+                "username": "seeduser",
+            },
+        )
+
+        if created:
+            user.set_password("password123")
+            user.save()
+
+        return user
 
     def is_lesson_published(self, lesson_title):
         unpublished_lessons = {
@@ -241,11 +272,13 @@ class Command(BaseCommand):
         resources.extend(random.sample(optional_resources, k=random.randint(1, 2)))
         return resources
 
-    def create_resource(self, resource_data):
+    def create_resource(self, resource_data, author, subject):
         resource = Resource(
             title=resource_data["title"],
             category=resource_data["category"],
             description=resource_data["description"],
+            is_protected=False,
+            author=author,
         )
 
         if resource_data["category"] in {"video", "link"}:
@@ -259,6 +292,8 @@ class Command(BaseCommand):
             )
 
         resource.save()
+        resource.subjects.add(subject)
+
         return resource
 
     def slug_text(self, text):
