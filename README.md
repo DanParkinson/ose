@@ -18,6 +18,8 @@ Tech stack:
 Requirements:
     Extensions:
         Dev containers - for loading local dev environment
+    Optimising API querues time and load:
+        Django-silk
 
 StartUp:
     Setting up:
@@ -57,3 +59,37 @@ Useful commands:
     populate database:
         cd backend
         uv run python manage.py populate_db
+
+    Creating ERD:
+        uv run manage.py graph_models core > models.dot
+        copy contents of file at https://graph.flyte.org/
+
+    Prior to commiting:
+        cd ..
+        git add .
+        uv run pre-commit run
+
+
+filters for the lessonvariant page:
+- Topics
+- LessonName
+- Variant
+- TeachingStyle
+
+# Still to implement
+
+lessonVariant Resources
+- testing + permissions
+
+filters
+- lessonvarianttopic testing
+- lessonvariantlessonname + testing
+- lessonvariantvariant + testing
+- lessonvariantteachingstyle + testing
+- lessonvariant filtereset for applying frotnend requests
+
+subject detail upgrade to show:
+- intro video
+- templates to get started
+- respurce templates
++ revamp of test permissions
