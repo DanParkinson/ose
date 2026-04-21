@@ -113,6 +113,9 @@ class LessonVariantResourceAttachView(generics.CreateAPIView):
 
 
 class LessonVariantResourceDestroyView(generics.DestroyAPIView):
+    serializer_class = (
+        lesson_variant_resource_serializers.LessonVariantResourceSerializer
+    )
     permission_classes = [permissions.IsAdminUser]
 
     def get_object(self):

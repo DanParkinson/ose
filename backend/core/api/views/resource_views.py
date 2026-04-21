@@ -1,4 +1,4 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, filters
 from rest_framework.response import Response
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
@@ -12,6 +12,8 @@ from ..serializers import resource_serializers
 class ResourceBySubjectListView(generics.ListCreateAPIView):
     serializer_class = resource_serializers.ResourceBySubjectSerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["title"]
 
     def get_subject(self):
         subject_id = self.kwargs["subject_id"]
@@ -24,6 +26,9 @@ class ResourceBySubjectListView(generics.ListCreateAPIView):
         )
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return models.LessonVariant.objects.none()
+
         subject = self.get_subject()
 
         matching_subjects = models.Subject.objects.filter(

@@ -51,6 +51,12 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
     - Verify returned values match database records
     - Verify returned values are correctly serialised
     ------------------
+    List - Filters
+    - Verify search returns matching resources by title
+    - Verify search returns empty list when no titles match
+    - Verify search does not return matching resources from other subjects
+    - Verify no search term returns the default subject queryset
+    ------------------
     Create - Permissions
     - Verify ADMIN users CAN create object and receive 201 CREATED
     - Verify UNAUTHORISED users CANNOT create object and receive 403 FORBIDDEN
@@ -169,6 +175,73 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         self.assertEqual(resource["url"], self.resource1.url)
         self.assertEqual(resource["is_protected"], self.resource1.is_protected)
         self.assertEqual(len(resource["subjects"]), 1)
+
+    # ==============
+    # List - Filters
+    # ==============
+
+    def test_resource_list_search_returns_matching_resource_by_title(self):
+        self.authenticate_admin()
+
+        response = self.client.get(self.list_url, {"search": self.resource1.title})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["title"], self.resource1.title)
+        self.assertEqual(
+            response.data[0]["resource_id"], str(self.resource1.resource_id)
+        )
+
+    def test_resource_list_search_returns_empty_list_when_no_titles_match(self):
+        self.authenticate_admin()
+
+        response = self.client.get(self.list_url, {"search": "Poetry"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_resource_list_search_does_not_return_matching_resource_from_other_subject(
+        self,
+    ):
+        self.authenticate_admin()
+
+        other_subject = models.Subject.objects.create(
+            title="Science",
+            level="gcse",
+            language="en",
+            is_published=True,
+            is_protected=False,
+        )
+
+        other_resource = models.Resource.objects.create(
+            title=self.resource1.title,
+            category="worksheet",
+            description="Science resource with same title",
+            url="https://example.com/science-resource",
+            is_protected=False,
+            author=self.superuser,
+        )
+        other_resource.subjects.add(other_subject)
+
+        response = self.client.get(self.list_url, {"search": self.resource1.title})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["resource_id"], str(self.resource1.resource_id)
+        )
+        self.assertEqual(response.data[0]["title"], self.resource1.title)
+
+    def test_resource_list_without_search_returns_default_subject_queryset(self):
+        self.authenticate_admin()
+
+        response = self.client.get(self.list_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["resource_id"], str(self.resource1.resource_id)
+        )
 
     # =====================
     # Create - Permissions

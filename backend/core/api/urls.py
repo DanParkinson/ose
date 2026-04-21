@@ -8,6 +8,7 @@ from .views import (
     resource_views,
     lesson_variant_views,
     lesson_variant_resource_views,
+    filter_views,
 )
 
 urlpatterns = [
@@ -124,12 +125,27 @@ urlpatterns = [
         lesson_variant_resource_views.LessonVariantResourceDestroyView.as_view(),
         name="lesson-variant-resource-delete",
     ),
-    # # =============
-    # # Filter List finders
-    # # =============
-    # path(
-    #     "subjects/<slug:subject_slug>/<uuid:subject_id>/lessons/topics/",
-    #     views.LessonVariantTopicListView.as_view(),
-    #     name="lessonvariant-topic-list",
-    # )
+    # =============
+    # Filter List finders
+    # =============
+    path(
+        "subjects/<slug:subject_slug>/<uuid:subject_id>/filter/topics/",
+        filter_views.FilterTopicBySubjectListView.as_view(),
+        name="filter-topic-by-subject",
+    ),
+    path(
+        "subjects/<slug:subject_slug>/<uuid:subject_id>/filter/lessonnames/",
+        filter_views.FilterLessonNameBySubjectListView.as_view(),
+        name="filter-lesson-name-by-subject",
+    ),
+    path(
+        "subjects/<slug:subject_slug>/<uuid:subject_id>/filter/teachingstyles/",
+        filter_views.FilterTeachingStyleListView.as_view(),
+        name="filter-teaching-style",
+    ),
+    path(
+        "subjects/<slug:subject_slug>/<uuid:subject_id>/filter/variations/",
+        filter_views.FilterVariationListView.as_view(),
+        name="filter-variation",
+    ),
 ]

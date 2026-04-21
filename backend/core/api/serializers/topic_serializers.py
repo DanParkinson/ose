@@ -17,9 +17,3 @@ class TopicSerializer(serializers.ModelSerializer):
             "is_protected",
         ]
         read_only_fields = ["topic_id", "slug"]
-
-
-class TopicFilterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Topic
-        fields = ["topic_id", "title"]

@@ -1,8 +1,6 @@
 import uuid
-
 from django.urls import reverse
 from rest_framework import status
-
 from .. import models
 from .base import BaseAPITestCase
 
@@ -69,6 +67,19 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
     - Verify returned values are correctly serialised
     - Verify author is returned as username
     - Verify related fields are returned as titles
+    ------------------
+    List - Filters
+    - Verify filtering by topic returns matching lesson variants only
+    - Verify filtering by lesson name returns matching lesson variants only
+    - Verify filtering by teaching style returns matching lesson variants only
+    - Verify filtering by variation returns matching lesson variants only
+    - Verify combined filters return matching lesson variants only
+    - Verify invalid filter value returns empty list
+    - Verify search returns matching lesson variants by lesson name
+    - Verify search returns matching lesson variants by topic
+    - Verify search returns matching lesson variants by variation
+    - Verify search returns empty list when no matches exist
+    - Verify filtering and search do not return lesson variants from other subjects
     """
 
     # ==================
@@ -214,6 +225,251 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         self.assertIsInstance(lesson_variant["teaching_style"], str)
         self.assertIsInstance(lesson_variant["variation"], str)
         self.assertIsInstance(lesson_variant["author"], str)
+
+    # ==============
+    # List - Filters
+    # ==============
+
+    def test_lesson_variant_list_can_filter_by_topic(self):
+        second_topic = models.Topic.objects.create(
+            title="Fractions",
+            is_protected=False,
+        )
+        second_topic.subjects.set([self.subject1])
+
+        second_lesson_name = models.LessonName.objects.create(
+            title="Fractions Basics",
+            is_protected=False,
+        )
+        second_lesson_name.subjects.set([self.subject1])
+
+        second_variant = models.LessonVariant.objects.create(
+            subject=self.subject1,
+            topic=second_topic,
+            lesson_name=second_lesson_name,
+            teaching_style=self.teaching_style1,
+            variation=self.variation1,
+            is_published=True,
+            is_protected=False,
+            author=self.superuser,
+        )
+
+        response = self.client.get(
+            self.list_url,
+            {"topic": str(second_topic.topic_id)},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["lesson_variant_id"],
+            str(second_variant.lesson_variant_id),
+        )
+        self.assertEqual(response.data[0]["topic"], second_topic.title)
+
+    def test_lesson_variant_list_can_filter_by_lesson_name(self):
+        second_lesson_name = models.LessonName.objects.create(
+            title="Fractions Basics",
+            is_protected=False,
+        )
+        second_lesson_name.subjects.set([self.subject1])
+
+        second_variant = models.LessonVariant.objects.create(
+            subject=self.subject1,
+            topic=self.topic1,
+            lesson_name=second_lesson_name,
+            teaching_style=self.teaching_style1,
+            variation=self.variation1,
+            is_published=True,
+            is_protected=False,
+            author=self.superuser,
+        )
+
+        response = self.client.get(
+            self.list_url,
+            {"lesson_name": str(second_lesson_name.lesson_name_id)},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["lesson_variant_id"],
+            str(second_variant.lesson_variant_id),
+        )
+        self.assertEqual(response.data[0]["lesson_name"], second_lesson_name.title)
+
+    def test_lesson_variant_list_can_filter_by_teaching_style(self):
+        second_teaching_style = models.TeachingStyle.objects.create(
+            title="Modelled Practice",
+            is_protected=False,
+        )
+
+        second_variant = models.LessonVariant.objects.create(
+            subject=self.subject1,
+            topic=self.topic1,
+            lesson_name=self.lesson_name1,
+            teaching_style=second_teaching_style,
+            variation=self.variation1,
+            is_published=True,
+            is_protected=False,
+            author=self.superuser,
+        )
+
+        response = self.client.get(
+            self.list_url,
+            {"teaching_style": str(second_teaching_style.teaching_style_id)},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["lesson_variant_id"],
+            str(second_variant.lesson_variant_id),
+        )
+        self.assertEqual(
+            response.data[0]["teaching_style"],
+            second_teaching_style.title,
+        )
+
+    def test_lesson_variant_list_can_filter_by_variation(self):
+        second_variation = models.Variation.objects.create(
+            title="Extended Writing",
+            is_protected=False,
+        )
+
+        second_variant = models.LessonVariant.objects.create(
+            subject=self.subject1,
+            topic=self.topic1,
+            lesson_name=self.lesson_name1,
+            teaching_style=self.teaching_style1,
+            variation=second_variation,
+            is_published=True,
+            is_protected=False,
+            author=self.superuser,
+        )
+
+        response = self.client.get(
+            self.list_url,
+            {"variation": str(second_variation.variation_id)},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["lesson_variant_id"],
+            str(second_variant.lesson_variant_id),
+        )
+        self.assertEqual(response.data[0]["variation"], second_variation.title)
+
+    def test_lesson_variant_list_can_filter_by_multiple_fields(self):
+        second_topic = models.Topic.objects.create(
+            title="Fractions",
+            is_protected=False,
+        )
+        second_topic.subjects.set([self.subject1])
+
+        second_lesson_name = models.LessonName.objects.create(
+            title="Fractions Basics",
+            is_protected=False,
+        )
+        second_lesson_name.subjects.set([self.subject1])
+
+        second_teaching_style = models.TeachingStyle.objects.create(
+            title="Modelled Practice",
+            is_protected=False,
+        )
+
+        second_variation = models.Variation.objects.create(
+            title="Extended Writing",
+            is_protected=False,
+        )
+
+        second_variant = models.LessonVariant.objects.create(
+            subject=self.subject1,
+            topic=second_topic,
+            lesson_name=second_lesson_name,
+            teaching_style=second_teaching_style,
+            variation=second_variation,
+            is_published=True,
+            is_protected=False,
+            author=self.superuser,
+        )
+
+        response = self.client.get(
+            self.list_url,
+            {
+                "topic": str(second_topic.topic_id),
+                "lesson_name": str(second_lesson_name.lesson_name_id),
+                "teaching_style": str(second_teaching_style.teaching_style_id),
+                "variation": str(second_variation.variation_id),
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.data[0]["lesson_variant_id"],
+            str(second_variant.lesson_variant_id),
+        )
+
+    def test_lesson_variant_list_returns_empty_list_for_invalid_topic_filter(self):
+        response = self.client.get(
+            self.list_url,
+            {"topic": str(uuid.uuid4())},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_lesson_variant_list_can_search_by_lesson_name_title(self):
+        response = self.client.get(
+            self.list_url,
+            {"search": "Linear"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["lesson_name"], self.lesson_name1.title)
+
+    def test_lesson_variant_list_can_search_by_topic_title(self):
+        response = self.client.get(
+            self.list_url,
+            {"search": "Algebra"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["topic"], self.topic1.title)
+
+    def test_lesson_variant_list_can_search_by_variation_title(self):
+        response = self.client.get(
+            self.list_url,
+            {"search": "Foundation"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["variation"], self.variation1.title)
+
+    def test_lesson_variant_list_search_returns_empty_list_when_no_match_exists(self):
+        response = self.client.get(
+            self.list_url,
+            {"search": "NotReal"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_lesson_variant_list_search_does_not_return_variants_from_other_subject(
+        self,
+    ):
+        response = self.client.get(
+            self.list_url,
+            {"search": "Poetry"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
 
 
 class LessonVariantCreateViewTests(BaseLessonVariantTestCase):

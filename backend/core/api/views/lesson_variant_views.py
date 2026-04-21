@@ -1,13 +1,18 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ... import models
 from ..serializers import lesson_variant_serializers
+from .. import custom_filters
 
 
 class LessonVariantBySubjectListView(generics.ListAPIView):
     serializer_class = lesson_variant_serializers.LessonVariantBySubjectListSerializer
     permission_classes = [permissions.AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = custom_filters.LessonVariantFilter
+    search_fields = ["lesson_name__title", "topic__title", "variation__title"]
 
     def get_subject(self):
         subject_id = self.kwargs["subject_id"]
@@ -20,6 +25,9 @@ class LessonVariantBySubjectListView(generics.ListAPIView):
         )
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return models.LessonVariant.objects.none()
+
         subject = self.get_subject()
         return models.LessonVariant.objects.select_related(
             "lesson_name",

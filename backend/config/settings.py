@@ -25,16 +25,28 @@ CSRF_TRUSTED_ORIGINS = [
 # Authentication
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-# Filtering
+# Rest Framework stuff
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%d %b %Y",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
 }
 
-# Silk
-
+# spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "OSE API",
+    "DESCRIPTION": "A simple open source resource library for teachers",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
 
 # Application definition
 INSTALLED_APPS = [
@@ -49,6 +61,7 @@ INSTALLED_APPS = [
     "django_filters",
     "silk",
     "corsheaders",
+    "drf_spectacular",
     # Extensions
     "django_extensions",
     "django_summernote",

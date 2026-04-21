@@ -1,0 +1,2274 @@
+openapi: 3.0.3
+info:
+  title: OSE API
+  version: 1.0.0
+  description: A simple open source resource library for teachers
+paths:
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /core/lesson_names/:
+    get:
+      operationId: core_lesson_names_list
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LessonName'
+          description: ''
+    post:
+      operationId: core_lesson_names_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonName'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonName'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonName'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonName'
+          description: ''
+  /core/lesson_names/{lesson_name_slug}/{lesson_name_id}/:
+    get:
+      operationId: core_lesson_names_retrieve
+      parameters:
+      - in: path
+        name: lesson_name_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_name_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonName'
+          description: ''
+    put:
+      operationId: core_lesson_names_update
+      parameters:
+      - in: path
+        name: lesson_name_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_name_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonName'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonName'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonName'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonName'
+          description: ''
+    patch:
+      operationId: core_lesson_names_partial_update
+      parameters:
+      - in: path
+        name: lesson_name_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_name_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonName'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonName'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonName'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonName'
+          description: ''
+    delete:
+      operationId: core_lesson_names_destroy
+      parameters:
+      - in: path
+        name: lesson_name_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_name_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/subjects/:
+    get:
+      operationId: core_subjects_list
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subject'
+          description: ''
+    post:
+      operationId: core_subjects_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subject'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/:
+    get:
+      operationId: core_subjects_retrieve
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+    put:
+      operationId: core_subjects_update
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subject'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+    patch:
+      operationId: core_subjects_partial_update
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSubject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSubject'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+    delete:
+      operationId: core_subjects_destroy
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/subjects/{subject_slug}/{subject_id}/lessons/:
+    get:
+      operationId: core_subjects_lessons_list
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LessonVariantBySubjectList'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/lessons/{lesson_variant_slug}/{lesson_variant_id}/:
+    get:
+      operationId: core_subjects_lessons_retrieve
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonVariantDetailReadOnly'
+          description: ''
+    put:
+      operationId: core_subjects_lessons_update
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonVariantUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonVariantUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonVariantUpdate'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonVariantUpdate'
+          description: ''
+    patch:
+      operationId: core_subjects_lessons_partial_update
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonVariantUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonVariantUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonVariantUpdate'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonVariantUpdate'
+          description: ''
+    delete:
+      operationId: core_subjects_lessons_destroy
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/subjects/{subject_slug}/{subject_id}/lessons/{lesson_variant_slug}/{lesson_variant_id}/resources/:
+    get:
+      operationId: core_subjects_lessons_resources_retrieve
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonVariantWithNestedResourcesDetail'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/lessons/{lesson_variant_slug}/{lesson_variant_id}/resources/{resource_id}/delete/:
+    delete:
+      operationId: core_subjects_lessons_resources_delete_destroy
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: resource_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/subjects/{subject_slug}/{subject_id}/lessons/{lesson_variant_slug}/{lesson_variant_id}/resources/attach/:
+    post:
+      operationId: core_subjects_lessons_resources_attach_create
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonVariantResourceAttach'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonVariantResourceAttach'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonVariantResourceAttach'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonVariantResourceAttach'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/lessons/{lesson_variant_slug}/{lesson_variant_id}/resources/create/:
+    get:
+      operationId: core_subjects_lessons_resources_create_retrieve
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceCreateForLessonVariant'
+          description: ''
+    post:
+      operationId: core_subjects_lessons_resources_create_create
+      parameters:
+      - in: path
+        name: lesson_variant_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: lesson_variant_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceCreateForLessonVariant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResourceCreateForLessonVariant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResourceCreateForLessonVariant'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceCreateForLessonVariant'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/lessons/create/:
+    post:
+      operationId: core_subjects_lessons_create_create
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonVariantWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonVariantWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonVariantWrite'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonVariantWrite'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/resources/:
+    get:
+      operationId: core_subjects_resources_list
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResourceBySubject'
+          description: ''
+    post:
+      operationId: core_subjects_resources_create
+      parameters:
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceBySubject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResourceBySubject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResourceBySubject'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceBySubject'
+          description: ''
+  /core/subjects/{subject_slug}/{subject_id}/resources/{resource_slug}/{resource_id}/:
+    get:
+      operationId: core_subjects_resources_retrieve
+      parameters:
+      - in: path
+        name: resource_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: resource_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceBySubject'
+          description: ''
+    put:
+      operationId: core_subjects_resources_update
+      parameters:
+      - in: path
+        name: resource_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: resource_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceBySubject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResourceBySubject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResourceBySubject'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceBySubject'
+          description: ''
+    patch:
+      operationId: core_subjects_resources_partial_update
+      parameters:
+      - in: path
+        name: resource_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: resource_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedResourceBySubject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedResourceBySubject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedResourceBySubject'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceBySubject'
+          description: ''
+    delete:
+      operationId: core_subjects_resources_destroy
+      parameters:
+      - in: path
+        name: resource_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: resource_slug
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: subject_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: subject_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/teaching_styles/:
+    get:
+      operationId: core_teaching_styles_list
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeachingStyle'
+          description: ''
+    post:
+      operationId: core_teaching_styles_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeachingStyle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TeachingStyle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TeachingStyle'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeachingStyle'
+          description: ''
+  /core/teaching_styles/{teaching_style_slug}/{teaching_style_id}/:
+    get:
+      operationId: core_teaching_styles_retrieve
+      parameters:
+      - in: path
+        name: teaching_style_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: teaching_style_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeachingStyle'
+          description: ''
+    put:
+      operationId: core_teaching_styles_update
+      parameters:
+      - in: path
+        name: teaching_style_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: teaching_style_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeachingStyle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TeachingStyle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TeachingStyle'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeachingStyle'
+          description: ''
+    patch:
+      operationId: core_teaching_styles_partial_update
+      parameters:
+      - in: path
+        name: teaching_style_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: teaching_style_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTeachingStyle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTeachingStyle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTeachingStyle'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeachingStyle'
+          description: ''
+    delete:
+      operationId: core_teaching_styles_destroy
+      parameters:
+      - in: path
+        name: teaching_style_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: teaching_style_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/topics/:
+    get:
+      operationId: core_topics_list
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+          description: ''
+    post:
+      operationId: core_topics_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Topic'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+  /core/topics/{topic_slug}/{topic_id}/:
+    get:
+      operationId: core_topics_retrieve
+      parameters:
+      - in: path
+        name: topic_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: topic_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+    put:
+      operationId: core_topics_update
+      parameters:
+      - in: path
+        name: topic_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: topic_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Topic'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+    patch:
+      operationId: core_topics_partial_update
+      parameters:
+      - in: path
+        name: topic_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: topic_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTopic'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTopic'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTopic'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+    delete:
+      operationId: core_topics_destroy
+      parameters:
+      - in: path
+        name: topic_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: topic_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /core/variations/:
+    get:
+      operationId: core_variations_list
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Variation'
+          description: ''
+    post:
+      operationId: core_variations_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Variation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Variation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Variation'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variation'
+          description: ''
+  /core/variations/{variation_slug}/{variation_id}/:
+    get:
+      operationId: core_variations_retrieve
+      parameters:
+      - in: path
+        name: variation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variation_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variation'
+          description: ''
+    put:
+      operationId: core_variations_update
+      parameters:
+      - in: path
+        name: variation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variation_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Variation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Variation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Variation'
+        required: true
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variation'
+          description: ''
+    patch:
+      operationId: core_variations_partial_update
+      parameters:
+      - in: path
+        name: variation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variation_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVariation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVariation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVariation'
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Variation'
+          description: ''
+    delete:
+      operationId: core_variations_destroy
+      parameters:
+      - in: path
+        name: variation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: variation_slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    CategoryEnum:
+      enum:
+      - slide
+      - worksheet
+      - video
+      - template
+      - file
+      - link
+      type: string
+      description: |-
+        * `slide` - Slide
+        * `worksheet` - Worksheet
+        * `video` - Video
+        * `template` - Template
+        * `file` - File
+        * `link` - Link
+    LanguageEnum:
+      enum:
+      - en
+      type: string
+      description: '* `en` - English'
+    LessonName:
+      type: object
+      properties:
+        lesson_name_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        subjects:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+      required:
+      - lesson_name_id
+      - slug
+      - subjects
+      - title
+    LessonVariantBySubjectList:
+      type: object
+      description: Used for listing LessonVariant before adding or loading resources
+      properties:
+        lesson_variant_id:
+          type: string
+          format: uuid
+          readOnly: true
+        subject:
+          type: string
+          readOnly: true
+        topic:
+          type: string
+          readOnly: true
+        lesson_name:
+          type: string
+          readOnly: true
+        teaching_style:
+          type: string
+          readOnly: true
+        variation:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_published:
+          type: boolean
+        is_protected:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+      required:
+      - author
+      - created_at
+      - lesson_name
+      - lesson_variant_id
+      - slug
+      - subject
+      - teaching_style
+      - topic
+      - updated_at
+      - variation
+    LessonVariantDetailReadOnly:
+      type: object
+      properties:
+        lesson_variant_id:
+          type: string
+          format: uuid
+          readOnly: true
+        subject:
+          type: string
+          readOnly: true
+        topic:
+          type: string
+          readOnly: true
+        lesson_name:
+          type: string
+          readOnly: true
+        teaching_style:
+          type: string
+          readOnly: true
+        variation:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_published:
+          type: boolean
+          readOnly: true
+        is_protected:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+      required:
+      - author
+      - created_at
+      - is_protected
+      - is_published
+      - lesson_name
+      - lesson_variant_id
+      - slug
+      - subject
+      - teaching_style
+      - topic
+      - updated_at
+      - variation
+    LessonVariantResource:
+      type: object
+      properties:
+        resource:
+          allOf:
+          - $ref: '#/components/schemas/ResourceBySubject'
+          readOnly: true
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - resource
+    LessonVariantResourceAttach:
+      type: object
+      properties:
+        resource:
+          type: string
+          format: uuid
+      required:
+      - resource
+    LessonVariantUpdate:
+      type: object
+      description: |-
+        Input serializer for updating a LessonVariant.
+        Subject comes from the URL via serializer context.
+        Topic and lesson_name are limited to values linked to that subject.
+      properties:
+        topic:
+          type: string
+        lesson_name:
+          type: string
+        teaching_style:
+          type: string
+        variation:
+          type: string
+        is_published:
+          type: boolean
+        is_protected:
+          type: boolean
+    LessonVariantWithNestedResourcesDetail:
+      type: object
+      properties:
+        lesson_variant_id:
+          type: string
+          format: uuid
+          readOnly: true
+        subject:
+          type: string
+          readOnly: true
+        topic:
+          type: string
+          readOnly: true
+        lesson_name:
+          type: string
+          readOnly: true
+        teaching_style:
+          type: string
+          readOnly: true
+        variation:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonVariantResource'
+          readOnly: true
+        is_published:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+      required:
+      - author
+      - created_at
+      - lesson_name
+      - lesson_variant_id
+      - resources
+      - slug
+      - subject
+      - teaching_style
+      - topic
+      - updated_at
+      - variation
+    LessonVariantWrite:
+      type: object
+      description: |-
+        Input serializer for creating a LessonVariant.
+        Subject comes from the URL.
+        Author comes from request.user.
+        lessonName and Topic start with no querset then filters through subject to fetch
+      properties:
+        topic:
+          type: string
+        lesson_name:
+          type: string
+        teaching_style:
+          type: string
+        variation:
+          type: string
+        is_published:
+          type: boolean
+        is_protected:
+          type: boolean
+      required:
+      - lesson_name
+      - teaching_style
+      - topic
+      - variation
+    LevelEnum:
+      enum:
+      - gcse
+      type: string
+      description: '* `gcse` - GCSE'
+    PatchedLessonName:
+      type: object
+      properties:
+        lesson_name_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        subjects:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+    PatchedLessonVariantUpdate:
+      type: object
+      description: |-
+        Input serializer for updating a LessonVariant.
+        Subject comes from the URL via serializer context.
+        Topic and lesson_name are limited to values linked to that subject.
+      properties:
+        topic:
+          type: string
+        lesson_name:
+          type: string
+        teaching_style:
+          type: string
+        variation:
+          type: string
+        is_published:
+          type: boolean
+        is_protected:
+          type: boolean
+    PatchedResourceBySubject:
+      type: object
+      properties:
+        resource_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        description:
+          type: string
+        file:
+          type: string
+          format: uri
+          nullable: true
+        url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        is_protected:
+          type: boolean
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectSummary'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+    PatchedSubject:
+      type: object
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        is_published:
+          type: boolean
+        is_protected:
+          type: boolean
+    PatchedTeachingStyle:
+      type: object
+      properties:
+        teaching_style_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+    PatchedTopic:
+      type: object
+      properties:
+        topic_id:
+          type: string
+          format: uuid
+          readOnly: true
+        subjects:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+    PatchedVariation:
+      type: object
+      properties:
+        variation_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+    ResourceBySubject:
+      type: object
+      properties:
+        resource_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        description:
+          type: string
+        file:
+          type: string
+          format: uri
+          nullable: true
+        url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        is_protected:
+          type: boolean
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectSummary'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+      required:
+      - author
+      - category
+      - created_at
+      - resource_id
+      - slug
+      - subjects
+      - title
+      - updated_at
+    ResourceCreateForLessonVariant:
+      type: object
+      properties:
+        resource_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        description:
+          type: string
+        file:
+          type: string
+          format: uri
+          nullable: true
+        url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        order:
+          type: integer
+          default: 0
+      required:
+      - category
+      - resource_id
+      - slug
+      - title
+    Subject:
+      type: object
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        is_published:
+          type: boolean
+        is_protected:
+          type: boolean
+      required:
+      - language
+      - level
+      - slug
+      - subject_id
+      - title
+    SubjectSummary:
+      type: object
+      description: Used In resources for faster lookups of resources with related
+        subjects
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          maxLength: 500
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - subject_id
+      - title
+    TeachingStyle:
+      type: object
+      properties:
+        teaching_style_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+      required:
+      - slug
+      - teaching_style_id
+      - title
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    Topic:
+      type: object
+      properties:
+        topic_id:
+          type: string
+          format: uuid
+          readOnly: true
+        subjects:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+      required:
+      - slug
+      - subjects
+      - title
+      - topic_id
+    Variation:
+      type: object
+      properties:
+        variation_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_protected:
+          type: boolean
+      required:
+      - slug
+      - title
+      - variation_id
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
