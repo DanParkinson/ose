@@ -1,5 +1,7 @@
 from rest_framework import generics, status, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ... import models
@@ -96,6 +98,10 @@ class LessonVariantDetailView(generics.RetrieveUpdateDestroyAPIView):
             return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
+    @method_decorator(cache_page(60 * 60 * 24, key_prefix="lesson_variant_detail"))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
     def get_serializer_class(self):
         if self.request.method in ["PUT", "PATCH"]:
             return lesson_variant_serializers.LessonVariantUpdateSerializer
@@ -139,6 +145,12 @@ class LessonVariantWithNestedResourcesDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
     lookup_field = "lesson_variant_id"
     lookup_url_kwarg = "lesson_variant_id"
+
+    @method_decorator(
+        cache_page(60 * 60 * 24, key_prefix="lesson_variant_with_resources_detail")
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def get_queryset(self):
         subject_id = self.kwargs["subject_id"]

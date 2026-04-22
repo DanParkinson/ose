@@ -11,7 +11,7 @@ class TeachingStyleListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
-class TeachingStyleDetailListView(generics.RetrieveUpdateDestroyAPIView):
+class TeachingStyleDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.TeachingStyle.objects.all()
     serializer_class = teaching_style_serializers.TeachingStyleSerializer
     permission_classes = [permissions.IsAdminUser]

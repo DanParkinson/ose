@@ -106,9 +106,9 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
-        resource = response.data[0]
+        resource = response.data["results"][0]
         self.assertEqual(resource["title"], self.resource1.title)
         self.assertEqual(resource["slug"], self.resource1.slug)
 
@@ -128,7 +128,7 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         response = self.client.get(empty_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     # ==========================
     # List - Response Structure
@@ -155,7 +155,7 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         }
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(set(response.data[0].keys()), expected_fields)
+        self.assertEqual(set(response.data["results"][0].keys()), expected_fields)
 
     # =======================
     # List - Response Values
@@ -166,7 +166,7 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
 
         response = self.client.get(self.list_url)
 
-        resource = response.data[0]
+        resource = response.data["results"][0]
 
         self.assertEqual(resource["title"], self.resource1.title)
         self.assertEqual(resource["slug"], self.resource1.slug)
@@ -186,10 +186,10 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         response = self.client.get(self.list_url, {"search": self.resource1.title})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["title"], self.resource1.title)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["title"], self.resource1.title)
         self.assertEqual(
-            response.data[0]["resource_id"], str(self.resource1.resource_id)
+            response.data["results"][0]["resource_id"], str(self.resource1.resource_id)
         )
 
     def test_resource_list_search_returns_empty_list_when_no_titles_match(self):
@@ -198,7 +198,7 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         response = self.client.get(self.list_url, {"search": "Poetry"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     def test_resource_list_search_does_not_return_matching_resource_from_other_subject(
         self,
@@ -226,11 +226,11 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         response = self.client.get(self.list_url, {"search": self.resource1.title})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["resource_id"], str(self.resource1.resource_id)
+            response.data["results"][0]["resource_id"], str(self.resource1.resource_id)
         )
-        self.assertEqual(response.data[0]["title"], self.resource1.title)
+        self.assertEqual(response.data["results"][0]["title"], self.resource1.title)
 
     def test_resource_list_without_search_returns_default_subject_queryset(self):
         self.authenticate_admin()
@@ -238,9 +238,9 @@ class ResourceBySubjectListCreateViewTests(BaseResourceTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["resource_id"], str(self.resource1.resource_id)
+            response.data["results"][0]["resource_id"], str(self.resource1.resource_id)
         )
 
     # =====================

@@ -98,7 +98,7 @@ class TeachingStyleListCreateViewTests(BaseTeachingStyleTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_teaching_style_list_returns_empty_list_when_no_teaching_styles_exist(self):
         self.authenticate_admin()
@@ -107,7 +107,7 @@ class TeachingStyleListCreateViewTests(BaseTeachingStyleTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     # ==========================
     # List - Response Structure
@@ -125,7 +125,7 @@ class TeachingStyleListCreateViewTests(BaseTeachingStyleTestCase):
             "is_protected",
         }
 
-        self.assertEqual(set(response.data[0].keys()), expected_fields)
+        self.assertEqual(set(response.data["results"][0].keys()), expected_fields)
 
     # =======================
     # List - Response Values
@@ -137,7 +137,8 @@ class TeachingStyleListCreateViewTests(BaseTeachingStyleTestCase):
         response = self.client.get(self.list_url)
 
         returned_teaching_styles = {
-            teaching_style["title"]: teaching_style for teaching_style in response.data
+            teaching_style["title"]: teaching_style
+            for teaching_style in response.data["results"]
         }
 
         lecture = returned_teaching_styles["Lecture"]

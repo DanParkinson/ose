@@ -19,7 +19,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "Populate the database with readable curriculum sample data"
+    help = "Populate the database with simple loop-friendly sample data"
 
     def handle(self, *args, **kwargs):
         self.stdout.write(self.style.WARNING("Clearing existing data..."))
@@ -37,127 +37,45 @@ class Command(BaseCommand):
 
         author = self.get_or_create_seed_user()
 
-        curriculum_data = {
-            "Mathematics": {
-                "topics": {
-                    "Algebra": [
-                        "Nth Term Basics",
-                        "Finding the Rule",
-                        "Using the Rule",
-                        "Mixed Sequence Practice",
-                        "One Step Equations",
-                        "Two Step Equations",
-                        "Equations with Brackets",
-                        "Equation Problem Solving",
-                        "Expanding One Bracket",
-                        "Expanding Two Brackets",
-                        "Factorising Simple Expressions",
-                        "Factorising Harder Expressions",
-                    ],
-                    "Number": [
-                        "Equivalent Fractions",
-                        "Comparing Fractions",
-                        "Adding Fractions",
-                        "Subtracting Fractions",
-                        "Percentage of an Amount",
-                        "Percentage Increase",
-                        "Percentage Decrease",
-                        "Reverse Percentages",
-                    ],
-                    "Geometry": [
-                        "Angles on a Line",
-                        "Angles Around a Point",
-                        "Angles in Triangles",
-                        "Angles in Parallel Lines",
-                        "Perimeter Basics",
-                        "Area of Rectangles and Triangles",
-                        "Area of Compound Shapes",
-                        "Area Problem Solving",
-                    ],
-                },
-            },
-            "English Language": {
-                "topics": {
-                    "Reading Skills": [
-                        "Identifying Language Features",
-                        "Analysing Word Choice",
-                        "Explaining Effects",
-                        "Language Analysis Practice",
-                        "Reading Between the Lines",
-                        "Using Evidence",
-                        "Developing Inference",
-                        "Inference Practice",
-                    ],
-                    "Writing Skills": [
-                        "Building Setting Description",
-                        "Using Sensory Detail",
-                        "Sentence Variety",
-                        "Descriptive Writing Practice",
-                        "Writing to Argue",
-                        "Writing to Persuade",
-                        "Writing for Audience",
-                        "Transactional Writing Practice",
-                    ],
-                },
-            },
-            "Combined Science": {
-                "topics": {
-                    "Biology": [
-                        "Animal and Plant Cells",
-                        "Specialised Cells",
-                        "Microscopes",
-                        "Cell Organisation",
-                    ],
-                    "Chemistry": [
-                        "Atoms Basics",
-                        "Elements and Compounds",
-                        "Mixtures",
-                        "Particle Models",
-                    ],
-                    "Physics": [
-                        "Contact and Non Contact Forces",
-                        "Resultant Force",
-                        "Distance Time Graphs",
-                        "Velocity Time Graphs",
-                    ],
-                },
-            },
-        }
+        self.stdout.write(self.style.WARNING("Creating seed data..."))
 
-        self.stdout.write(
-            self.style.WARNING(
-                "Creating subjects, topics, lesson names, lesson variants, and resources..."
-            )
-        )
+        teaching_style = self.get_or_create_teaching_style()
+        variation = self.get_or_create_variation()
 
-        teaching_style, _ = TeachingStyle.objects.get_or_create(
-            title="Standard",
-            defaults={"is_protected": False},
-        )
-        variation, _ = Variation.objects.get_or_create(
-            title="Base",
-            defaults={"is_protected": False},
-        )
+        # Easy-to-edit seed sizes
+        subject_count = 3
+        topics_per_subject = 3
+        lessons_per_topic = 4
 
-        for subject_title, subject_info in curriculum_data.items():
+        for subject_index in range(1, subject_count + 1):
             subject = Subject.objects.create(
-                title=subject_title,
+                title=f"subject-{subject_index}",
                 level="gcse",
                 language="en",
                 is_published=True,
                 is_protected=False,
             )
 
-            for topic_title, lesson_titles in subject_info["topics"].items():
+            for topic_index in range(1, topics_per_subject + 1):
+                global_topic_number = (
+                    (subject_index - 1) * topics_per_subject
+                ) + topic_index
+
                 topic, _ = Topic.objects.get_or_create(
-                    title=topic_title,
+                    title=f"topic-{global_topic_number}",
                     defaults={"is_protected": False},
                 )
                 topic.subjects.add(subject)
 
-                for lesson_title in lesson_titles:
+                for lesson_index in range(1, lessons_per_topic + 1):
+                    global_lesson_number = (
+                        ((subject_index - 1) * topics_per_subject * lessons_per_topic)
+                        + ((topic_index - 1) * lessons_per_topic)
+                        + lesson_index
+                    )
+
                     lesson_name, _ = LessonName.objects.get_or_create(
-                        title=lesson_title,
+                        title=f"lesson-{global_lesson_number}",
                         defaults={"is_protected": False},
                     )
                     lesson_name.subjects.add(subject)
@@ -168,16 +86,16 @@ class Command(BaseCommand):
                         lesson_name=lesson_name,
                         teaching_style=teaching_style,
                         variation=variation,
-                        is_published=self.is_lesson_published(lesson_title),
+                        is_published=self.is_lesson_published(global_lesson_number),
                         is_protected=False,
                         author=author,
                     )
 
-                    lesson_resources = self.build_resources_for_lesson(lesson_title)
+                    lesson_resources = self.build_resources_for_lesson(
+                        global_lesson_number
+                    )
 
-                    for resource_order, resource_data in enumerate(
-                        lesson_resources, start=1
-                    ):
+                    for order, resource_data in enumerate(lesson_resources, start=1):
                         resource = self.create_resource(
                             resource_data=resource_data,
                             author=author,
@@ -186,12 +104,12 @@ class Command(BaseCommand):
                         LessonVariantResource.objects.create(
                             lesson_variant=lesson_variant,
                             resource=resource,
-                            order=resource_order,
+                            order=order,
                         )
 
         self.stdout.write(
             self.style.SUCCESS(
-                "Database successfully populated with readable curriculum sample data."
+                "Database successfully populated with simple sample data."
             )
         )
 
@@ -209,63 +127,66 @@ class Command(BaseCommand):
 
         return user
 
-    def is_lesson_published(self, lesson_title):
-        unpublished_lessons = {
-            "Mixed Sequence Practice",
-            "Expanding Two Brackets",
-            "Factorising Harder Expressions",
-            "Percentage Decrease",
-            "Reverse Percentages",
-            "Sentence Variety",
-            "Descriptive Writing Practice",
-            "Writing to Argue",
-            "Writing to Persuade",
-            "Writing for Audience",
-            "Transactional Writing Practice",
-            "Velocity Time Graphs",
-        }
-        return lesson_title not in unpublished_lessons
+    def get_or_create_teaching_style(self):
+        teaching_style, _ = TeachingStyle.objects.get_or_create(
+            title="teaching-style-1",
+            defaults={"is_protected": False},
+        )
+        return teaching_style
 
-    def build_resources_for_lesson(self, lesson_title):
+    def get_or_create_variation(self):
+        variation, _ = Variation.objects.get_or_create(
+            title="variation-1",
+            defaults={"is_protected": False},
+        )
+        return variation
+
+    def is_lesson_published(self, lesson_number):
+        unpublished_lessons = {4, 8, 12}
+        return lesson_number not in unpublished_lessons
+
+    def build_resources_for_lesson(self, lesson_number):
+        lesson_title = f"lesson-{lesson_number}"
+
         resources = [
             {
-                "title": f"{lesson_title} Slides",
+                "title": f"{lesson_title}-slides",
                 "category": "slide",
-                "description": f"Slide deck for {lesson_title.lower()}.",
+                "description": f"Slides for {lesson_title}.",
                 "file_name": self.make_file_name(lesson_title, "slides"),
             },
             {
-                "title": f"{lesson_title} Worksheet",
+                "title": f"{lesson_title}-worksheet",
                 "category": "worksheet",
-                "description": f"Worksheet for {lesson_title.lower()}.",
+                "description": f"Worksheet for {lesson_title}.",
                 "file_name": self.make_file_name(lesson_title, "worksheet"),
             },
             {
-                "title": f"{lesson_title} Teacher Notes",
+                "title": f"{lesson_title}-notes",
                 "category": "file",
-                "description": f"Teacher notes for {lesson_title.lower()}.",
-                "file_name": self.make_file_name(lesson_title, "teacher_notes"),
+                "description": f"Teacher notes for {lesson_title}.",
+                "file_name": self.make_file_name(lesson_title, "notes"),
             },
         ]
 
         optional_resources = [
             {
-                "title": f"{lesson_title} Video",
+                "title": f"{lesson_title}-video",
                 "category": "video",
-                "description": f"Video explanation for {lesson_title.lower()}.",
-                "url": f"https://example.com/videos/{self.slug_text(lesson_title)}",
+                "description": f"Video for {lesson_title}.",
+                "url": f"https://example.com/videos/{lesson_title}",
             },
             {
-                "title": f"{lesson_title} Extension Task",
+                "title": f"{lesson_title}-template",
                 "category": "template",
-                "description": f"Extension task for {lesson_title.lower()}.",
-                "file_name": self.make_file_name(lesson_title, "extension_task"),
+                "description": f"Template for {lesson_title}.",
+                "file_name": self.make_file_name(lesson_title, "template"),
             },
             {
-                "title": f"{lesson_title} Help Link",
+                "title": f"{lesson_title}-link",
                 "category": "link",
-                "description": f"Helpful support link for {lesson_title.lower()}.",
-                "url": f"https://example.com/help/{self.slug_text(lesson_title)}",
+                "description": f"Helpful link for {lesson_title}.",
+                "url": f"https://example.com/help/{lesson_title}",
             },
         ]
 
@@ -296,8 +217,5 @@ class Command(BaseCommand):
 
         return resource
 
-    def slug_text(self, text):
-        return text.lower().replace("&", "and").replace(" ", "_")
-
     def make_file_name(self, lesson_title, suffix):
-        return f"{self.slug_text(lesson_title)}_{suffix}.txt"
+        return f"{lesson_title}_{suffix}.txt"

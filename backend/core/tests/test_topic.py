@@ -97,7 +97,7 @@ class TopicListCreateViewTests(BaseTopicTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_topic_list_returns_empty_list_when_no_topics_exist(self):
         self.authenticate_admin()
@@ -106,7 +106,7 @@ class TopicListCreateViewTests(BaseTopicTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     # ==========================
     # List - Response Structure
@@ -125,7 +125,7 @@ class TopicListCreateViewTests(BaseTopicTestCase):
             "is_protected",
         }
 
-        self.assertEqual(set(response.data[0].keys()), expected_fields)
+        self.assertEqual(set(response.data["results"][0].keys()), expected_fields)
 
     # =======================
     # List - Response Values
@@ -136,7 +136,7 @@ class TopicListCreateViewTests(BaseTopicTestCase):
 
         response = self.client.get(self.list_url)
 
-        returned_topics = {topic["title"]: topic for topic in response.data}
+        returned_topics = {topic["title"]: topic for topic in response.data["results"]}
 
         algebra = returned_topics["Algebra"]
         poetry = returned_topics["Poetry"]

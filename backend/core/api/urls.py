@@ -68,7 +68,7 @@ urlpatterns = [
     ),
     path(
         "teaching_styles/<slug:teaching_style_slug>/<uuid:teaching_style_id>/",
-        teaching_style_views.TeachingStyleDetailListView.as_view(),
+        teaching_style_views.TeachingStyleDetailView.as_view(),
         name="teaching-style-detail",
     ),
     # ==============

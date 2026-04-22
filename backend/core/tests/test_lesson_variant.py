@@ -152,8 +152,10 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["lesson_name"], self.lesson_name1.title)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["lesson_name"], self.lesson_name1.title
+        )
 
     def test_lesson_variant_list_returns_empty_list_when_subject_has_no_variants(self):
         empty_subject = models.Subject.objects.create(
@@ -169,7 +171,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         response = self.client.get(empty_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     # ==========================
     # List - Response Structure
@@ -193,7 +195,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
             "author",
         }
 
-        self.assertEqual(set(response.data[0].keys()), expected_fields)
+        self.assertEqual(set(response.data["results"][0].keys()), expected_fields)
 
     # =======================
     # List - Response Values
@@ -202,7 +204,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
     def test_lesson_variant_list_returns_expected_values(self):
         response = self.client.get(self.list_url)
 
-        lesson_variant = response.data[0]
+        lesson_variant = response.data["results"][0]
 
         self.assertEqual(lesson_variant["subject"], self.subject1.title)
         self.assertEqual(lesson_variant["topic"], self.topic1.title)
@@ -217,7 +219,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
     def test_lesson_variant_list_returns_related_fields_as_titles(self):
         response = self.client.get(self.list_url)
 
-        lesson_variant = response.data[0]
+        lesson_variant = response.data["results"][0]
 
         self.assertIsInstance(lesson_variant["subject"], str)
         self.assertIsInstance(lesson_variant["topic"], str)
@@ -260,12 +262,12 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["lesson_variant_id"],
+            response.data["results"][0]["lesson_variant_id"],
             str(second_variant.lesson_variant_id),
         )
-        self.assertEqual(response.data[0]["topic"], second_topic.title)
+        self.assertEqual(response.data["results"][0]["topic"], second_topic.title)
 
     def test_lesson_variant_list_can_filter_by_lesson_name(self):
         second_lesson_name = models.LessonName.objects.create(
@@ -291,12 +293,14 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["lesson_variant_id"],
+            response.data["results"][0]["lesson_variant_id"],
             str(second_variant.lesson_variant_id),
         )
-        self.assertEqual(response.data[0]["lesson_name"], second_lesson_name.title)
+        self.assertEqual(
+            response.data["results"][0]["lesson_name"], second_lesson_name.title
+        )
 
     def test_lesson_variant_list_can_filter_by_teaching_style(self):
         second_teaching_style = models.TeachingStyle.objects.create(
@@ -321,13 +325,13 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["lesson_variant_id"],
+            response.data["results"][0]["lesson_variant_id"],
             str(second_variant.lesson_variant_id),
         )
         self.assertEqual(
-            response.data[0]["teaching_style"],
+            response.data["results"][0]["teaching_style"],
             second_teaching_style.title,
         )
 
@@ -354,12 +358,14 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["lesson_variant_id"],
+            response.data["results"][0]["lesson_variant_id"],
             str(second_variant.lesson_variant_id),
         )
-        self.assertEqual(response.data[0]["variation"], second_variation.title)
+        self.assertEqual(
+            response.data["results"][0]["variation"], second_variation.title
+        )
 
     def test_lesson_variant_list_can_filter_by_multiple_fields(self):
         second_topic = models.Topic.objects.create(
@@ -406,9 +412,9 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data[0]["lesson_variant_id"],
+            response.data["results"][0]["lesson_variant_id"],
             str(second_variant.lesson_variant_id),
         )
 
@@ -419,7 +425,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     def test_lesson_variant_list_can_search_by_lesson_name_title(self):
         response = self.client.get(
@@ -428,8 +434,10 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["lesson_name"], self.lesson_name1.title)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["lesson_name"], self.lesson_name1.title
+        )
 
     def test_lesson_variant_list_can_search_by_topic_title(self):
         response = self.client.get(
@@ -438,8 +446,8 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["topic"], self.topic1.title)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["topic"], self.topic1.title)
 
     def test_lesson_variant_list_can_search_by_variation_title(self):
         response = self.client.get(
@@ -448,8 +456,10 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["variation"], self.variation1.title)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["variation"], self.variation1.title
+        )
 
     def test_lesson_variant_list_search_returns_empty_list_when_no_match_exists(self):
         response = self.client.get(
@@ -458,7 +468,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     def test_lesson_variant_list_search_does_not_return_variants_from_other_subject(
         self,
@@ -469,7 +479,7 @@ class LessonVariantBySubjectListViewTests(BaseLessonVariantTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
 
 class LessonVariantCreateViewTests(BaseLessonVariantTestCase):

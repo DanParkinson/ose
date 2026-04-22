@@ -110,7 +110,7 @@ class LessonNameListCreateViewTests(BaseLessonNameTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_lesson_name_list_returns_empty_list_when_no_lesson_names_exist(self):
         self.authenticate_admin()
@@ -119,7 +119,7 @@ class LessonNameListCreateViewTests(BaseLessonNameTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     # ==========================
     # List - Response Structure
@@ -129,7 +129,7 @@ class LessonNameListCreateViewTests(BaseLessonNameTestCase):
         self.authenticate_admin()
         response = self.client.get(self.list_url)
 
-        first_lesson_name = response.data[0]
+        first_lesson_name = response.data["results"][0]
 
         self.assertIn("lesson_name_id", first_lesson_name)
         self.assertIn("subjects", first_lesson_name)
@@ -141,9 +141,10 @@ class LessonNameListCreateViewTests(BaseLessonNameTestCase):
         self.authenticate_admin()
         response = self.client.get(self.list_url)
 
-        first_keys = set(response.data[0].keys())
+        results = response.data["results"]
+        first_keys = set(results[0].keys())
 
-        for lesson_name in response.data:
+        for lesson_name in results:
             self.assertEqual(set(lesson_name.keys()), first_keys)
 
     # =======================
@@ -154,7 +155,9 @@ class LessonNameListCreateViewTests(BaseLessonNameTestCase):
         self.authenticate_admin()
         response = self.client.get(self.list_url)
 
-        returned_titles = [lesson_name["title"] for lesson_name in response.data]
+        returned_titles = [
+            lesson_name["title"] for lesson_name in response.data["results"]
+        ]
 
         self.assertIn(self.lesson_name1.title, returned_titles)
         self.assertIn(self.lesson_name2.title, returned_titles)
@@ -164,7 +167,8 @@ class LessonNameListCreateViewTests(BaseLessonNameTestCase):
         response = self.client.get(self.list_url)
 
         returned_lesson_names = {
-            lesson_name["title"]: lesson_name for lesson_name in response.data
+            lesson_name["title"]: lesson_name
+            for lesson_name in response.data["results"]
         }
 
         first_lesson_name = returned_lesson_names[self.lesson_name1.title]

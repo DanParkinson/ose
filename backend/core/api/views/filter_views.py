@@ -7,6 +7,7 @@ from ..serializers import filter_serializers
 class FilterTopicBySubjectListView(generics.ListAPIView):
     serializer_class = filter_serializers.FilterTopicBySubjectSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
     def get_subject(self):
         subject_id = self.kwargs["subject_id"]
@@ -26,6 +27,7 @@ class FilterTopicBySubjectListView(generics.ListAPIView):
 class FilterLessonNameBySubjectListView(generics.ListAPIView):
     serializer_class = filter_serializers.FilterLessonNameBySubjectSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
     def get_subject(self):
         subject_id = self.kwargs["subject_id"]
@@ -46,11 +48,13 @@ class FilterTeachingStyleListView(generics.ListAPIView):
     queryset = models.TeachingStyle.objects.all()
     serializer_class = filter_serializers.FilterTeachingStyleSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
 
 class FilterVariationListView(generics.ListAPIView):
     serializer_class = filter_serializers.FilterVariationSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
     def get_subject(self):
         subject_id = self.kwargs["subject_id"]

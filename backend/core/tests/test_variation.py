@@ -94,7 +94,7 @@ class VariationListCreateViewTests(BaseVariationTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_variation_list_returns_empty_list_when_no_variations_exist(self):
         self.authenticate_admin()
@@ -103,7 +103,7 @@ class VariationListCreateViewTests(BaseVariationTestCase):
         response = self.client.get(self.list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        self.assertEqual(response.data["results"], [])
 
     # ==========================
     # List - Response Structure
@@ -121,7 +121,7 @@ class VariationListCreateViewTests(BaseVariationTestCase):
             "is_protected",
         }
 
-        self.assertEqual(set(response.data[0].keys()), expected_fields)
+        self.assertEqual(set(response.data["results"][0].keys()), expected_fields)
 
     # =======================
     # List - Response Values
@@ -133,7 +133,7 @@ class VariationListCreateViewTests(BaseVariationTestCase):
         response = self.client.get(self.list_url)
 
         returned_variations = {
-            variation["title"]: variation for variation in response.data
+            variation["title"]: variation for variation in response.data["results"]
         }
 
         foundation = returned_variations["Foundation"]
