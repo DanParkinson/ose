@@ -8,39 +8,41 @@ from .. import models
 class BaseAPITestCase(APITestCase):
     def setUp(self):
         self.User = get_user_model()
+
         # ===========
-        # users
+        # Users
         # ===========
         self.user = self.User.objects.create_user(
-            username="user",
+            email="user@example.com",
             password="testpass123",
         )
         self.other_user = self.User.objects.create_user(
-            username="otheruser",
+            email="otheruser@example.com",
             password="testpass123",
         )
         self.superuser = self.User.objects.create_superuser(
-            username="admin",
             email="admin@example.com",
             password="testpass123",
         )
+
         # ===========
         # Subjects
         # ===========
         self.subject1 = models.Subject.objects.create(
             title="Mathematics",
-            level="gcse",
+            level="secondary",
             language="en",
             is_published=True,
             is_protected=False,
         )
         self.subject2 = models.Subject.objects.create(
             title="English",
-            level="gcse",
+            level="primary",
             language="en",
             is_published=False,
             is_protected=True,
         )
+
         # ===========
         # Topics
         # ===========
@@ -54,8 +56,9 @@ class BaseAPITestCase(APITestCase):
         )
         self.topic1.subjects.set([self.subject1])
         self.topic2.subjects.set([self.subject2])
+
         # ===========
-        # Lesson Name
+        # Lesson Names
         # ===========
         self.lesson_name1 = models.LessonName.objects.create(
             title="Linear Equations",
@@ -67,8 +70,9 @@ class BaseAPITestCase(APITestCase):
         )
         self.lesson_name1.subjects.set([self.subject1])
         self.lesson_name2.subjects.set([self.subject2])
+
         # ===========
-        # Variation
+        # Variations
         # ===========
         self.variation1 = models.Variation.objects.create(
             title="Foundation",
@@ -78,8 +82,9 @@ class BaseAPITestCase(APITestCase):
             title="Higher",
             is_protected=True,
         )
+
         # ===========
-        # Teaching Style
+        # Teaching Styles
         # ===========
         self.teaching_style1 = models.TeachingStyle.objects.create(
             title="Lecture",
@@ -89,8 +94,9 @@ class BaseAPITestCase(APITestCase):
             title="Discussion",
             is_protected=True,
         )
+
         # ===========
-        # Lesson Variant
+        # Lesson Variants
         # ===========
         self.lesson_variant1 = models.LessonVariant.objects.create(
             subject=self.subject1,
@@ -112,8 +118,9 @@ class BaseAPITestCase(APITestCase):
             is_protected=True,
             author=self.superuser,
         )
+
         # ===========
-        # Resource
+        # Resources
         # ===========
         self.resource1 = models.Resource.objects.create(
             title="Algebra Slides",
@@ -133,8 +140,9 @@ class BaseAPITestCase(APITestCase):
         )
         self.resource1.subjects.set([self.subject1])
         self.resource2.subjects.set([self.subject2])
+
         # ===========
-        # Lesson Variant Resource
+        # Lesson Variant Resources
         # ===========
         self.lesson_variant_resource1 = models.LessonVariantResource.objects.create(
             lesson_variant=self.lesson_variant1,
@@ -163,198 +171,31 @@ class BaseAPITestCase(APITestCase):
         self.client.force_authenticate(user=None)
 
     # =====================
-    # Subject URLs
+    # Active Subject URLs
     # =====================
     def get_subject_list_url(self):
         return reverse("subject-list")
 
-    def get_subject_detail_url(self, subject=None):
-        subject = subject or self.subject1
-        return reverse(
-            "subject-detail",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-            },
-        )
-
     # =====================
-    # Topic URLs
+    # Active Topic URLs
     # =====================
     def get_topic_list_url(self):
         return reverse("topic-list")
 
-    def get_topic_detail_url(self, topic=None):
-        topic = topic or self.topic1
-        return reverse(
-            "topic-detail",
-            kwargs={
-                "topic_slug": topic.slug,
-                "topic_id": topic.topic_id,
-            },
-        )
-
     # =====================
-    # Lesson name URLs
+    # Active Lesson Name URLs
     # =====================
     def get_lesson_name_list_url(self):
         return reverse("lesson-name-list")
 
-    def get_lesson_name_detail_url(self, lesson_name=None):
-        lesson_name = lesson_name or self.lesson_name1
-        return reverse(
-            "lesson-name-detail",
-            kwargs={
-                "lesson_name_slug": lesson_name.slug,
-                "lesson_name_id": lesson_name.lesson_name_id,
-            },
-        )
-
     # =====================
-    # Variation URLs
+    # Active Variation URLs
     # =====================
     def get_variation_list_url(self):
         return reverse("variation-list")
 
-    def get_variation_detail_url(self, variation=None):
-        variation = variation or self.variation1
-        return reverse(
-            "variation-detail",
-            kwargs={
-                "variation_slug": variation.slug,
-                "variation_id": variation.variation_id,
-            },
-        )
-
     # =====================
-    # Teaching style URLs
+    # Active Teaching Style URLs
     # =====================
     def get_teaching_style_list_url(self):
         return reverse("teaching-style-list")
-
-    def get_teaching_style_detail_url(self, teaching_style=None):
-        teaching_style = teaching_style or self.teaching_style1
-        return reverse(
-            "teaching-style-detail",
-            kwargs={
-                "teaching_style_slug": teaching_style.slug,
-                "teaching_style_id": teaching_style.teaching_style_id,
-            },
-        )
-
-    # =====================
-    # Resource URLs
-    # =====================
-    def get_resource_by_subject_list_url(self, subject=None):
-        subject = subject or self.subject1
-        return reverse(
-            "resource-by-subject-list",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-            },
-        )
-
-    def get_resource_by_subject_detail_url(self, subject=None, resource=None):
-        subject = subject or self.subject1
-        resource = resource or self.resource1
-        return reverse(
-            "resource-by-subject-detail",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-                "resource_slug": resource.slug,
-                "resource_id": resource.resource_id,
-            },
-        )
-
-    # =====================
-    # Lesson variant URLs
-    # =====================
-    def get_lesson_list_url(self, subject=None):
-        subject = subject or self.subject1
-        return reverse(
-            "lesson-list",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-            },
-        )
-
-    def get_lesson_create_url(self, subject=None):
-        subject = subject or self.subject1
-        return reverse(
-            "lesson-create",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-            },
-        )
-
-    def get_lesson_detail_url(self, subject=None, lesson_variant=None):
-        subject = subject or self.subject1
-        lesson_variant = lesson_variant or self.lesson_variant1
-        return reverse(
-            "lesson-detail",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-                "lesson_variant_slug": lesson_variant.slug,
-                "lesson_variant_id": lesson_variant.lesson_variant_id,
-            },
-        )
-
-    def get_lesson_with_resource_detail_url(self, subject=None, lesson_variant=None):
-        subject = subject or self.subject1
-        lesson_variant = lesson_variant or self.lesson_variant1
-        return reverse(
-            "lesson-with-resource-detail",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-                "lesson_variant_slug": lesson_variant.slug,
-                "lesson_variant_id": lesson_variant.lesson_variant_id,
-            },
-        )
-
-    # =====================
-    # Lesson variant resource URLs
-    # =====================
-    def get_lesson_variant_resource_create_url(self, subject=None, lesson_variant=None):
-        subject = subject or self.subject1
-        lesson_variant = lesson_variant or self.lesson_variant1
-        return reverse(
-            "lesson-variant-resource-create",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-                "lesson_variant_slug": lesson_variant.slug,
-                "lesson_variant_id": lesson_variant.lesson_variant_id,
-            },
-        )
-
-    def get_lesson_variant_resource_attach_url(self, subject=None, lesson_variant=None):
-        subject = subject or self.subject1
-        lesson_variant = lesson_variant or self.lesson_variant1
-        return reverse(
-            "lesson-variant-resource-attach",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-                "lesson_variant_slug": lesson_variant.slug,
-                "lesson_variant_id": lesson_variant.lesson_variant_id,
-            },
-        )
-
-    def get_lesson_variant_resource_delete_url(self, subject=None, lesson_variant=None):
-        subject = subject or self.subject1
-        lesson_variant = lesson_variant or self.lesson_variant1
-        return reverse(
-            "lesson-variant-resource-delete",
-            kwargs={
-                "subject_slug": subject.slug,
-                "subject_id": subject.subject_id,
-                "lesson_variant_slug": lesson_variant.slug,
-                "lesson_variant_id": lesson_variant.lesson_variant_id,
-            },
-        )

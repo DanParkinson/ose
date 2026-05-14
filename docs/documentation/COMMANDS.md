@@ -1,5 +1,9 @@
 # Useful Commands
 
+## Navigation
+
+[← Back to README.md](/README.md)
+
 ## Populating the Database
 
 From `/backend`
@@ -7,8 +11,6 @@ From `/backend`
 ```bash
 uv run manage.py populate_db
 ```
-
----
 
 ## Prior to Committing
 
@@ -18,8 +20,6 @@ From root directory `/app`
 git add .
 uv run pre-commit run
 ```
-
----
 
 ## Creating an ERD
 
@@ -32,8 +32,6 @@ uv run manage.py graph_models core > models.dot
 Then:
 - Open the `.dot` file
 - Copy contents into: https://graph.flyte.org/
-
----
 
 ## Launching API Docs (Swagger UI)
 
@@ -49,8 +47,6 @@ Then open in browser:
 http://localhost:8000/api/schema/swagger-ui/
 ```
 
----
-
 ## Launching API Schema
 
 From `/backend`
@@ -61,4 +57,8 @@ uv run manage.py spectacular --file schema.yml
 
 This generates an OpenAPI schema file for the API.
 
----
+## Run Tests
+
+```bash
+npm run test
+```

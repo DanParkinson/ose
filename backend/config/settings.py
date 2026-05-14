@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -11,27 +12,56 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-# CORS
+# Authentication and Authorisation
+AUTH_USER_MODEL = "accounts.CustomUser"
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 
-# CSRF
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
 ]
 
-# Authentication
-AUTH_USER_MODEL = "accounts.CustomUser"
+SITE_ID = 1
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_EMAIL_VERIFICATION = "none"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "access",
+    "JWT_AUTH_REFRESH_COOKIE": "refresh",
+    "JWT_AUTH_HTTPONLY": True,
+    "JWT_AUTH_SECURE": False,  # True in production!
+    "JWT_AUTH_SAMESITE": "Lax",
+    "JWT_AUTH_RETURN_EXPIRATION": True,
+    "TOKEN_MODEL": None,
+    "REGISTER_SERIALIZER": "accounts.api.serializers.CustomRegisterSerializer",
+    "USER_DETAILS_SERIALIZER": "accounts.api.serializers.CustomUserDetailsSerializer",
+    "PASSWORD_RESET_CONFIRM_URL": "reset-password/{uid}/{token}",
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+}
 
 # Rest Framework stuff
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%d %b %Y",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -56,27 +86,38 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     # Django stuff
     "rest_framework",
-    "django_filters",
-    "silk",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "corsheaders",
-    "drf_spectacular",
+    # All Auth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    # Filtering
+    "django_filters",
     # Extensions
     "django_extensions",
     "django_summernote",
+    "silk",
+    "drf_spectacular",
     # Apps
-    "core",
+    "core.apps.CoreConfig",
     "accounts",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "silk.middleware.SilkyMiddleware",
@@ -87,7 +128,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

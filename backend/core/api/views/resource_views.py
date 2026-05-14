@@ -8,9 +8,6 @@ from ... import models
 from ..serializers import resource_serializers
 
 
-# ======================
-# Resources
-# ======================
 class ResourceBySubjectListView(generics.ListCreateAPIView):
     serializer_class = resource_serializers.ResourceBySubjectSerializer
     permission_classes = [permissions.IsAdminUser]

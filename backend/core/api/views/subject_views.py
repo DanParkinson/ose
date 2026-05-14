@@ -1,16 +1,33 @@
-from rest_framework import generics, status, permissions
+# DRF generic views and API utilities
+from rest_framework import generics, status, permissions, filters
 from rest_framework.response import Response
+
+# Django helpers
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+
+# Filtering
+from django_filters.rest_framework import DjangoFilterBackend
+
+# Project models
 from ... import models
+
+# App serializers
 from ..serializers import subject_serializers
 
 
 class SubjectListCreateView(generics.ListCreateAPIView):
     queryset = models.Subject.objects.all()
     serializer_class = subject_serializers.SubjectSerializer
-    pagination_class = None
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = [
+        "level",
+        "language",
+        "is_published",
+        "is_protected",
+    ]
+    search_fields = ["title"]
 
     def get_permissions(self):
         if self.request.method == "POST":

@@ -1,10 +1,14 @@
-## Installation Guide
+# Installation Guide
+
+## Navigation
+
+[← Back to README.md](/README.md)
+
+## Purpose
 
 This project uses **Docker**, **Docker Compose**, and **VS Code Dev Containers** to create a consistent development environment for the backend, frontend, PostgreSQL database, and Redis cache.
 
 The steps below explain how to set up the project for local development.
-
----
 
 ## Table of Contents
 
@@ -22,9 +26,7 @@ The steps below explain how to set up the project for local development.
 - [Stopping the Environment](#stopping-the-environment)
 - [Notes](#notes)
 
----
-
-### Prerequisites
+## Prerequisites
 
 Before starting, make sure the following tools are installed:
 
@@ -34,9 +36,7 @@ Before starting, make sure the following tools are installed:
 - **Dev Containers extension for VS Code**
 - **Git**
 
----
-
-### Clone the Repository
+## Clone the Repository
 
 Clone the project repository to your local machine:
 
@@ -45,9 +45,7 @@ git clone <your-repository-url>
 cd <your-project-folder>
 ```
 
----
-
-### Environment Variables
+## Environment Variables
 
 Create a `.env` file in the same directory as your `docker-compose.yml` file.
 
@@ -63,17 +61,13 @@ DB_PORT=5432
 
 These environment variables are used by the PostgreSQL container and by the backend service when connecting to the database.
 
----
-
-### Open the Project in VS Code
+## Open the Project in VS Code
 
 Open the project folder in **Visual Studio Code**.
 
 If the Dev Containers extension is installed, VS Code should detect the container configuration automatically.
 
----
-
-### Start the Development Container
+## Start the Development Container
 
 Open the Command Palette in VS Code and select:
 
@@ -93,9 +87,7 @@ The workspace will open at:
 /app
 ```
 
----
-
-### Services Included in the Development Environment
+## Services Included in the Development Environment
 
 The development setup starts the following containers:
 
@@ -106,9 +98,7 @@ The development setup starts the following containers:
 | `db`        | PostgreSQL database |
 | `redis`     | Redis cache |
 
----
-
-### Backend Environment
+## Backend Environment
 
 The backend container:
 
@@ -126,18 +116,14 @@ Dependencies are installed during the image build process using:
 uv sync --frozen
 ```
 
----
-
-### Frontend Environment
+## Frontend Environment
 
 The frontend container:
 
 - uses **Node 20**
 - runs the frontend development server on port `5173`
 
----
-
-### Running the Project
+## Running the Project
 
 Once the dev container is open, the containers should already be available through Docker Compose.
 
@@ -159,9 +145,7 @@ cd /app/backend
 python uv run manage.py runserver 0.0.0.0:8000
 ```
 
----
-
-### Database Setup
+## Database Setup
 
 If this is the first time running the project, apply migrations from inside the backend container:
 
@@ -170,36 +154,29 @@ cd /app/backend
 python uv run manage.py migrate
 ```
 
-If needed, create a superuser:
+If needed, create a superuser, EMAIL REQUIRED:
 
 ```bash
 python uv run manage.py createsuperuser
 ```
 
----
-
-### Accessing the Application
+## Accessing the Application
 
 Once running, the project should be available at:
 
-| Service   | URL |
-| --------- | --- |
-| Backend   | `http://localhost:8000/` |
-| Frontend  | `http://localhost:5173/` |
+| Service      | URL                           |
+| ------------ | ----------------------------- |
+| Backend      | `http://localhost:8000/`      |
+| Django Admin | `http://localhost:8000/admin` |
+| Frontend     | `http://localhost:5173/`      |
 
----
-
-### Stopping the Environment
+## Stopping the Environment
 
 To stop the containers, shut down the Dev Container session or stop the Docker Compose services from Docker Desktop or the terminal.
 
----
-
-### Notes
+## Notes
 
 - PostgreSQL data is stored in a named Docker volume
 - Redis data is stored in a named Docker volume
 - The backend service depends on the database being healthy before startup
 - The development container is designed to keep the environment consistent across machines
-
----

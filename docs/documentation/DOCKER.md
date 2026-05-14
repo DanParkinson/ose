@@ -1,9 +1,13 @@
 ## Docker Setup
 
+## Navigation
+
+[← Back to README.md](/README.md)
+
+## Purpose
+
 The project uses **Docker Compose** to run the backend, frontend, PostgreSQL database, and Redis cache in separate containers.
 This creates a consistent local development environment and avoids machine-specific setup issues.
-
----
 
 ## Table of Contents
 
@@ -22,9 +26,7 @@ This creates a consistent local development environment and avoids machine-speci
 - [Container Startup Notes](#container-startup-notes)
 - [Summary](#summary)
 
----
-
-### Services Overview
+## Services Overview
 
 | Service     | Description |
 | ----------- | ----------- |
@@ -33,9 +35,7 @@ This creates a consistent local development environment and avoids machine-speci
 | `db`        | Runs a PostgreSQL 17 database container for persistent application data. |
 | `redis`     | Runs a Redis 7 container for caching. |
 
----
-
-### Environment Variables
+## Environment Variables
 
 The database container uses the following environment variables:
 
@@ -49,46 +49,40 @@ DB_PORT=5432
 
 These values are loaded through the `.env` file referenced in the Docker Compose configuration.
 
----
-
-### Docker Compose Configuration
+## Docker Compose Configuration
 
 The project uses a `docker-compose.yml` file to define and connect all services.
 
-#### Backend
+### Backend
 - Built from the project root using `backend/Dockerfile.backend`
 - Exposes port `8000`
 - Mounts the full project into `/app`
 - Waits for PostgreSQL and Redis before starting
 - Uses environment variables from `.env`
 
-#### Frontend
+### Frontend
 - Built from the project root using `frontend/Dockerfile.frontend`
 - Exposes port `5173`
 - Mounts the frontend source code into the container
 - Enables polling for file watching in development
 
-#### Database
+### Database
 - Uses the official `postgres:17` image
 - Stores persistent data in a named Docker volume
 - Includes a health check using `pg_isready`
 
-#### Redis
+### Redis
 - Uses the official `redis:7` image
 - Stores Redis data in a named Docker volume
 
----
-
-### Docker Volumes
+## Docker Volumes
 
 | Volume         | Description |
 | -------------- | ----------- |
 | `postgres_db`  | Stores PostgreSQL database data persistently. |
 | `redis_data`   | Stores Redis data persistently. |
 
----
-
-### Dev Container Configuration
+## Dev Container Configuration
 
 The project also includes a **Dev Container** setup for development inside VS Code.
 
@@ -100,7 +94,7 @@ The dev container:
 - Enables Docker-outside-of-Docker support
 - Configures the Python interpreter at `/app/backend/.venv/bin/python`
 
-#### Included VS Code Extensions
+### Included VS Code Extensions
 - Python
 - Pylance
 - Jupyter
@@ -110,9 +104,7 @@ The dev container:
 
 This setup helps standardise the development environment across different machines.
 
----
-
-### Backend Dockerfile
+## Backend Dockerfile
 
 The backend container is based on `python:3.12-slim-bookworm`.
 
@@ -133,9 +125,7 @@ The backend starts using:
 ENTRYPOINT ["sh", "/app/backend/entrypoint.sh"]
 ```
 
----
-
-### Frontend Dockerfile
+## Frontend Dockerfile
 
 The frontend container is based on `node:20-bookworm-slim`.
 
@@ -152,18 +142,14 @@ The frontend starts using:
 CMD ["sh", "-c", "npm install && npm run dev -- --host"]
 ```
 
----
-
-### Container Startup Notes
+## Container Startup Notes
 
 - The backend depends on the database being healthy before it starts
 - The backend also depends on Redis being available
 - The backend currently uses `sleep infinity` in Docker Compose, which is useful for Dev Container development
 - PostgreSQL and Redis use named volumes so their data persists between container restarts
 
----
-
-### Summary
+## Summary
 
 Docker is used in this project to:
 
@@ -171,5 +157,3 @@ Docker is used in this project to:
 - isolate backend, frontend, database, and cache services
 - simplify onboarding and local setup
 - support development inside VS Code Dev Containers
-
----

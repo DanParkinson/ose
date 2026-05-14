@@ -1,0 +1,40 @@
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.withCredentials = true;
+
+export const axiosRequest = axios.create({
+  baseURL: "http://localhost:8000",
+  withCredentials: true,
+});
+
+export const axiosResponse = axios.create({
+  baseURL: "http://localhost:8000",
+  withCredentials: true,
+});
+
+axiosResponse.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/api/auth/login/") &&
+      !originalRequest.url.includes("/api/auth/token/refresh/")
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        await axiosRequest.post("/api/auth/token/refresh/");
+        return axiosResponse(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);

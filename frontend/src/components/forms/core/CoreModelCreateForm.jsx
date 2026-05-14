@@ -1,0 +1,134 @@
+import { useEffect, useState } from "react";
+import { VStack } from "@chakra-ui/react";
+
+import {
+  createCoreModelItem,
+} from "../../../api/coreApi";
+
+import FormSubmitButton from "../base/FormSubmitButton";
+import FormError from "../base/FormError";
+import FormSuccess from "../base/FormSuccess";
+
+import getInitialFormData from "../../../utils/form_fields/getInitialFormData";
+import getUpdatedRelationValues from "../../../utils/form_fields/relation/getUpdatedRelationValues";
+import parseBackendErrors from "../../../utils/form_fields/errors/parseBackendErrors";
+
+import useCoreFieldOptions from "../../../hooks/useCoreFieldOptions";
+import useCoreRelationOptions from "../../../hooks/useCoreRelationOptions";
+import useDebouncedValue from "../../../hooks/useDebouncedValue";
+
+import FormFieldRenderer from "../../renderers/FormFieldRenderer";
+
+const CoreModelCreateForm = ({ model, onCreated }) => {
+  const [formData, setFormData] = useState({});
+  const [relationSearch, setRelationSearch] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fieldOptions = useCoreFieldOptions(model.endpoint);
+  const relationOptions = useCoreRelationOptions(model.createFields);
+  const debouncedSearch = useDebouncedValue(relationSearch, 1000);
+
+  useEffect(() => {
+    setFormData(getInitialFormData(model.createFields));
+    setFieldErrors({});
+    setGeneralError("");
+    setSuccess("");
+    setRelationSearch({});
+  }, [model]);
+
+  const handleChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setFieldErrors((prev) => ({
+      ...prev,
+      [name]: null,
+    }));
+  };
+
+  const handleRelationToggle = (field, option) => {
+    const updatedValues = getUpdatedRelationValues({
+      field,
+      option,
+      currentValues: formData[field.name] || [],
+    });
+
+    handleChange(field.name, updatedValues);
+  };
+
+  const handleRelationSearchChange = (name, value) => {
+    setRelationSearch((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+    setFieldErrors({});
+    setGeneralError("");
+    setSuccess("");
+
+    try {
+      await createCoreModelItem({
+        endpoint: model.endpoint,
+        data: formData,
+      });
+
+      setSuccess(`${model.title} created successfully.`);
+
+      setTimeout(() => {
+        onCreated?.();
+      }, 1000);
+
+    } catch (error) {
+      console.error(error.response?.data || error);
+
+      const parsedErrors = parseBackendErrors(error);
+
+      setFieldErrors(parsedErrors.fieldErrors);
+      setGeneralError(parsedErrors.generalError);
+    } finally {
+          setLoading(false);
+        }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <VStack align="stretch" gap={4}>
+        <FormError>{generalError}</FormError>
+
+        <FormSuccess>{success}</FormSuccess>
+
+       {model.createFields.map((field) => (
+          <FormFieldRenderer
+            key={field.name}
+            field={field}
+            formData={formData}
+            fieldOptions={fieldOptions}
+            fieldErrors={fieldErrors}
+            relationOptions={relationOptions}
+            relationSearch={relationSearch}
+            debouncedSearch={debouncedSearch}
+            onChange={handleChange}
+            onRelationToggle={handleRelationToggle}
+            onRelationSearchChange={handleRelationSearchChange}
+          />
+        ))}
+
+        <FormSubmitButton disabled={loading}>
+          {loading ? "Creating..." : "Create"}
+        </FormSubmitButton>
+      </VStack>
+    </form>
+  );
+};
+
+export default CoreModelCreateForm;

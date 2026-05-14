@@ -19,7 +19,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "Populate the database with simple loop-friendly sample data"
+    help = "Populate database with Maths and English lesson data"
 
     def handle(self, *args, **kwargs):
         self.stdout.write(self.style.WARNING("Clearing existing data..."))
@@ -37,88 +37,158 @@ class Command(BaseCommand):
 
         author = self.get_or_create_seed_user()
 
-        self.stdout.write(self.style.WARNING("Creating seed data..."))
+        teaching_styles = self.create_teaching_styles()
+        variations = self.create_variations()
 
-        teaching_style = self.get_or_create_teaching_style()
-        variation = self.get_or_create_variation()
+        subject_data = {
+            "Mathematics": {
+                "level": "secondary",
+                "topics": [
+                    "Number",
+                    "Algebra",
+                    "Geometry",
+                    "Ratio",
+                    "Fractions",
+                    "Decimals",
+                    "Percentages",
+                    "Statistics",
+                    "Probability",
+                    "Sequences",
+                    "Graphs",
+                    "Trigonometry",
+                ],
+                "lessons": [
+                    "Simplifying Expressions",
+                    "Linear Equations",
+                    "Equivalent Fractions",
+                    "Percentage Change",
+                    "Compound Shapes",
+                    "Angles in Polygons",
+                    "Linear Graphs",
+                    "Calculating Averages",
+                    "Probability Scale",
+                    "Nth Term",
+                    "Ratio Problems",
+                    "Pythagoras Theorem",
+                ],
+            },
+            "English": {
+                "level": "secondary",
+                "topics": [
+                    "Reading",
+                    "Creative Writing",
+                    "Persuasive Writing",
+                    "Poetry",
+                    "Shakespeare",
+                    "Modern Fiction",
+                    "Non-Fiction",
+                    "Grammar",
+                    "Vocabulary",
+                    "Sentence Structure",
+                    "Literary Devices",
+                    "Spoken Language",
+                ],
+                "lessons": [
+                    "Character Analysis",
+                    "Using Evidence",
+                    "Descriptive Openings",
+                    "Poetic Imagery",
+                    "Shakespeare Language",
+                    "Building Tension",
+                    "Writing to Persuade",
+                    "Using Commas",
+                    "Vocabulary Choices",
+                    "Sentence Openers",
+                    "Metaphors and Similes",
+                    "Spoken Arguments",
+                ],
+            },
+        }
 
-        # Easy-to-edit seed sizes
-        subject_count = 3
-        topics_per_subject = 3
-        lessons_per_topic = 4
+        lesson_variant_count = 0
 
-        for subject_index in range(1, subject_count + 1):
+        for subject_title, data in subject_data.items():
             subject = Subject.objects.create(
-                title=f"subject-{subject_index}",
-                level="gcse",
+                title=subject_title,
+                level=data["level"],
                 language="en",
                 is_published=True,
                 is_protected=False,
             )
 
-            for topic_index in range(1, topics_per_subject + 1):
-                global_topic_number = (
-                    (subject_index - 1) * topics_per_subject
-                ) + topic_index
+            topics = self.create_topics(
+                topic_names=data["topics"],
+                subject=subject,
+            )
 
-                topic, _ = Topic.objects.get_or_create(
-                    title=f"topic-{global_topic_number}",
-                    defaults={"is_protected": False},
+            lesson_names = self.create_lesson_names(
+                lesson_names=data["lessons"],
+                subject=subject,
+            )
+
+            for topic in topics:
+                selected_lessons = random.sample(
+                    lesson_names,
+                    k=6,
                 )
-                topic.subjects.add(subject)
 
-                for lesson_index in range(1, lessons_per_topic + 1):
-                    global_lesson_number = (
-                        ((subject_index - 1) * topics_per_subject * lessons_per_topic)
-                        + ((topic_index - 1) * lessons_per_topic)
-                        + lesson_index
+                for lesson_name in selected_lessons:
+                    selected_styles = random.sample(
+                        teaching_styles,
+                        k=3,
                     )
 
-                    lesson_name, _ = LessonName.objects.get_or_create(
-                        title=f"lesson-{global_lesson_number}",
-                        defaults={"is_protected": False},
-                    )
-                    lesson_name.subjects.add(subject)
-
-                    lesson_variant = LessonVariant.objects.create(
-                        subject=subject,
-                        topic=topic,
-                        lesson_name=lesson_name,
-                        teaching_style=teaching_style,
-                        variation=variation,
-                        is_published=self.is_lesson_published(global_lesson_number),
-                        is_protected=False,
-                        author=author,
+                    selected_variations = random.sample(
+                        variations,
+                        k=3,
                     )
 
-                    lesson_resources = self.build_resources_for_lesson(
-                        global_lesson_number
-                    )
+                    for teaching_style in selected_styles:
+                        for variation in selected_variations:
+                            lesson_variant_count += 1
 
-                    for order, resource_data in enumerate(lesson_resources, start=1):
-                        resource = self.create_resource(
-                            resource_data=resource_data,
-                            author=author,
-                            subject=subject,
-                        )
-                        LessonVariantResource.objects.create(
-                            lesson_variant=lesson_variant,
-                            resource=resource,
-                            order=order,
-                        )
+                            lesson_variant = LessonVariant.objects.create(
+                                subject=subject,
+                                topic=topic,
+                                lesson_name=lesson_name,
+                                teaching_style=teaching_style,
+                                variation=variation,
+                                is_published=(lesson_variant_count % 5 != 0),
+                                is_protected=(lesson_variant_count % 11 == 0),
+                                author=author,
+                            )
+
+                            resources = self.build_resources(
+                                topic=topic,
+                                lesson_name=lesson_name,
+                                subject=subject,
+                            )
+
+                            for order, resource_data in enumerate(
+                                resources,
+                                start=1,
+                            ):
+                                resource = self.create_resource(
+                                    resource_data=resource_data,
+                                    author=author,
+                                    subject=subject,
+                                )
+
+                                LessonVariantResource.objects.create(
+                                    lesson_variant=lesson_variant,
+                                    resource=resource,
+                                    order=order,
+                                )
 
         self.stdout.write(
             self.style.SUCCESS(
-                "Database successfully populated with simple sample data."
+                f"Successfully created {lesson_variant_count} lesson variants."
             )
         )
 
     def get_or_create_seed_user(self):
         user, created = User.objects.get_or_create(
             email="seed@example.com",
-            defaults={
-                "username": "seeduser",
-            },
         )
 
         if created:
@@ -127,95 +197,154 @@ class Command(BaseCommand):
 
         return user
 
-    def get_or_create_teaching_style(self):
-        teaching_style, _ = TeachingStyle.objects.get_or_create(
-            title="teaching-style-1",
-            defaults={"is_protected": False},
-        )
-        return teaching_style
+    def create_teaching_styles(self):
+        style_names = [
+            "Teacher Explanation",
+            "Guided Practice",
+            "Independent Practice",
+        ]
 
-    def get_or_create_variation(self):
-        variation, _ = Variation.objects.get_or_create(
-            title="variation-1",
-            defaults={"is_protected": False},
-        )
-        return variation
+        return [
+            TeachingStyle.objects.create(
+                title=style_name,
+                is_protected=False,
+            )
+            for style_name in style_names
+        ]
 
-    def is_lesson_published(self, lesson_number):
-        unpublished_lessons = {4, 8, 12}
-        return lesson_number not in unpublished_lessons
+    def create_variations(self):
+        variation_names = [
+            "Support",
+            "Core",
+            "Challenge",
+        ]
 
-    def build_resources_for_lesson(self, lesson_number):
-        lesson_title = f"lesson-{lesson_number}"
+        return [
+            Variation.objects.create(
+                title=variation_name,
+                is_protected=False,
+            )
+            for variation_name in variation_names
+        ]
+
+    def create_topics(self, topic_names, subject):
+        topics = []
+
+        for topic_name in topic_names:
+            topic = Topic.objects.create(
+                title=f"{subject.title} - {topic_name}",
+                is_protected=False,
+            )
+
+            topic.subjects.add(subject)
+
+            topics.append(topic)
+
+        return topics
+
+    def create_lesson_names(self, lesson_names, subject):
+        lessons = []
+
+        for lesson_title in lesson_names:
+            lesson_name = LessonName.objects.create(
+                title=lesson_title,
+                is_protected=False,
+            )
+
+            lesson_name.subjects.add(subject)
+
+            lessons.append(lesson_name)
+
+        return lessons
+
+    def build_resources(self, topic, lesson_name, subject):
+        base_name = self.slugify(f"{topic.title}-{lesson_name.title}")
+
+        display_name = lesson_name.title
 
         resources = [
             {
-                "title": f"{lesson_title}-slides",
+                "title": f"{display_name} Slides",
                 "category": "slide",
-                "description": f"Slides for {lesson_title}.",
-                "file_name": self.make_file_name(lesson_title, "slides"),
+                "description": (f"Slides for {display_name} in {subject.title}."),
+                "file_name": (f"{base_name}-slides.txt"),
             },
             {
-                "title": f"{lesson_title}-worksheet",
+                "title": f"{display_name} Worksheet",
                 "category": "worksheet",
-                "description": f"Worksheet for {lesson_title}.",
-                "file_name": self.make_file_name(lesson_title, "worksheet"),
+                "description": (f"Worksheet for {display_name} in {subject.title}."),
+                "file_name": (f"{base_name}-worksheet.txt"),
             },
             {
-                "title": f"{lesson_title}-notes",
+                "title": f"{display_name} Notes",
                 "category": "file",
-                "description": f"Teacher notes for {lesson_title}.",
-                "file_name": self.make_file_name(lesson_title, "notes"),
+                "description": (f"Teacher notes for {display_name}."),
+                "file_name": (f"{base_name}-notes.txt"),
             },
         ]
 
         optional_resources = [
             {
-                "title": f"{lesson_title}-video",
+                "title": (f"{display_name} Video"),
                 "category": "video",
-                "description": f"Video for {lesson_title}.",
-                "url": f"https://example.com/videos/{lesson_title}",
+                "description": (f"Video explanation for {display_name}."),
+                "url": (f"https://example.com/{base_name}/video"),
             },
             {
-                "title": f"{lesson_title}-template",
+                "title": (f"{display_name} Template"),
                 "category": "template",
-                "description": f"Template for {lesson_title}.",
-                "file_name": self.make_file_name(lesson_title, "template"),
+                "description": (f"Editable template for {display_name}."),
+                "file_name": (f"{base_name}-template.txt"),
             },
             {
-                "title": f"{lesson_title}-link",
+                "title": (f"{display_name} Extension"),
                 "category": "link",
-                "description": f"Helpful link for {lesson_title}.",
-                "url": f"https://example.com/help/{lesson_title}",
+                "description": (f"Extension resource for {display_name}."),
+                "url": (f"https://example.com/{base_name}/extension"),
             },
         ]
 
-        resources.extend(random.sample(optional_resources, k=random.randint(1, 2)))
+        resources.extend(
+            random.sample(
+                optional_resources,
+                k=random.randint(1, 3),
+            )
+        )
+
         return resources
 
-    def create_resource(self, resource_data, author, subject):
+    def create_resource(
+        self,
+        resource_data,
+        author,
+        subject,
+    ):
         resource = Resource(
             title=resource_data["title"],
             category=resource_data["category"],
             description=resource_data["description"],
-            is_protected=False,
+            is_protected=random.choice([False, False, False, True]),
             author=author,
         )
 
-        if resource_data["category"] in {"video", "link"}:
+        if resource_data["category"] in {
+            "video",
+            "link",
+        }:
             resource.url = resource_data["url"]
+
         else:
-            file_name = resource_data["file_name"]
             resource.file.save(
-                file_name,
+                resource_data["file_name"],
                 ContentFile(f"Sample content for {resource_data['title']}"),
                 save=False,
             )
 
         resource.save()
+
         resource.subjects.add(subject)
 
         return resource
 
-    def make_file_name(self, lesson_title, suffix):
-        return f"{lesson_title}_{suffix}.txt"
+    def slugify(self, value):
+        return value.lower().replace(" ", "-").replace("/", "-")

@@ -13,3 +13,12 @@ class LessonVariantFilter(django_filters.FilterSet):
     class Meta:
         model = models.LessonVariant
         fields = ["topic", "lesson_name", "teaching_style", "variation"]
+
+
+class UniqueLessonVariantFilter(django_filters.FilterSet):
+    topic = django_filters.UUIDFilter(field_name="topic__topic_id")
+    lesson_name = django_filters.UUIDFilter(field_name="lesson_name__lesson_name_id")
+
+    class Meta:
+        model = models.LessonVariant
+        fields = ["topic", "lesson_name"]

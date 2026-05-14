@@ -19,8 +19,6 @@ This API intergrates with a frontend built in **React**. It Enables users to **a
 | **Admin Management**        | Admins can create, update and delte resources and lessons                       |
 | **RESTful API Design**      | Follows RESTful principles for seamless integration with frontend applications. |
 
----
-
 ## Supporting Docs
 
 For more in depth documentation, the following is provided:
@@ -28,14 +26,8 @@ For more in depth documentation, the following is provided:
 - [Installation Guide](docs/documentation/INSTALLATION.md)
 - [Useful commands](docs/documentation/COMMANDS.md)
 - [Docker Guide](docs/documentation/DOCKER.md)
-- [Django REST API](docs/documentation/BACKEND.md)
-- REACT FRONTEND
-- DEPLOYMENT
-- Testing
-    - [Testing Checklist Backend](docs/documentation/TESTING_CHECKLIST_BACKEND.md)
-    - [Test - Backend](docs/documentation/TEST_BACKEND.md)
-
----
+- [Backend](docs/documentation/backend/BACKEND.md)
+- [Frontend](docs/documentation/frontend/FRONTEND.md)
 
 ## Table of Contents
 
@@ -54,28 +46,26 @@ For more in depth documentation, the following is provided:
     - [lesson Variant Resource](#lessonvariantresource)
     - [Filtering & Searching (Public)](#filtering--searching-public)
 
----
-
 ## User Stories
 
 ### **Public User Authentication & Authorisation** ✅❌
 
 | User Story                  | Description                                                                     | Backend | Frontend |
 | --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **User Registration**       | Secure user registration, login, and token-based authentication.                | ❌     | ❌       |
-| **User Login**              | Secure login so that a user can aquire their token                              | ❌     | ❌       |
-| **User Logout**             | Log out to end the users session                                                | ❌     | ❌       |
-| **User Profile**            | A user profile page to allow a user to access / update personal info            | ❌     | ❌       |
-| **User auto create**        | Account creation auto create an account for the user                            | ❌     | ❌       |
-| **User Account Deletion**   | Users can delete their account with all information removed form database       | ❌     | ❌       |
-| **Reset Password**          | Users can recevie an email to reset their password                              | ❌     | ❌       |
-| **Change Password**         | Users can update their password if needed                                       | ❌     | ❌       |
+| **User Registration**       | Secure user registration, login, and token-based authentication.                | ✅     | ✅       |
+| **User Login**              | Secure login so that a user can aquire their token                              | ✅     | ✅       |
+| **User Logout**             | Log out to end the users session                                                | ✅     | ✅       |
+| **User Profile**            | A user profile page to allow a user to access / update personal info            | ✅     | ✅       |
+| **User auto create**        | Account creation auto create an account for the user                            | ✅     | ✅       |
+| **User Account Deactivation** | Users can deactivate their account                                            | ✅     | ✅       |
+| **Reset Password**          | Users can recevie an email to reset their password                              | ✅     | ✅       |
+| **Change Password**         | Users can update their password if needed                                       | ✅     | ✅       |
 
 ### **User Account Management**
 
 | User Story                  | Description                                                                     | Backend | Frontend |
 | --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **User View Profile**       | Authenticated Users can access their account page                               | ❌     | ❌       |
+| **User View Profile**       | Authenticated Users can access their account page                               | ❌     | ✅       |
 | **User Update Profile**     | Authenticated Users can update the account information                          | ❌     | ❌       |
 | **User upload CV**          | Authenticated User can upload their CV                                          | ❌     | ❌       |
 
