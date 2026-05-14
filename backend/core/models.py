@@ -7,9 +7,7 @@ User = get_user_model()
 
 
 class Subject(models.Model):
-    LEVEL_CHOICES = [
-        ("gcse", "GCSE"),
-    ]
+    LEVEL_CHOICES = [("secondary", "Secondary"), ("primary", "Primary")]
     LANGUAGE_CHOICES = [
         ("en", "English"),
     ]

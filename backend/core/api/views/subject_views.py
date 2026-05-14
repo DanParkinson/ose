@@ -1,26 +1,47 @@
-from rest_framework import generics, status, permissions
+# DRF generic views and API utilities
+from rest_framework import generics, status, permissions, filters
 from rest_framework.response import Response
+
+# Django helpers
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
+# Filtering
+from django_filters.rest_framework import DjangoFilterBackend
+
+# Project models
 from ... import models
+
+# App serializers
 from ..serializers import subject_serializers
 
 
 class SubjectListCreateView(generics.ListCreateAPIView):
     queryset = models.Subject.objects.all()
     serializer_class = subject_serializers.SubjectSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = [
+        "level",
+        "language",
+        "is_published",
+        "is_protected",
+    ]
+    search_fields = ["title"]
 
     def get_permissions(self):
         if self.request.method == "POST":
             return [permissions.IsAdminUser()]
         return [permissions.AllowAny()]
 
+    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_list"))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class SubjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Subject.objects.all()
     serializer_class = subject_serializers.SubjectSerializer
-    protected_delete_message = (
-        "This Subject cannot be deleted. Contact SuperUser if intended."
-    )
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
@@ -32,6 +53,10 @@ class SubjectDetailView(generics.RetrieveUpdateDestroyAPIView):
         subject_id = self.kwargs.get("subject_id")
         subject_slug = self.kwargs.get("subject_slug")
         return get_object_or_404(queryset, subject_id=subject_id, slug=subject_slug)
+
+    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_detail"))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

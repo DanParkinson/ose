@@ -1,17 +1,42 @@
-from rest_framework import generics, status, permissions
+# DRF generic views and API utilities
+from rest_framework import generics, status, permissions, filters
 from rest_framework.response import Response
+
+# Django helpers
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
+# Filtering
+from django_filters.rest_framework import DjangoFilterBackend
+
+# Project models
 from ... import models
+
+# App serializers
 from ..serializers import teaching_style_serializers
 
 
 class TeachingStyleListView(generics.ListCreateAPIView):
     queryset = models.TeachingStyle.objects.all()
     serializer_class = teaching_style_serializers.TeachingStyleSerializer
-    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = [
+        "is_protected",
+    ]
+    search_fields = ["title"]
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
+
+    @method_decorator(cache_page(60 * 60 * 24, key_prefix="teaching_style_list"))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
-class TeachingStyleDetailListView(generics.RetrieveUpdateDestroyAPIView):
+class TeachingStyleDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.TeachingStyle.objects.all()
     serializer_class = teaching_style_serializers.TeachingStyleSerializer
     permission_classes = [permissions.IsAdminUser]
