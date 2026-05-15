@@ -77,7 +77,9 @@ const AdminDashboard = () => {
   };
 
   const openCreatePanel = (model) => {
+    setSelectedModel(model);
     setCreateModel(model);
+    setOffset(0);
     setIsCreatePanelOpen(true);
   };
 
@@ -187,6 +189,8 @@ const AdminDashboard = () => {
             model={createModel}
             onCreated={() => {
               setIsCreatePanelOpen(false);
+              setSelectedModel(createModel);
+              setOffset(0);
               refetch();
             }}
           />

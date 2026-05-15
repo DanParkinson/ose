@@ -12,8 +12,10 @@
 - [Redis](#redis)
 - [Django Cache Framework](#django-cache-framework)
 - [django-redis](#django-redis)
-- [View Caching](#view-caching)
+- [Manual List Caching](#manual-list-caching)
+- [Cache Keys](#cache-keys)
 - [Cache Invalidation](#cache-invalidation)
+- [Browser Cache vs Backend Cache](#browser-cache-vs-backend-cache)
 - [Why Caching Is Used](#why-caching-is-used)
 - [Infrastructure Role](#infrastructure-role)
 - [Notes](#notes)
@@ -23,10 +25,13 @@
 This document provides an overview of the caching technologies and caching concepts used within the backend infrastructure.
 
 It explains:
+
 - what caching tools are used
-- the role of caching within the project
-- how Django integrates with Redis
-- the purpose of cache invalidation
+- how Redis integrates with Django
+- how list endpoint caching works
+- how cache invalidation works
+- the difference between browser caching and backend caching
+- why manual cache control is used
 
 ## Caching Technology
 
@@ -34,8 +39,8 @@ It explains:
 |---|---|
 | Redis | In-memory data storage used for caching |
 | django-redis | Connects Django's cache framework to Redis |
-| Django cache framework | Provides a unified caching interface |
-| cache_page decorator | Caches view responses |
+| Django cache framework | Provides a unified caching API |
+| Low-level cache API | Provides explicit cache control |
 | Django signals | Used to trigger cache invalidation behaviour |
 
 ## Redis
@@ -53,50 +58,169 @@ Benefits include:
 - reusable shared cache storage
 ```
 
+Redis runs as a dedicated Docker container and stores cached API responses separately from PostgreSQL.
+
 ## Django Cache Framework
 
 Django provides a built-in caching framework that abstracts cache usage behind a consistent API.
 
 This allows the application to:
+
 - store cached data
 - retrieve cached data
 - invalidate cached data
 - switch cache providers without changing application logic
+
+The primary cache methods used are:
+
+```py
+cache.get()
+cache.set()
+cache.delete_pattern()
+```
 
 ## django-redis
 
 `django-redis` allows Django's cache framework to communicate with Redis.
 
 It acts as the integration layer between:
+
 - Django
 - Redis
 - the cache backend configuration
 
-## View Caching
-
-Django provides response-level caching through decorators such as:
+Example configuration:
 
 ```py
-cache_page()
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
 ```
 
-This allows entire API responses to be cached for a configurable duration.
+## Manual List Caching
 
-View caching is commonly used for:
-- public endpoints
-- frequently requested data
-- expensive database queries
+List endpoints use manual low-level caching inside the `list()` method.
 
-## Cache Invalidation
+This approach was chosen instead of Django's `cache_page()` decorator because it provides:
+
+```text
+- explicit cache control
+- simpler invalidation behaviour
+- easier debugging
+- better separation between backend cache and browser cache
+- reduced browser disk-cache issues
+```
+
+### Example pattern:
+
+```py
+from django.core.cache import cache
+from rest_framework.response import Response
+
+
+def list(self, request, *args, **kwargs):
+    cache_key = f"subject_list:{request.get_full_path()}"
+
+    cached_data = cache.get(cache_key)
+
+    if cached_data is not None:
+        return Response(cached_data)
+
+    response = super().list(request, *args, **kwargs)
+
+    cache.set(
+        cache_key,
+        response.data,
+        timeout=60 * 60 * 24,
+    )
+
+    return response
+```
+
+### Cache Keys
+
+Each resource should have its own cache prefix.
+
+Examples:
+
+```text
+subject_list
+topic_list
+lesson_name_list
+teaching_style_list
+variation_list
+```
+
+Cache keys also include the full request path.
+
+This allows separate caching for:
+
+```text
+pagination
+filtering
+searching
+ordering
+```
+
+Example generated keys:
+
+```text
+subject_list:/core/subjects/?limit=20&offset=0
+subject_list:/core/subjects/?search=math
+subject_list:/core/subjects/?level=secondary
+```
+
+### Cache Invalidation
 
 Caching systems require invalidation to prevent stale data from being returned.
 
-Django signals can be used to automatically invalidate cached data when:
+Django signals are used to automatically invalidate cache entries when:
+
 - records are created
 - records are updated
 - records are deleted
 
-This keeps cached responses synchronised with the database.
+Example:
+
+```py
+@receiver([post_save, post_delete], sender=Subject)
+def invalidate_subject_cache(sender, instance, **kwargs):
+    cache.delete_pattern("*subject_list:*")
+```
+
+This ensures cached responses stay synchronised with the database.
+
+## Backend Cache
+
+Backend caching refers to Redis storing cached API response data.
+
+This is controlled directly through Django's cache framework.
+
+Example:
+
+```text
+Redis cache
+Django cache API
+cache.get()
+cache.set()
+cache.delete_pattern()
+```
+
+### Browser Cache
+
+Browsers may also cache API responses locally using disk cache.
+
+This can cause stale frontend data even when backend cache invalidation is working correctly.
+
+The project originally used Django's `cache_page()` decorator, which introduced browser caching behaviour alongside Redis caching.
+
+Manual low-level caching was adopted to avoid browser disk-cache interference while still benefiting from Redis backend caching.
 
 ## Why Caching Is Used
 
@@ -109,26 +233,29 @@ Caching is used to improve:
 | Response Times | Improves API speed |
 | Infrastructure Efficiency | Reduces backend resource usage |
 
-## Infrastructure Role
+### Infrastructure Role
 
 Within the infrastructure layer, caching provides:
 
 ```text
 - reusable backend performance optimisation
 - shared cache storage
-- framework-level response caching
+- backend response caching
 - automatic invalidation capabilities
 ```
+
+Caching is intentionally implemented through Django's cache framework to keep infrastructure reusable and maintainable.
 
 ## Notes
 
 ```text
-Caching is intentionally implemented through Django's built-in cache
-framework to keep the infrastructure reusable and maintainable.
+Manual low-level caching is intentionally preferred over cache_page()
+for dashboard list endpoints because it provides clearer cache control
+and avoids browser disk-cache side effects.
 
 Redis is used as the cache backend because it integrates cleanly with
 Django and provides fast in-memory performance.
 
-Implementation-specific caching behaviour is documented separately from
-this infrastructure overview.
+Implementation-specific cache behaviour should be documented alongside
+the relevant view or endpoint documentation.
 ```

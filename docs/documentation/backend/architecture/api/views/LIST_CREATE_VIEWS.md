@@ -58,9 +58,19 @@ class LessonNameListCreateView(generics.ListCreateAPIView):
             return [permissions.IsAdminUser()]
         return [permissions.AllowAny()]
 
-    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_list"))
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        cache_key = f"subject_list:{request.get_full_path()}"
+
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            return Response(cached_data)
+
+        response = super().list(request, *args, **kwargs)
+
+        cache.set(cache_key, response.data, timeout=60 * 60 * 24)
+
+        return response
 ```
 
 ## Purpose Of Each Section
@@ -163,23 +173,52 @@ This creates:
 
 List endpoints should use Redis caching to reduce repeated database queries and improve response performance.
 
-Caching is applied directly to the `list()` method using Django's `cache_page` decorator.
+Caching is handled manually inside the `list()` method using Django's low-level cache API.
 
-Standard pattern:
+This approach provides explicit control over:
+
+- cache creation
+- cache invalidation
+- cache keys
+- browser caching behaviour
+
+It also avoids browser disk-cache issues caused by `cache_page`.
+
+### Standard List Cache Pattern
 
 ```py
-@method_decorator(cache_page(60 * 60 * 24, key_prefix="lesson_name_list"))
+from django.core.cache import cache
+from rest_framework.response import Response
+
+
 def list(self, request, *args, **kwargs):
-    return super().list(request, *args, **kwargs)
+    cache_key = f"subject_list:{request.get_full_path()}"
+
+    cached_data = cache.get(cache_key)
+
+    if cached_data is not None:
+        return Response(cached_data)
+
+    response = super().list(request, *args, **kwargs)
+
+    cache.set(
+        cache_key,
+        response.data,
+        timeout=60 * 60 * 24,
+    )
+
+    return response
 ```
 
 ### Cache Structure
 
 | Section | Purpose |
 |---|---|
-| `cache_page()` | Caches the response for a specific amount of time |
-| `60 * 60 * 24` | Cache duration (24 hours) |
-| `key_prefix` | Unique cache identifier for the resource |
+| `cache.get()` | Retrieves cached response data |
+| `cache.set()` | Stores serialized response data |
+| `cache_key` | Unique identifier for cached resource |
+| `request.get_full_path()` | Includes query parameters in the cache key |
+| `timeout` | Cache duration in seconds |
 
 ### Cache Key Convention
 
@@ -195,11 +234,21 @@ teaching_style_list
 variation_list
 ```
 
-This ensures resources do not overwrite each other's cache entries.
+Cache keys should include the full request path to support pagination, filtering, and searching.
+
+Example generated keys:
+
+```text
+subject_list:/core/subjects/?limit=20&offset=0
+subject_list:/core/subjects/?search=math
+subject_list:/core/subjects/?level=secondary
+```
+
+This ensures each query variation stores its own cached response.
 
 ### Cache Behaviour
 
-The cache stores the final API response for the endpoint.
+The cache stores the final serialized API response.
 
 This includes:
 
@@ -211,17 +260,7 @@ ordering
 serialized data
 ```
 
-Django automatically creates unique cache entries for different query parameters.
-
-Example:
-
-```text
-/core/subjects/
-/core/subjects/?search=math
-/core/subjects/?level=secondary
-```
-
-Each URL variation is cached separately.
+Responses are stored in Redis and reused until invalidated or expired.
 
 ### Cache Invalidation Convention
 
@@ -230,13 +269,15 @@ When a model is created, updated, or deleted, related cache entries should be in
 Example:
 
 ```py
+from django.core.cache import cache
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
+
+
 @receiver([post_save, post_delete], sender=Subject)
 def invalidate_subject_cache(sender, instance, **kwargs):
-    cache.delete_pattern("*subject_list*")
-    cache.delete_pattern("*subject_detail*")
+    cache.delete_pattern("*subject_list:*")
 ```
-
-This ensures stale API responses are removed after data changes.
 
 ### Why Cache Invalidation Is Required
 

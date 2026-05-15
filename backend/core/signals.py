@@ -9,15 +9,19 @@ def invalidate_subject_cache(sender, instance, **kwargs):
     """
     Invalidate Subject list, detail caches when a Subject is created, updated, deleted
     """
-    cache.delete_pattern("*subject_list*")
+    cache.delete_pattern("*subject_list:*")
 
 
+# ============
+# Topics
+# ============
 @receiver([post_save, post_delete], sender=Topic)
 def invalidate_topic_cache(sender, instance, **kwargs):
     """
-    Invalidate Topic list, detail caches when a Topic is created, updated, deleted
+    Invalidate Topic list caches when a Topic is created, updated, or deleted.
     """
-    cache.delete_pattern("*topic_list*")
+    deleted_count = cache.delete_pattern("*topic_list:*")
+    print(f"TOPIC post_save/post_delete cache deleted: {deleted_count}")
 
 
 @receiver([post_save, post_delete], sender=LessonName)
@@ -25,7 +29,7 @@ def invalidate_lesson_name_cache(sender, instance, **kwargs):
     """
     Invalidate LessonName list, detail caches when a LessonName is created, updated, deleted
     """
-    cache.delete_pattern("*lesson_name_list*")
+    cache.delete_pattern("*lesson_name_list:*")
 
 
 @receiver([post_save, post_delete], sender=TeachingStyle)

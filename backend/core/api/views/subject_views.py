@@ -7,6 +7,9 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
+# Caching
+from django.core.cache import cache
+
 # Filtering
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -34,9 +37,22 @@ class SubjectListCreateView(generics.ListCreateAPIView):
             return [permissions.IsAdminUser()]
         return [permissions.AllowAny()]
 
-    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_list"))
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        cache_key = f"subject_list:{request.get_full_path()}"
+
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            # print("Subject LIST FROM CACHE")
+            return Response(cached_data)
+
+        # print("Subject LIST FROM DATABASE")
+
+        response = super().list(request, *args, **kwargs)
+
+        cache.set(cache_key, response.data, timeout=60 * 60 * 24)
+
+        return response
 
 
 class SubjectDetailView(generics.RetrieveUpdateDestroyAPIView):
