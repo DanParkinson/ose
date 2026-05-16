@@ -89,56 +89,9 @@ class LessonName(models.Model):
         return f"{self.title}"
 
 
-class Variation(models.Model):
-    variation_id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False
-    )
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(blank=True, max_length=100)
-    is_protected = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ["title"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["title"],
-                name="unique_variation_title",
-            )
-        ]
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.title}")
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.title}"
-
-
-class TeachingStyle(models.Model):
-    teaching_style_id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False
-    )
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(blank=True, max_length=100)
-    is_protected = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ["title"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["title"],
-                name="unique_teaching_style_title",
-            )
-        ]
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.title}")
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.title}"
+# ==============
+# not implemented
+# ==============
 
 
 class Resource(models.Model):
@@ -195,16 +148,6 @@ class LessonVariant(models.Model):
         on_delete=models.CASCADE,
         related_name="lesson_variants",
     )
-    teaching_style = models.ForeignKey(
-        TeachingStyle,
-        on_delete=models.CASCADE,
-        related_name="lesson_variants",
-    )
-    variation = models.ForeignKey(
-        Variation,
-        on_delete=models.CASCADE,
-        related_name="lesson_variants",
-    )
     resources = models.ManyToManyField(
         "Resource", through="LessonVariantResource", related_name="lesson_variants"
     )
@@ -220,15 +163,13 @@ class LessonVariant(models.Model):
     )
 
     class Meta:
-        ordering = ["subject", "topic", "lesson_name", "teaching_style", "variation"]
+        ordering = ["subject", "topic", "lesson_name"]
         constraints = [
             models.UniqueConstraint(
                 fields=[
                     "subject",
                     "topic",
                     "lesson_name",
-                    "teaching_style",
-                    "variation",
                 ],
                 name="unique_variation_per_lesson_name",
             )
@@ -236,13 +177,11 @@ class LessonVariant(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(
-                f"{self.lesson_name.title}-{self.teaching_style.title}-{self.variation.title}"
-            )
+            self.slug = slugify(f"{self.lesson_name.title}")
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.lesson_name.title} - ({self.teaching_style}-{self.variation})"
+        return f"{self.lesson_name.title}"
 
 
 class LessonVariantResource(models.Model):

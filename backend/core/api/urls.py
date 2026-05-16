@@ -3,8 +3,6 @@ from .views import (
     subject_views,
     topic_views,
     lesson_name_views,
-    variation_views,
-    teaching_style_views,
 )
 
 urlpatterns = [
@@ -50,32 +48,6 @@ urlpatterns = [
     #     "subjects/<slug:subject_slug>/<uuid:subject_id>/lesson-names/",
     #     lesson_name_views.LessonNameBySubjectListView.as_view(),
     #     name="lesson-name-by-subject-list",
-    # ),
-    # =============
-    # Variation
-    # =============
-    path(
-        "variations/",
-        variation_views.VariationListView.as_view(),
-        name="variation-list",
-    ),
-    # path(
-    #     "variations/<slug:variation_slug>/<uuid:variation_id>/",
-    #     variation_views.VariationDetailView.as_view(),
-    #     name="variation-detail",
-    # ),
-    # =============
-    # Teaching Style
-    # =============
-    path(
-        "teaching_styles/",
-        teaching_style_views.TeachingStyleListView.as_view(),
-        name="teaching-style-list",
-    ),
-    # path(
-    #     "teaching_styles/<slug:teaching_style_slug>/<uuid:teaching_style_id>/",
-    #     teaching_style_views.TeachingStyleDetailView.as_view(),
-    #     name="teaching-style-detail",
     # ),
     # ==============
     # Resources

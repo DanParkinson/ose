@@ -4,7 +4,7 @@ const coreModels = [
     title: "Subjects",
     endpoint: "/core/subjects/",
     columns: ["Subject", "Level", "Language", "Published", "Protected"],
-    templateColumns: "1fr 1fr 1fr 1fr 1fr",
+    templateColumns: "2fr 1fr 1fr 1fr 1fr",
     keyField: "subject_id",
     fields: ["title", "level", "language", "is_published", "is_protected"],
     filters: [
@@ -119,54 +119,7 @@ const coreModels = [
       { name: "is_protected", label: "Protected", type: "boolean" },
     ],
   },
-  {
-    id: "variations",
-    title: "Variations",
-    endpoint: "/core/variations/",
-    columns: ["Variation", "Protected"],
-    templateColumns: "1fr 1fr",
-    keyField: "variation_id",
-    fields: ["title", "is_protected"],
-    filters: [
-      {
-        key: "is_protected",
-        title: "By protected",
-        options: [
-          { label: "All", value: "all" },
-          { label: "Yes", value: true },
-          { label: "No", value: false },
-        ],
-      },
-    ],
-    createFields: [
-      { name: "title", label: "Title", type: "text" },
-      { name: "is_protected", label: "Protected", type: "boolean" },
-    ],
-  },
-  {
-    id: "teaching_styles",
-    title: "Teaching Styles",
-    endpoint: "/core/teaching_styles/",
-    columns: ["Teaching Style", "Protected"],
-    templateColumns: "1fr 1fr",
-    keyField: "teaching_style_id",
-    fields: ["title", "is_protected"],
-    filters: [
-      {
-        key: "is_protected",
-        title: "By protected",
-        options: [
-          { label: "All", value: "all" },
-          { label: "Yes", value: true },
-          { label: "No", value: false },
-        ],
-      },
-    ],
-    createFields: [
-      { name: "title", label: "Title", type: "text" },
-      { name: "is_protected", label: "Protected", type: "boolean" },
-    ],
-  },
+
 ];
 
 export default coreModels;

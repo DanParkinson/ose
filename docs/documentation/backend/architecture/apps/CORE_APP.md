@@ -31,8 +31,6 @@ It is responsible for managing:
 subjects
 topics
 lesson names
-variations
-teaching styles
 resources
 lesson variants
 lesson-resource relationships
@@ -76,14 +74,6 @@ Subject
 Topic
     ↓
 Lesson Name
-    ↓
-Teaching Style
-    ↓
-Variation
-    ↓
-Lesson Variant
-    ↓
-Resources
 ```
 
 This allows lessons to exist in multiple reusable variations and teaching approaches.
@@ -110,8 +100,6 @@ Examples:
 subject_id
 topic_id
 lesson_name_id
-lesson_variant_id
-resource_id
 ```
 
 UUIDs are used to:
@@ -207,8 +195,6 @@ Examples:
 ```text
 unique subject title per level/language
 unique topic title
-unique teaching style title
-unique lesson variant combinations
 ```
 
 This helps preserve data consistency throughout the educational system.

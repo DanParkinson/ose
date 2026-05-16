@@ -1,7 +1,10 @@
+import { Center, Text } from "@chakra-ui/react";
+
 import FormFieldWrapper from "./FormFieldWrapper";
 import FormTextInput from "../FormTextInput";
 import SelectableOptionList from "./SelectableOptionList";
 import SelectedOptionList from "./SelectedOptionList";
+import ButtonSpinner from "../../../feedback/ButtonSpinner";
 
 const FormFieldRelation = ({
   field,
@@ -10,6 +13,8 @@ const FormFieldRelation = ({
   filteredOptions,
   selectedValues,
   selectedOptions,
+  isSearching,
+  hasNoResults,
   onSearchChange,
   onRelationToggle,
   formatRelationOption,
@@ -22,13 +27,25 @@ const FormFieldRelation = ({
         onChange={(event) => onSearchChange(field.name, event.target.value)}
       />
 
-      <SelectableOptionList
-        options={filteredOptions}
-        field={field}
-        selectedValues={selectedValues}
-        onSelect={(option) => onRelationToggle(field, option)}
-        formatOption={(option) => formatRelationOption(option, field)}
-      />
+      {isSearching ? (
+        <Center py={3}>
+          <ButtonSpinner />
+        </Center>
+      ) : hasNoResults ? (
+        <Center py={3}>
+          <Text color="text.light4" fontSize="sm">
+            No matching {field.label.toLowerCase()} found.
+          </Text>
+        </Center>
+      ) : (
+        <SelectableOptionList
+          options={filteredOptions}
+          field={field}
+          selectedValues={selectedValues}
+          onSelect={(option) => onRelationToggle(field, option)}
+          formatOption={(option) => formatRelationOption(option, field)}
+        />
+      )}
 
       <SelectedOptionList
         title={`Selected ${field.label}`}

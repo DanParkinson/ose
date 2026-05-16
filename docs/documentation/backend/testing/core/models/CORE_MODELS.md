@@ -14,25 +14,25 @@
 
 ## Field / Save Behaviour
 
-| Test Case                                      | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Slug is generated automatically on create      | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                      | Subject | Topic | Lesson Name |
+|------------------------------------------------|---------|-------|-------------|
+| Slug is generated automatically on create      | ✅      | ✅    | ✅          |
 
 ## Model Meta
 
-| Test Case                                           | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|-----------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Objects are ordered by title                        | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Duplicate title is not allowed                      | ➖      | ✅    | ✅          | ✅        | ✅             |
-| Duplicate title, level, and language is not allowed | ✅      | ➖    | ➖          | ➖        | ➖             |
-| Same title with different level is allowed          | ✅      | ➖    | ➖          | ➖        | ➖             |
+| Test Case                                           | Subject | Topic | Lesson Name |
+|-----------------------------------------------------|---------|-------|-------------|
+| Objects are ordered by title                        | ✅      | ✅    | ✅          |
+| Duplicate title is not allowed                      | ➖      | ✅    | ✅          |
+| Duplicate title, level, and language is not allowed | ✅      | ➖    | ➖          |
+| Same title with different level is allowed          | ✅      | ➖    | ➖          |
 
 ## Relationships
 
-| Test Case                                      | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Object can be assigned to one subject          | ➖      | ✅    | ✅          | ➖        | ➖             |
-| Object can be assigned to multiple subjects    | ➖      | ✅    | ✅          | ➖        | ➖             |
+| Test Case                                      | Subject | Topic | Lesson Name |
+|------------------------------------------------|---------|-------|-------------||
+| Object can be assigned to one subject          | ➖      | ✅    | ✅          |
+| Object can be assigned to multiple subjects    | ➖      | ✅    | ✅          |
 
 # Notes
 

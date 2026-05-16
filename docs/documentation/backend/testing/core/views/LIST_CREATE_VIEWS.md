@@ -14,64 +14,64 @@
 
 ## List - Permissions
 
-| Test Case                             | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|---------------------------------------|---------|-------|-------------|-----------|----------------|
-| Public users can access list endpoint | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                             | Subject | Topic | Lesson Name |
+|---------------------------------------|---------|-------|-------------|
+| Public users can access list endpoint | ✅      | ✅    | ✅          |
 
 ## List - Queryset / Returned Objects
 
-| Test Case                                                | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|----------------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Returns all expected objects                             | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Returns empty results list when queryset is empty        | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                                | Subject | Topic | Lesson Name |
+|----------------------------------------------------------|---------|-------|-------------|
+| Returns all expected objects                             | ✅      | ✅    | ✅          |
+| Returns empty results list when queryset is empty        | ✅      | ✅    | ✅          |
 
 ## List - Response Structure
 
-| Test Case                                      | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Returns paginated response structure           | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Returns expected serializer fields             | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Response structure is consistent across objects| ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                      | Subject | Topic | Lesson Name |
+|------------------------------------------------|---------|-------|-------------|
+| Returns paginated response structure           | ✅      | ✅    | ✅          |
+| Returns expected serializer fields             | ✅      | ✅    | ✅          |
+| Response structure is consistent across objects| ✅      | ✅    | ✅          |
 
 ## List - Response Values
 
-| Test Case                                                  | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Returned titles match database records                     | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Returned values match stored database records              | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Returned nested relationship values match database records | ➖      | ✅    | ✅          | ➖        | ➖             |
+| Test Case                                                  | Subject | Topic | Lesson Name |
+|------------------------------------------------------------|---------|-------|-------------|
+| Returned titles match database records                     | ✅      | ✅    | ✅          |
+| Returned values match stored database records              | ✅      | ✅    | ✅          |
+| Returned nested relationship values match database records | ➖      | ✅    | ✅          |
 
 ## Create - Permissions
 
-| Test Case                                                  | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Admin users can create object                              | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Authenticated non-admin users cannot create object         | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Unauthenticated users cannot create object                 | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                                  | Subject | Topic | Lesson Name |
+|------------------------------------------------------------|---------|-------|-------------|
+| Admin users can create object                              | ✅      | ✅    | ✅          |
+| Authenticated non-admin users cannot create object         | ✅      | ✅    | ✅          |
+| Unauthenticated users cannot create object                 | ✅      | ✅    | ✅          |
 
 ## Create - Valid Payloads
 
-| Test Case                                      | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Valid payload creates object successfully      | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Valid payload assigns relationships correctly  | ➖      | ✅    | ✅          | ➖        | ➖             |
-| Valid payload can assign multiple relationships| ➖      | ✅    | ✅          | ➖        | ➖             |
-| Create response returns serialized object data | ➖      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                      | Subject | Topic | Lesson Name |
+|------------------------------------------------|---------|-------|-------------|
+| Valid payload creates object successfully      | ✅      | ✅    | ✅          |
+| Valid payload assigns relationships correctly  | ➖      | ✅    | ✅          |
+| Valid payload can assign multiple relationships| ➖      | ✅    | ✅          |
+| Create response returns serialized object data | ➖      | ✅    | ✅          |
 
 ## Create - Invalid Payloads
 
-| Test Case                                        | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|--------------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Duplicate object returns 400 BAD REQUEST         | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Missing required fields returns 400 BAD REQUEST  | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Invalid payload returns validation errors        | ✅      | ✅    | ✅          | ✅        | ✅             |
-| Validation error attached to correct field       | ➖      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                        | Subject | Topic | Lesson Name |
+|--------------------------------------------------|---------|-------|-------------|
+| Duplicate object returns 400 BAD REQUEST         | ✅      | ✅    | ✅          |
+| Missing required fields returns 400 BAD REQUEST  | ✅      | ✅    | ✅          |
+| Invalid payload returns validation errors        | ✅      | ✅    | ✅          |
+| Validation error attached to correct field       | ➖      | ✅    | ✅          |
 
 ## Create - Business Rules
 
-| Test Case                              | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|----------------------------------------|---------|-------|-------------|-----------|----------------|
-| Generated slug is created correctly    | ✅      | ❌    | ✅          | ✅        | ❌             |
+| Test Case                              | Subject | Topic | Lesson Name |
+|----------------------------------------|---------|-------|-------------|
+| Generated slug is created correctly    | ✅      | ❌    | ✅          |
 
 # Notes
 

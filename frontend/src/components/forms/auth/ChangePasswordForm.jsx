@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { HStack } from "@chakra-ui/react";
+
 import useAuth from "../../../hooks/UseAuth";
 
 import FormSubmitButton from "../base/FormSubmitButton";
@@ -6,6 +8,8 @@ import FormError from "../base/FormError";
 import FormTextInput from "../base/FormTextInput";
 import AccountFormContainer from "../base/AccountFormContainer";
 import FormSuccess from "../base/FormSuccess";
+
+import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 const ChangePasswordForm = () => {
   const { changePassword } = useAuth();
@@ -16,8 +20,12 @@ const ChangePasswordForm = () => {
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChangePassword = async () => {
+    if (loading) return;
+
+    setLoading(true);
     setErrors({});
     setSuccessMessage("");
 
@@ -35,6 +43,8 @@ const ChangePasswordForm = () => {
     } else {
       setErrors(response.errors);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -48,6 +58,7 @@ const ChangePasswordForm = () => {
           setErrors((prev) => ({ ...prev, old_password: undefined }));
         }}
       />
+
       <FormError>{errors.old_password?.[0]}</FormError>
 
       <FormTextInput
@@ -59,6 +70,7 @@ const ChangePasswordForm = () => {
           setErrors((prev) => ({ ...prev, new_password1: undefined }));
         }}
       />
+
       <FormError>{errors.new_password1?.[0]}</FormError>
 
       <FormTextInput
@@ -70,6 +82,7 @@ const ChangePasswordForm = () => {
           setErrors((prev) => ({ ...prev, new_password2: undefined }));
         }}
       />
+
       <FormError>{errors.new_password2?.[0]}</FormError>
 
       <FormError>{errors.non_field_errors?.[0]}</FormError>
@@ -78,8 +91,14 @@ const ChangePasswordForm = () => {
         <FormSuccess>{successMessage}</FormSuccess>
       )}
 
-      <FormSubmitButton onClick={handleChangePassword}>
-        Update Password
+      <FormSubmitButton
+        onClick={handleChangePassword}
+        disabled={loading}
+      >
+        <HStack gap={2} justify="center">
+          {loading && <ButtonSpinner />}
+          <span>{loading ? "Updating..." : "Update Password"}</span>
+        </HStack>
       </FormSubmitButton>
     </AccountFormContainer>
   );

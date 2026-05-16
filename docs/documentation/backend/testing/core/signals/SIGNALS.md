@@ -14,21 +14,21 @@
 
 ## Create - Cache Invalidation
 
-| Test Case                                | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Create clears list cache                 | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                | Subject | Topic | Lesson Name |
+|------------------------------------------|---------|-------|-------------|
+| Create clears list cache                 | ✅      | ✅    | ✅          |
 
 ## Update - Cache Invalidation
 
-| Test Case                                | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Update clears list cache                 | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                | Subject | Topic | Lesson Name |
+|------------------------------------------|---------|-------|-------------|
+| Update clears list cache                 | ✅      | ✅    | ✅          |
 
 ## Delete - Cache Invalidation
 
-| Test Case                                | Subject | Topic | Lesson Name | Variation | Teaching Style |
-|------------------------------------------|---------|-------|-------------|-----------|----------------|
-| Delete clears list cache                 | ✅      | ✅    | ✅          | ✅        | ✅             |
+| Test Case                                | Subject | Topic | Lesson Name |
+|------------------------------------------|---------|-------|-------------|
+| Delete clears list cache                 | ✅      | ✅    | ✅         |
 
 # Notes
 

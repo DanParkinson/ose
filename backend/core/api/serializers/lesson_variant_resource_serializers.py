@@ -1,73 +1,73 @@
-from rest_framework import serializers
-from ... import models
-from ..serializers import resource_serializers
+# from rest_framework import serializers
+# from ... import models
+# from ..serializers import resource_serializers
 
 
-class LessonVariantResourceSerializer(serializers.ModelSerializer):
-    resource = resource_serializers.ResourceBySubjectSerializer(read_only=True)
+# class LessonVariantResourceSerializer(serializers.ModelSerializer):
+#     resource = resource_serializers.ResourceBySubjectSerializer(read_only=True)
 
-    class Meta:
-        model = models.LessonVariantResource
-        fields = [
-            "resource",
-            "order",
-        ]
-
-
-class ResourceCreateForLessonVariantSerializer(serializers.ModelSerializer):
-    order = serializers.IntegerField(required=False, default=0)
-
-    class Meta:
-        model = models.Resource
-        fields = [
-            "resource_id",
-            "title",
-            "slug",
-            "category",
-            "description",
-            "file",
-            "url",
-            "order",
-        ]
-        read_only_fields = [
-            "resource_id",
-            "slug",
-        ]
-
-    def create(self, validated_data):
-        validated_data.pop("order", 0)
-        return super().create(validated_data)
+#     class Meta:
+#         model = models.LessonVariantResource
+#         fields = [
+#             "resource",
+#             "order",
+#         ]
 
 
-class LessonVariantResourceAttachSerializer(serializers.Serializer):
-    resource = serializers.PrimaryKeyRelatedField(
-        queryset=models.Resource.objects.none()
-    )
+# class ResourceCreateForLessonVariantSerializer(serializers.ModelSerializer):
+#     order = serializers.IntegerField(required=False, default=0)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+#     class Meta:
+#         model = models.Resource
+#         fields = [
+#             "resource_id",
+#             "title",
+#             "slug",
+#             "category",
+#             "description",
+#             "file",
+#             "url",
+#             "order",
+#         ]
+#         read_only_fields = [
+#             "resource_id",
+#             "slug",
+#         ]
 
-        lesson_variant = self.context.get("lesson_variant")
+#     def create(self, validated_data):
+#         validated_data.pop("order", 0)
+#         return super().create(validated_data)
 
-        if lesson_variant:
-            self.fields["resource"].queryset = (
-                models.Resource.objects.filter(
-                    subjects=lesson_variant.subject,
-                )
-                .exclude(resource_lesson_variants__lesson_variant=lesson_variant)
-                .distinct()
-            )
 
-    def validate(self, attrs):
-        lesson_variant = self.context["lesson_variant"]
-        resource = attrs["resource"]
+# class LessonVariantResourceAttachSerializer(serializers.Serializer):
+#     resource = serializers.PrimaryKeyRelatedField(
+#         queryset=models.Resource.objects.none()
+#     )
 
-        if models.LessonVariantResource.objects.filter(
-            lesson_variant=lesson_variant,
-            resource=resource,
-        ).exists():
-            raise serializers.ValidationError(
-                {"resource": "Resource already attached."}
-            )
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
 
-        return attrs
+#         lesson_variant = self.context.get("lesson_variant")
+
+#         if lesson_variant:
+#             self.fields["resource"].queryset = (
+#                 models.Resource.objects.filter(
+#                     subjects=lesson_variant.subject,
+#                 )
+#                 .exclude(resource_lesson_variants__lesson_variant=lesson_variant)
+#                 .distinct()
+#             )
+
+#     def validate(self, attrs):
+#         lesson_variant = self.context["lesson_variant"]
+#         resource = attrs["resource"]
+
+#         if models.LessonVariantResource.objects.filter(
+#             lesson_variant=lesson_variant,
+#             resource=resource,
+#         ).exists():
+#             raise serializers.ValidationError(
+#                 {"resource": "Resource already attached."}
+#             )
+
+#         return attrs

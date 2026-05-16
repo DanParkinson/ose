@@ -15,10 +15,7 @@
     - [Example Topic List Response](#example-topic-list-response)
   - [Lesson Name Endpoints](#lesson-name-endpoints)
     - [Example Lesson Name List Response](#example-lesson-name-list-response)
-  - [Variation Endpoints](#variation-endpoints)
-    - [Example Variation List Response](#example-variation-list-response)
-  - [Teaching Style Endpoints](#teaching-style-endpoints)
-    - [Example Teaching Style List Response](#example-teaching-style-list-response)
+
 
 ## Introduction
 
@@ -136,67 +133,6 @@ Each lesson name can be linked to multiple subjects and includes a title and pro
           "title": "Mathematics"
         }
       ],
-      "is_protected": false
-    }
-  ]
-}
-```
-
----
-
-### Variation Endpoints
-
-Users can retrieve available **variations**.
-Each variation includes a title and protection status.
-Variation Creation handled by SpuerUser inside of Django Admin Panel
-
-| Method | Endpoint                                              | Description                    | Authentication Required? | Implemented |
-| ------ | ----------------------------------------------------- | ------------------------------ | ------------------------ | ----------- |
-| GET    | `/variations/`                                        | List all variations.           | ❌ **(Admin)**          | ✅          |
-| GET    | `/variations/{variation_slug}/{variation_id}/`         | Retrieve variation details.   | ❌ **(Admin)**          | ❌          |
-
-### Example Variation List Response
-
-```json
-{
-  "count": 18,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "variation_id": "d4e5f6a7-b8c9-0123-def4-5678901234cd",
-      "title": "Basic",
-      "slug": "basic",
-      "is_protected": false
-    }
-  ]
-}
-```
-
----
-
-### Teaching Style Endpoints
-
-Users can retrieve available **teaching styles**.
-Each teaching style includes a title and protection status.
-
-| Method | Endpoint                                                            | Description                         | Authentication Required? | Implemented |
-| ------ | ------------------------------------------------------------------- | ----------------------------------- | ------------------------ | ----------- |
-| GET    | `/teaching_styles/`                                                 | List all teaching styles.           | ❌ **(Admin)**          | ✅          |
-| GET    | `/teaching_styles/{teaching_style_slug}/{teaching_style_id}/`       | Retrieve teaching style details.    | ❌ **(Admin)**          | ❌          |
-
-### Example Teaching Style List Response
-
-```json
-{
-  "count": 10,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "teaching_style_id": "e5f6a7b8-c9d0-1234-ef56-6789012345de",
-      "title": "Visual Learning",
-      "slug": "visual-learning",
       "is_protected": false
     }
   ]

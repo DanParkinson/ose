@@ -41,17 +41,18 @@ import Pagination from "../../components/pagination/Pagination";
 
 const AdminDashboard = () => {
   const [selectedModel, setSelectedModel] = useState(coreModels[0]);
+  const [createModel, setCreateModel] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [offset, setOffset] = useState(0);
   const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
-  const [createModel, setCreateModel] = useState(null);
+
 
   const limit = 20;
 
   const {
-    rows, next, previous, count, refetch,
+    rows, next, previous, count, loading, refetch,
   } = useCoreModelData(
     selectedModel.endpoint, offset, searchQuery, activeFilters
   );
@@ -139,6 +140,7 @@ const AdminDashboard = () => {
             <DashboardTable
               columns={selectedModel.columns}
               rows={rows}
+              loading={loading}
               templateColumns={selectedModel.templateColumns}
               getRowKey={(row) => row[selectedModel.keyField]}
               renderRow={(row) =>
@@ -186,6 +188,7 @@ const AdminDashboard = () => {
       >
         {createModel && (
           <CoreModelCreateForm
+            key={createModel.id}
             model={createModel}
             onCreated={() => {
               setIsCreatePanelOpen(false);
