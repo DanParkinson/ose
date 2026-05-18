@@ -43,34 +43,6 @@ class BaseAPITestCase(APITestCase):
             is_protected=True,
         )
 
-        # ===========
-        # Topics
-        # ===========
-        self.topic1 = models.Topic.objects.create(
-            title="Algebra",
-            is_protected=False,
-        )
-        self.topic2 = models.Topic.objects.create(
-            title="Poetry",
-            is_protected=True,
-        )
-        self.topic1.subjects.set([self.subject1])
-        self.topic2.subjects.set([self.subject2])
-
-        # ===========
-        # Lesson Names
-        # ===========
-        self.lesson_name1 = models.LessonName.objects.create(
-            title="Linear Equations",
-            is_protected=False,
-        )
-        self.lesson_name2 = models.LessonName.objects.create(
-            title="Poetry Analysis",
-            is_protected=True,
-        )
-        self.lesson_name1.subjects.set([self.subject1])
-        self.lesson_name2.subjects.set([self.subject2])
-
     # =====================
     # Auth helpers
     # =====================
@@ -91,15 +63,3 @@ class BaseAPITestCase(APITestCase):
     # =====================
     def get_subject_list_url(self):
         return reverse("subject-list")
-
-    # =====================
-    # Active Topic URLs
-    # =====================
-    def get_topic_list_url(self):
-        return reverse("topic-list")
-
-    # =====================
-    # Active Lesson Name URLs
-    # =====================
-    def get_lesson_name_list_url(self):
-        return reverse("lesson-name-list")

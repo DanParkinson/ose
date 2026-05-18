@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Text, HStack, Button } from "@chakra-ui/react";
 
 // API & Data configs
 import coreModels from "../../config/coreModels";
@@ -14,7 +13,7 @@ import DashboardTable from "../../components/structure/dashboard/DashboardTable"
 import DashboardTableTitleRow from "../../components/structure/dashboard/DashboardTableTitleRow";
 import DashboardPanelBox from "../../components/structure/dashboard/DashboardPanelBox";
 import DashboardFilterPanel from "../../components/structure/dashboard/DashboardFilterPanel";
-import DashboardTableHeader from "../../components/structure/dashboard/DashboardTableHeader";
+
 
 // Forms
 import CoreModelCreateForm from "../../components/forms/core/CoreModelCreateForm";
@@ -43,6 +42,7 @@ const AdminDashboard = () => {
   const [selectedModel, setSelectedModel] = useState(coreModels[0]);
   const [createModel, setCreateModel] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
+  const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [offset, setOffset] = useState(0);
   const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
@@ -59,6 +59,7 @@ const AdminDashboard = () => {
 
   const handleModelChange = (row) => {
     setSelectedModel(row);
+    setSearchInput("");
     setSearchQuery("");
     setOffset(0);
 
@@ -73,6 +74,7 @@ const AdminDashboard = () => {
 
   const resetActiveFilters = () => {
     setActiveFilters(buildResetFilters(selectedModel.filters));
+    setSearchInput("");
     setSearchQuery("");
     setOffset(0);
   };
@@ -116,8 +118,8 @@ const AdminDashboard = () => {
           <DashboardSection>
             <DashboardPanelBox title="Filters">
               <TextSearchFilter
-                value={searchQuery}
-                onChange={setSearchQuery}
+                value={searchInput}
+                onChange={setSearchInput}
                 onSearch={(value) => {
                   setSearchQuery(value);
                   setOffset(0);

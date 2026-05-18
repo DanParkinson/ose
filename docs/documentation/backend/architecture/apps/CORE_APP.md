@@ -29,11 +29,6 @@ It is responsible for managing:
 
 ```text
 subjects
-topics
-lesson names
-resources
-lesson variants
-lesson-resource relationships
 ```
 
 The app provides the primary backend API consumed by the frontend application.
@@ -70,10 +65,6 @@ The `core` app is built around a layered educational content structure.
 
 ```text
 Subject
-    ↓
-Topic
-    ↓
-Lesson Name
 ```
 
 This allows lessons to exist in multiple reusable variations and teaching approaches.
@@ -180,8 +171,7 @@ author = models.ForeignKey(
 This is primarily used by:
 
 ```text
-resources
-lesson variants
+
 ```
 
 Author ownership supports future moderation and ownership workflows.

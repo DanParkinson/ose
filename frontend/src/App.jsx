@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import AdminRoute from "./routes/AdminRoute";
 
 import Layout from "./layouts/Layout";
 
@@ -40,9 +41,9 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <AdminDashboardPage />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
 

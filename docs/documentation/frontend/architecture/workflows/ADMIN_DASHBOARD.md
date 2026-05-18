@@ -72,6 +72,7 @@ refetch reloads latest rows
 ```js
 const [selectedModel, setSelectedModel] = useState(coreModels[0]);
 const [activeFilters, setActiveFilters] = useState({});
+const [searchInput, setSearchInput] = useState("");
 const [searchQuery, setSearchQuery] = useState("");
 const [offset, setOffset] = useState(0);
 const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
@@ -83,7 +84,8 @@ const [createModel, setCreateModel] = useState(null);
 |---|---|
 | `selectedModel` | Tracks the active model configuration |
 | `activeFilters` | Stores selected filter values |
-| `searchQuery` | Stores current search text |
+| `searchInput` | Stores the live text currently shown in the search input |
+| `searchQuery` | Stores the delayed search value used by the API request |
 | `offset` | Tracks current pagination position |
 | `isCreatePanelOpen` | Controls create side panel visibility |
 | `isFilterPanelOpen` | Controls filter side panel visibility |
@@ -119,6 +121,10 @@ activeFilters
 
 When any of these values change, the hook reloads data.
 
+`searchQuery` is the delayed search value, not the live input value.
+
+This prevents the API from firing on every keypress.
+
 ## Model Selection Flow
 
 The left model list is built from `coreModels`.
@@ -133,11 +139,12 @@ The left model list is built from `coreModels`.
 />
 ```
 
-When a model is clicked:
+When a model is clicked, the dashboard changes model and clears previous search/filter state.
 
 ```js
 const handleModelChange = (row) => {
   setSelectedModel(row);
+  setSearchInput("");
   setSearchQuery("");
   setOffset(0);
 
@@ -155,7 +162,8 @@ This:
 
 ```text
 changes selected model
-clears search
+clears the visible search input
+clears the active API search query
 resets pagination
 resets filters
 triggers useCoreModelData
@@ -195,17 +203,42 @@ how the table grid is shaped
 
 ## Search Flow
 
-Search is controlled by `searchQuery`.
+Search is split into two states so typing does not fire an API request on every keypress.
+
+```js
+const [searchInput, setSearchInput] = useState("");
+const [searchQuery, setSearchQuery] = useState("");
+```
+
+`searchInput` is the immediate input value.
+
+It updates every time the user types.
+
+`searchQuery` is the delayed API search value.
+
+It only updates after `TextSearchFilter` finishes its debounce delay.
 
 ```jsx
 <TextSearchFilter
-  value={searchQuery}
-  onChange={setSearchQuery}
+  value={searchInput}
+  onChange={setSearchInput}
   onSearch={(value) => {
     setSearchQuery(value);
     setOffset(0);
   }}
+  placeholder={`Search ${selectedModel.title.toLowerCase()}...`}
 />
+```
+
+The data hook uses `searchQuery`.
+
+```js
+useCoreModelData(
+  selectedModel.endpoint,
+  offset,
+  searchQuery,
+  activeFilters
+);
 ```
 
 Flow:
@@ -213,13 +246,40 @@ Flow:
 ```text
 user types search
     ↓
+searchInput updates immediately
+    ↓
+input visually updates without fetching
+    ↓
+TextSearchFilter debounce timer starts
+    ↓
+user keeps typing
+    ↓
+previous debounce timer is cancelled
+    ↓
+user stops typing
+    ↓
+debounce delay completes
+    ↓
+onSearch runs
+    ↓
 searchQuery updates
     ↓
 offset resets to 0
     ↓
-useCoreModelData refetches
+useCoreModelData receives new searchQuery
+    ↓
+API request fires
     ↓
 rows update
+```
+
+This keeps the interface responsive while preventing unnecessary API calls.
+
+The key idea is:
+
+```text
+searchInput controls the input.
+searchQuery controls the API request.
 ```
 
 ## Filter Flow
@@ -270,6 +330,7 @@ Resetting uses `buildResetFilters`.
 ```js
 const resetActiveFilters = () => {
   setActiveFilters(buildResetFilters(selectedModel.filters));
+  setSearchInput("");
   setSearchQuery("");
   setOffset(0);
 };
@@ -279,7 +340,8 @@ This resets:
 
 ```text
 filters
-search query
+visible search input
+active API search query
 pagination
 ```
 
@@ -348,7 +410,9 @@ The create panel opens using:
 
 ```js
 const openCreatePanel = (model) => {
+  setSelectedModel(model);
   setCreateModel(model);
+  setOffset(0);
   setIsCreatePanelOpen(true);
 };
 ```
@@ -363,9 +427,12 @@ The side panel renders the create form:
 >
   {createModel && (
     <CoreModelCreateForm
+      key={createModel.id}
       model={createModel}
       onCreated={() => {
         setIsCreatePanelOpen(false);
+        setSelectedModel(createModel);
+        setOffset(0);
         refetch();
       }}
     />
@@ -378,7 +445,11 @@ Flow:
 ```text
 user clicks create
     ↓
+selectedModel is updated to the model being created
+    ↓
 createModel is stored
+    ↓
+pagination resets
     ↓
 create side panel opens
     ↓
@@ -389,6 +460,10 @@ form submits data
 onCreated runs
     ↓
 side panel closes
+    ↓
+selectedModel is kept in sync with createModel
+    ↓
+offset resets to 0
     ↓
 refetch reloads rows
 ```
@@ -435,8 +510,12 @@ The data refetches when these change:
 |---|---|
 | `selectedModel.endpoint` | User selects a different model |
 | `offset` | User changes page |
-| `searchQuery` | User searches |
+| `searchQuery` | Debounced search completes |
 | `activeFilters` | User applies filters |
+
+`searchInput` does not trigger data fetching directly.
+
+It only controls the text shown inside the search input.
 
 ## Key Principle
 
