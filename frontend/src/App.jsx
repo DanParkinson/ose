@@ -18,6 +18,8 @@ import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
 import ReactivateRequestPage from "./pages/Auth/ReactivateRequestPage";
 import ReactivateConfirmPage from "./pages/Auth/ReactivateConfirmPage";
+import SubjectListPage from "./pages/SubjectList/SubjectListPage";
+import SubjectDashboardPage from "./pages/SubjectDashboard/SubjectDashboardPage";
 
 
 
@@ -36,6 +38,18 @@ function App() {
           element={
               <AboutPage />
           }
+        />
+
+        <Route
+          path="/subjects"
+          element={
+              <SubjectListPage />
+          }
+        />
+
+        <Route
+          path="/subjects/:subjectSlug/:subjectId/"
+          element={<SubjectDashboardPage/>}
         />
 
         <Route

@@ -1,6 +1,16 @@
 import { Box, Text } from "@chakra-ui/react";
 import { HiCheck, HiX } from "react-icons/hi";
 
+const formatTextValue = (value) => {
+  if (value == null || value === "") {
+    return null;
+  }
+
+  const stringValue = String(value);
+
+  return stringValue.charAt(0).toUpperCase() + stringValue.slice(1);
+};
+
 const ModelFieldRenderer = ({ value, emptyValue = "-" }) => {
   if (typeof value === "boolean") {
     return (
@@ -30,7 +40,7 @@ const ModelFieldRenderer = ({ value, emptyValue = "-" }) => {
 
   return (
     <Text fontSize="sm" color="text.light4">
-      {value == null || value === "" ? emptyValue : String(value)}
+      {formatTextValue(value) || emptyValue}
     </Text>
   );
 };

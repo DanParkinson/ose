@@ -15,13 +15,3 @@ class SubjectSerializer(serializers.ModelSerializer):
             "is_protected",
         ]
         read_only_fields = ["subject_id", "slug"]
-
-
-class SubjectSummarySerializer(serializers.ModelSerializer):
-    """
-    Used In resources for faster lookups of resources with related subjects
-    """
-
-    class Meta:
-        model = models.Subject
-        fields = ["subject_id", "title", "slug"]

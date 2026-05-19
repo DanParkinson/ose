@@ -70,7 +70,20 @@ For more in depth documentation, the following is provided:
 
 | User Story                  | Description                                                                     | Backend | Frontend |
 | --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **Access**                  | **Only Admin User** can access the dashboard                                    | ➖     | ❌       |
+| **Access**                  | **Only Admin User** can access the dashboard                                    | ➖     | ✅       |
+| **Filtering**               | Users can filter by specified filter                                            | ✅     | ✅       |
+| **Searching**               | Users can text search for specified fields                                      | ✅     | ✅       |
+| **Pagination**              | Users can access next and previous buttons with resource counts shown           | ✅     | ✅       |
+
+### **Subject**
+| User Story                  | Description                                                                     | Backend | Frontend |
+| --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
+| **Subject List**            | **Admin User** can access list of subjects                                      | ✅     | ✅       |
+| **Subject Detail**          | **Admin User** can access Detail of Subject                                     | ✅     | ✅       |
+| **Subject Create**          | **Admin User** can create a subject                                             | ✅     | ✅       |
+| **Subject Update**          | **Admin User** can update a subject                                             | ✅     | ✅       |
+| **Subject Delete**          | **Admin User** can delete a subject                                             | ✅     | ✅       |
+| **Subject Protect**         | Proteced objects cannot be deleted or updated                                   | ✅     | ✅       |
 
 
 ### **Lesson related Crud**
@@ -79,10 +92,10 @@ For more in depth documentation, the following is provided:
 
 | User Story                  | Description                                                                     | Backend | Frontend |
 | --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **Subject List**            | **Admin User** can access list of subjects                                      | ✅     | ✅       |
-| **Subject Detail**          | **Admin User** can access Detail of Subject                                     | ❌     | ❌       |
-| **Subject Create**          | **Admin User** can create a subject                                             | ✅     | ✅       |
-| **Subject Update**          | **Admin User** can update a subject                                             | ✅     | ❌       |
-| **Subject Delete**          | **Admin User** can delete a subject                                             | ✅     | ❌       |
-| **Subject Publish**         | **Admin User** can change the publish status of a subject                       | ✅     | ❌       |
-| **Subject Protect**         | **Admin User** can set a subject to not protected for delete                    | ✅     | ❌       |
+| **Subject List**            | **All Users** can access list of subjects                                       | ✅     | ✅       |
+| **Subject Detail**          | **No User** can access Detail of Subject                                        | ❌     | ➖       |
+| **Subject Create**          | **No user** can create a subject                                                | ❌     | ❌       |
+| **Subject Update**          | **No user** can update a subject                                                | ✅     | ❌       |
+| **Subject Delete**          | **No user** can delete a subject                                                | ✅     | ❌       |
+| **Subject Publish**         | **No user** can change the publish status of a subject                          | ✅     | ❌       |
+| **Subject Protect**         | **No user** can set a subject to not protected for delete                       | ✅     | ❌       |

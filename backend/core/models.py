@@ -34,4 +34,4 @@ class Subject(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title} - ({self.level} {self.language})"
+        return f"{self.title} - ({self.level})"

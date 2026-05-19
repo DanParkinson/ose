@@ -1,11 +1,9 @@
 # DRF generic views and API utilities
-from rest_framework import generics, status, permissions, filters
+from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 
 # Django helpers
 from django.shortcuts import get_object_or_404
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 
 # Caching
 from django.core.cache import cache
@@ -60,19 +58,12 @@ class SubjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = subject_serializers.SubjectSerializer
 
     def get_permissions(self):
-        if self.request.method in permissions.SAFE_METHODS:
-            return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
     def get_object(self):
         queryset = self.get_queryset()
         subject_id = self.kwargs.get("subject_id")
-        subject_slug = self.kwargs.get("subject_slug")
-        return get_object_or_404(queryset, subject_id=subject_id, slug=subject_slug)
-
-    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_detail"))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        return get_object_or_404(queryset, subject_id=subject_id)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

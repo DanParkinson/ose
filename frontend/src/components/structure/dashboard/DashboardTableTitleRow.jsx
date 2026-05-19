@@ -1,21 +1,24 @@
-import { HStack, Text } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 
 const DashboardTableTitleRow = ({
   title,
   actions,
+  onTitleClick,
 }) => {
   return (
-    <HStack justify="space-between" w="100%">
-      <Text
-        fontSize="sm"
-        color="text.light1"
-        fontWeight="medium"
+    <Flex align="center" justify="space-between" w="100%" gap={3}>
+      <Button
+        variant="dashboardTitleRow"
+        flex="1"
+        onClick={onTitleClick}
+        px={3}
+        py={3}
       >
         {title}
-      </Text>
+      </Button>
 
       {actions}
-    </HStack>
+    </Flex>
   );
 };
 

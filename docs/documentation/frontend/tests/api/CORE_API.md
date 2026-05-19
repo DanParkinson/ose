@@ -23,3 +23,15 @@
 | Test Name | Purpose |
 |---|---|
 | creates a core model item using the given endpoint and data | Verifies POST requests are sent correctly with payload data. |
+
+## updateCoreModelItem
+
+| Test Name | Purpose |
+|---|---|
+| updates a core model item using the detail endpoint, id, and data | Verifies PATCH requests are sent correctly with the correct detail URL and update payload. |
+
+## deleteCoreModelItem
+
+| Test Name | Purpose |
+|---|---|
+| deletes a core model item using the detail endpoint and id | Verifies DELETE requests are sent correctly with the correct detail URL. |

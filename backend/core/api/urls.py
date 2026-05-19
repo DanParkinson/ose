@@ -10,4 +10,9 @@ urlpatterns = [
     path(
         "subjects/", subject_views.SubjectListCreateView.as_view(), name="subject-list"
     ),
+    path(
+        "subjects/<uuid:subject_id>/",
+        subject_views.SubjectDetailView.as_view(),
+        name="subject-detail",
+    ),
 ]

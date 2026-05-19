@@ -3,10 +3,11 @@ const coreModels = [
     id: "subjects",
     title: "Subjects",
     endpoint: "/core/subjects/",
-    columns: ["Subject", "Level", "Language", "Published", "Protected"],
-    templateColumns: "2fr 1fr 1fr 1fr 1fr",
+    detailEndpoint: "/core/subjects/",
+    columns: ["Subject", "Level","Published", "Protected"],
+    templateColumns: "2fr 1fr 1fr 1fr",
     keyField: "subject_id",
-    fields: ["title", "level", "language", "is_published", "is_protected"],
+    fields: ["title", "level", "is_published", "is_protected"],
     filters: [
       {
         key: "level",
@@ -51,7 +52,16 @@ const coreModels = [
       { name: "is_published", label: "Published", type: "boolean" },
       { name: "is_protected", label: "Protected", type: "boolean" },
     ],
+    updateFields: [
+      { name: "title", label: "Title", type: "text" },
+      { name: "level", label: "Level", type: "choice" },
+      { name: "language", label: "Language", type: "choice" },
+      { name: "is_published", label: "Published", type: "boolean" },
+      { name: "is_protected", label: "Protected", type: "boolean" },
+    ],
   },
+
+
   // {
   //   id: "topics",
   //   title: "Topics",

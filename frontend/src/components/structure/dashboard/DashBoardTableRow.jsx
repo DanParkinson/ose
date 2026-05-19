@@ -10,9 +10,9 @@ const DashboardTableRow = ({
   return (
     <Grid
       templateColumns={templateColumns}
-      gap={4}
-      px={4}
-      py={3}
+      gap={1}
+      px={1}
+      py={1}
       cursor={onClick ? "pointer" : "default"}
       bg={isSelected ? "bg.dark3" : "bg.dark2"}
       borderBottom="1px solid"
@@ -20,14 +20,10 @@ const DashboardTableRow = ({
       borderLeft="3px solid"
       borderLeftColor={isSelected ? "text.primarylight" : "transparent"}
       transition="all 0.2s ease"
-      _hover={
-        onClick
-          ? {
-              bg: "bg.dark3",
-              borderLeftColor: "text.primarylight",
-            }
-          : undefined
-      }
+      _hover={{
+        bg: "bg.dark3",
+        borderLeftColor: "text.primarylight",
+      }}
       onClick={() => onClick?.(row)}
     >
       {children}

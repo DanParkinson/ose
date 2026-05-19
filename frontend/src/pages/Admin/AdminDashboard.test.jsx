@@ -142,6 +142,14 @@ vi.mock("../../components/structure/dashboard/DashboardPanelBox", () => ({
   ),
 }));
 
+vi.mock("../../components/structure/dashboard/DashboardTableButtonRow", () => ({
+  default: ({ children, onClick }) => (
+    <button type="button" onClick={onClick}>
+      {children}
+    </button>
+  ),
+}));
+
 vi.mock("../../components/structure/dashboard/DashboardTable", () => ({
   default: ({
     columns,
@@ -159,15 +167,14 @@ vi.mock("../../components/structure/dashboard/DashboardTable", () => ({
         const selected = isSelected?.(row);
 
         return (
-          <button
+          <div
             key={rowKey}
-            type="button"
             data-testid={`table-row-${rowKey}`}
             data-selected={String(selected)}
             onClick={() => onRowClick?.(row)}
           >
             {renderRow(row)}
-          </button>
+          </div>
         );
       })}
     </div>
@@ -225,6 +232,19 @@ vi.mock("../../components/forms/core/CoreModelCreateForm", () => ({
         onClick={onCreated}
       >
         Finish Create
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("../../components/forms/core/CoreModelUpdateDeleteForm", () => ({
+  default: ({ model, row, onUpdated }) => (
+    <div>
+      <p>Update form for {model.title}</p>
+      <p>Updating row: {row.title}</p>
+
+      <button type="button" onClick={onUpdated}>
+        Finish Update
       </button>
     </div>
   ),
@@ -705,5 +725,28 @@ describe("AdminDashboard", () => {
         level: "primary",
       },
     });
+  });
+
+  test("opens update panel when a main table row is clicked", () => {
+    render(<AdminDashboard />);
+
+    fireEvent.click(screen.getByText("Mathematics"));
+
+    expect(screen.getByText("Update Subjects")).toBeInTheDocument();
+    expect(screen.getByText("Update form for Subjects")).toBeInTheDocument();
+    expect(screen.getByText("Updating row: Mathematics")).toBeInTheDocument();
+  });
+
+  test("successful update closes panel and refetches data", () => {
+    render(<AdminDashboard />);
+
+    fireEvent.click(screen.getByText("Mathematics"));
+    fireEvent.click(screen.getByText("Finish Update"));
+
+    expect(mockRefetch).toHaveBeenCalledTimes(1);
+
+    expect(
+      screen.queryByText("Update form for Subjects")
+    ).not.toBeInTheDocument();
   });
 });

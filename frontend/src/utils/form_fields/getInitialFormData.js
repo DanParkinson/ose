@@ -1,8 +1,10 @@
-const getInitialFormData = (fields) => {
+const getInitialFormData = (fields, existingData = null) => {
   const initialData = {};
 
   fields.forEach((field) => {
-    if (field.type === "boolean") {
+    if (existingData && existingData[field.name] !== undefined) {
+      initialData[field.name] = existingData[field.name];
+    } else if (field.type === "boolean") {
       initialData[field.name] = false;
     } else if (field.type === "relation") {
       initialData[field.name] = field.multiple ? [] : "";

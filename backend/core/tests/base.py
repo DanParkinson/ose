@@ -63,3 +63,9 @@ class BaseAPITestCase(APITestCase):
     # =====================
     def get_subject_list_url(self):
         return reverse("subject-list")
+
+    def get_subject_detail_url(self, subject):
+        return reverse(
+            "subject-detail",
+            kwargs={"subject_id": subject.subject_id},
+        )

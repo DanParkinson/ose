@@ -36,9 +36,9 @@ Each subject includes a title, level, language, publication status, and protecti
 | ------ | ----------------------------------------------------- | -------------------------------- | ------------------------ | ----------- |
 | GET    | `/subjects/`                                          | List all subjects.               | ❌  **(All Users)**     | ✅          |
 | POST   | `/subjects/`                                          | Create a new subject.            | ✅  **(Admin)**         | ✅          |
-| GET    | `/subjects/{subject_slug}/{subject_id}/`              | Retrieve subject details.        | ❌  **(All Users)**     | ❌          |
-| PUT    | `/subjects/{subject_slug}/{subject_id}/`              | Update subject details.          | ✅  **(Admin)**         | ❌          |
-| DELETE | `/subjects/{subject_slug}/{subject_id}/`              | Delete a subject.                | ✅  **(Admin)**         | ❌          |
+| GET    | `/subjects/{subject_id}/`                             | Retrieve subject details.        | ✅  **(Admin)**         | ❌          |
+| PUT    | `/subjects/{subject_id}/`                             | Update subject details.          | ✅  **(Admin)**         | ❌          |
+| DELETE | `/subjects/{subject_id}/`                             | Delete a subject.                | ✅  **(Admin)**         | ❌          |
 
 ### Example Subject Response
 

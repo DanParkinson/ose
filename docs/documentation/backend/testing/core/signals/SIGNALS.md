@@ -1,4 +1,4 @@
-# Cache Invalidation Signal overview
+# Cache Invalidation Signal Overview
 
 ## Navigation
 
@@ -14,21 +14,21 @@
 
 ## Create - Cache Invalidation
 
-| Test Case                                | Subject | Topic | Lesson Name |
-|------------------------------------------|---------|-------|-------------|
-| Create clears list cache                 | ✅      | ✅    | ✅          |
+| Test Case                | Subject |
+|--------------------------|---------|
+| Create clears list cache | ✅      |
 
 ## Update - Cache Invalidation
 
-| Test Case                                | Subject | Topic | Lesson Name |
-|------------------------------------------|---------|-------|-------------|
-| Update clears list cache                 | ✅      | ✅    | ✅          |
+| Test Case                | Subject |
+|--------------------------|---------|
+| Update clears list cache | ✅      |
 
 ## Delete - Cache Invalidation
 
-| Test Case                                | Subject | Topic | Lesson Name |
-|------------------------------------------|---------|-------|-------------|
-| Delete clears list cache                 | ✅      | ✅    | ✅         |
+| Test Case                | Subject |
+|--------------------------|---------|
+| Delete clears list cache | ✅      |
 
 # Notes
 

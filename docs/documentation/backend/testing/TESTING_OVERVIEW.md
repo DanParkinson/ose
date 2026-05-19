@@ -122,6 +122,7 @@ No current need for serializer testing in core
 | Test Area | Overview File |
 |---|---|
 | List/Create API Views | [Test Overview](./core/views/LIST_CREATE_VIEWS.md) |
+| Retrieve/Update/Destroy Views | [Test Overview](./core/views/UPDATE_DESTROY_VIEWS.md) |
 
 #### Signals
 
