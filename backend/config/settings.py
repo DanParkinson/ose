@@ -2,28 +2,39 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+# ==============================
+# Base Directory
+# ==============================
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ==============================
+# Environment / Security
+# ==============================
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-$om*(47trzk0r6d6b04z%55!+j7qr7cq3l*my#+w*yh_*ym590"
+SECRET_KEY = os.environ["SECRET_KEY"]
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["*"]
+# ==============================
+# Hosts, CORS and CSRF
+# ==============================
 
-# Authentication and Authorisation
-AUTH_USER_MODEL = "accounts.CustomUser"
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
+
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-]
+# ==============================
+# Authentication and Authorisation
+# ==============================
+
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 SITE_ID = 1
 
@@ -31,14 +42,17 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+JWT_AUTH_SECURE = not DEBUG
 
 REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_COOKIE": "access",
     "JWT_AUTH_REFRESH_COOKIE": "refresh",
     "JWT_AUTH_HTTPONLY": True,
-    "JWT_AUTH_SECURE": False,  # True in production!
+    "JWT_AUTH_SECURE": JWT_AUTH_SECURE,
     "JWT_AUTH_SAMESITE": "Lax",
     "JWT_AUTH_RETURN_EXPIRATION": True,
     "TOKEN_MODEL": None,
@@ -46,7 +60,6 @@ REST_AUTH = {
     "USER_DETAILS_SERIALIZER": "accounts.api.serializers.CustomUserDetailsSerializer",
     "PASSWORD_RESET_CONFIRM_URL": "reset-password/{uid}/{token}",
 }
-
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
@@ -56,7 +69,10 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 }
 
-# Rest Framework stuff
+# ==============================
+# Django REST Framework
+# ==============================
+
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%d %b %Y",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -70,7 +86,10 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
 }
 
-# spectacular
+# ==============================
+# API Schema Documentation
+# ==============================
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "OSE API",
     "DESCRIPTION": "A simple open source resource library for teachers",
@@ -78,8 +97,12 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-# Application definition
+# ==============================
+# Installed Applications
+# ==============================
+
 INSTALLED_APPS = [
+    # Django Applications
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -87,41 +110,61 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    # Django stuff
+    # REST Framework
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    # Authentication
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "corsheaders",
-    # All Auth
+    # Allauth
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    # CORS
+    "corsheaders",
     # Filtering
     "django_filters",
-    # Extensions
+    # Development Tools
     "django_extensions",
-    "django_summernote",
     "silk",
+    # Rich Text Editors
+    "django_summernote",
+    # API Documentation
     "drf_spectacular",
-    # Apps
+    # Local Applications
     "core.apps.CoreConfig",
     "accounts",
 ]
 
+# ==============================
+# Middleware
+# ==============================
+
 MIDDLEWARE = [
+    # Security
     "django.middleware.security.SecurityMiddleware",
+    # CORS
     "corsheaders.middleware.CorsMiddleware",
+    # Sessions
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # Common Django Middleware
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    # Authentication
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    # Messaging
     "django.contrib.messages.middleware.MessageMiddleware",
+    # Clickjacking Protection
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Development Tools
     "silk.middleware.SilkyMiddleware",
 ]
+
+# ==============================
+# Templates and Application Entry
+# ==============================
 
 ROOT_URLCONF = "config.urls"
 
@@ -143,7 +186,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
+# ==============================
 # Database
+# ==============================
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
@@ -158,7 +203,9 @@ DATABASES = {
 }
 
 
-# Password validation
+# ==============================
+# Password Validation
+# ==============================
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -177,7 +224,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# ==============================
 # Internationalization
+# ==============================
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
@@ -188,18 +237,24 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+# ==============================
+# Static Files
+# ==============================
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
 
-# Default primary key field type
+# ==============================
+# Default Primary Key Field
+# ==============================
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# ==============================
 # Caching
+# ==============================
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",

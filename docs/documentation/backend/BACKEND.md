@@ -78,7 +78,11 @@ It currently supports:
 
 | Documentation | Description |
 |---|---|
-| [Authentication Architecture](./architecture/authentication/AUTHENTICATION_ARCHITECTURE.md) | JWT authentication architecture and backend authentication workflows. |
+| [Authentication](./architecture/authentication/AUTHENTICATION.md) | JWT authentication architecture and backend authentication workflows. |
+| [Registration](./architecture/authentication/REGISTRATION.md) | Email-first registration architecture and account creation workflows. |
+| [User Serializers](./architecture/authentication/USER_SERIALIZERS.md) | Custom authentication serializers and frontend authentication state structure. |
+| [Frontend Authentication](./architecture/authentication/FRONTEND_AUTHENTICATION.md) | Frontend and backend authentication integration using JWT cookies, CORS, and CSRF configuration. |
+| [Email Configuration](./architecture/authentication/EMAILs.md) | Development and production email backend configuration and authentication email workflows. |
 | [Custom User Model](./architecture/authentication/CUSTOM_USER_MODEL.md) | Email-based custom user model and authentication identity configuration. |
 
 ## Infrastructure
