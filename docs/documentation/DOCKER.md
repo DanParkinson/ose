@@ -58,7 +58,8 @@ The project uses a `docker-compose.yml` file to define and connect all services.
 - Exposes port `8000`
 - Mounts the full project into `/app`
 - Waits for PostgreSQL and Redis before starting
-- Uses environment variables from `.env`
+- Uses environment variables from `.env` for development
+- Uses `backend/.env` for production
 
 ### Frontend
 - Built from the project root using `frontend/Dockerfile.frontend`

@@ -86,7 +86,7 @@ For more in depth documentation, the following is provided:
 | **Subject Protect**         | Proteced objects cannot be deleted or updated                                   | ✅     | ✅       |
 
 
-### **Lesson related Crud**
+## **Lesson related Crud**
 
 #### Subjects
 

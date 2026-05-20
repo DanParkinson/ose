@@ -47,6 +47,10 @@ cd <your-project-folder>
 
 ## Environment Variables
 
+`.env` files are created seperatly for production and development purposes. All are needed for the application to run in development.
+
+### Local Development
+
 Create a `.env` file in the same directory as your `docker-compose.yml` file.
 
 Add the following values:
@@ -60,6 +64,22 @@ DB_PORT=5432
 ```
 
 These environment variables are used by the PostgreSQL container and by the backend service when connecting to the database.
+
+### backend
+
+A seperate environment file is needed for backend. To explore the repo and have it wokr for development only:
+
+Create `.env` inside of the backend folder.
+
+inside `backend/.env`:
+
+```python
+DEBUG=True # or False if you dont want detailed logs
+SECRET_KEY=<Your secret key>
+ALLOWED_HOSTS=localhost,127.0.0.1,backend # backend is the container name
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+CSRF_TRUSTED_ORIGINS=http://localhost:5173
+```
 
 ## Open the Project in VS Code
 
