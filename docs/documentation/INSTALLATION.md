@@ -74,11 +74,13 @@ Create `.env` inside of the backend folder.
 inside `backend/.env`:
 
 ```python
-DEBUG=True # or False if you dont want detailed logs
+DEBUG=True
 SECRET_KEY=<Your secret key>
 ALLOWED_HOSTS=localhost,127.0.0.1,backend # backend is the container name
 CORS_ALLOWED_ORIGINS=http://localhost:5173
 CSRF_TRUSTED_ORIGINS=http://localhost:5173
+REDIS_URL=redis://redis:6379/1
+DATABASE_URL=postgresql://postgres:postgres@db:5432/dev_database
 ```
 
 ## Open the Project in VS Code

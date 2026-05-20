@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
 
 # ==============================
 # Base Directory
@@ -38,6 +39,35 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 SITE_ID = 1
 
+# settings
+
+# Use secure HTTPS-only JWT cookies in production
+# Local development still allows HTTP
+JWT_AUTH_SECURE = not DEBUG
+
+# Automatically redirect all HTTP traffic to HTTPS in production
+SECURE_SSL_REDIRECT = not DEBUG
+
+# Only allow session cookies over HTTPS in production
+# Helps protect authenticated sessions from interception
+SESSION_COOKIE_SECURE = not DEBUG
+
+# Only allow CSRF cookies over HTTPS in production
+# Helps protect CSRF tokens from insecure transport
+CSRF_COOKIE_SECURE = not DEBUG
+
+# Enable HTTP Strict Transport Security (HSTS) in production
+# Forces browsers to always use HTTPS after first secure visit
+# 31536000 = 1 year
+SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
+
+# Apply HSTS rules to all subdomains in production
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+
+# Allow the domain to be submitted to browser HSTS preload lists
+SECURE_HSTS_PRELOAD = not DEBUG
+
+# custom account setup
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"email"}
@@ -45,8 +75,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-JWT_AUTH_SECURE = not DEBUG
-
+# rest auth
 REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_COOKIE": "access",
@@ -148,6 +177,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     # Sessions
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # Static file loading
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     # Common Django Middleware
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -191,17 +222,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # ==============================
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ["POSTGRES_DB"],
-        "USER": os.environ["POSTGRES_USER"],
-        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
-        "HOST": os.environ["DB_HOST"],
-        "PORT": os.environ["DB_PORT"],
-    }
-}
-
+DATABASES = {"default": dj_database_url.parse(os.environ["DATABASE_URL"])}
 
 # ==============================
 # Password Validation
@@ -240,10 +261,10 @@ USE_TZ = True
 # ==============================
 # Static Files
 # ==============================
-# Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ==============================
 # Default Primary Key Field
@@ -258,7 +279,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": os.environ["REDIS_URL"],
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
