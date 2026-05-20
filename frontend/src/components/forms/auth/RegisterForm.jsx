@@ -1,13 +1,16 @@
 import { useState } from "react";
-import useAuth from "../../../hooks/UseAuth";
+import { HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
+import useAuth from "../../../hooks/UseAuth";
 
 import FormContainer from "../base/FormContainer";
 import FormSubmitButton from "../base/FormSubmitButton";
 import FormLink from "../base/FormLink";
 import FormError from "../base/FormError";
 import FormTextInput from "../base/FormTextInput";
+
+import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 const RegisterForm = () => {
   const { register } = useAuth();
@@ -18,17 +21,21 @@ const RegisterForm = () => {
   const [password2, setPassword2] = useState("");
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     setErrors({});
 
     const response = await register(email, password1, password2);
-
 
     if (response.success) {
       navigate("/login");
     } else {
       setErrors(response.errors);
+      setLoading(false);
     }
   };
 
@@ -39,6 +46,7 @@ const RegisterForm = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
+
       <FormError>{errors.email}</FormError>
 
       <FormTextInput
@@ -47,6 +55,7 @@ const RegisterForm = () => {
         value={password1}
         onChange={(e) => setPassword1(e.target.value)}
       />
+
       <FormError>{errors.password1}</FormError>
 
       <FormTextInput
@@ -55,12 +64,19 @@ const RegisterForm = () => {
         value={password2}
         onChange={(e) => setPassword2(e.target.value)}
       />
+
       <FormError>{errors.password2}</FormError>
 
       <FormError>{errors.non_field_errors?.[0]}</FormError>
 
-      <FormSubmitButton onClick={handleSubmit}>
-        Register
+      <FormSubmitButton
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        <HStack gap={2} justify="center">
+          {loading && <ButtonSpinner />}
+          <span>{loading ? "Registering..." : "Register"}</span>
+        </HStack>
       </FormSubmitButton>
 
       <FormLink

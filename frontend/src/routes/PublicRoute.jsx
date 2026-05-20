@@ -1,11 +1,14 @@
 import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
+import LoadingSpinner from "../components/feedback/LoadingSpinner";
+
+
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner label="Checking permissions..." />;
   }
 
   if (user) {

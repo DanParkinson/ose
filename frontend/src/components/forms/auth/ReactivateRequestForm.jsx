@@ -1,18 +1,26 @@
 import { useState } from "react";
+import { HStack, Text } from "@chakra-ui/react";
+
 import { axiosRequest } from "../../../api/axiosDefaults";
-import { Text } from "@chakra-ui/react";
+
 import FormContainer from "../base/FormContainer";
 import FormSubmitButton from "../base/FormSubmitButton";
 import FormLink from "../base/FormLink";
 import FormError from "../base/FormError";
 import FormTextInput from "../base/FormTextInput";
 
+import ButtonSpinner from "../../feedback/ButtonSpinner";
+
 const ReactivateRequestForm = () => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     setErrors({});
 
     try {
@@ -27,6 +35,8 @@ const ReactivateRequestForm = () => {
           non_field_errors: ["Reactivation request failed. Please try again."],
         }
       );
+
+      setLoading(false);
     }
   };
 
@@ -47,7 +57,9 @@ const ReactivateRequestForm = () => {
         </>
       ) : (
         <>
-          <Text color="text.light2">Enter your email to receive a reactivation link.</Text>
+          <Text color="text.light2">
+            Enter your email to receive a reactivation link.
+          </Text>
 
           <FormTextInput
             placeholder="Email"
@@ -61,8 +73,16 @@ const ReactivateRequestForm = () => {
           <FormError>{errors.email?.[0]}</FormError>
           <FormError>{errors.non_field_errors?.[0]}</FormError>
 
-          <FormSubmitButton onClick={handleSubmit}>
-            Send Reactivation Email
+          <FormSubmitButton
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            <HStack gap={2} justify="center">
+              {loading && <ButtonSpinner />}
+              <span>
+                {loading ? "Sending..." : "Send Reactivation Email"}
+              </span>
+            </HStack>
           </FormSubmitButton>
 
           <FormLink

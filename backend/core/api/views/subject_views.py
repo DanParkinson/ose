@@ -1,11 +1,12 @@
 # DRF generic views and API utilities
-from rest_framework import generics, status, permissions, filters
+from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 
 # Django helpers
 from django.shortcuts import get_object_or_404
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+
+# Caching
+from django.core.cache import cache
 
 # Filtering
 from django_filters.rest_framework import DjangoFilterBackend
@@ -34,9 +35,22 @@ class SubjectListCreateView(generics.ListCreateAPIView):
             return [permissions.IsAdminUser()]
         return [permissions.AllowAny()]
 
-    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_list"))
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        cache_key = f"subject_list:{request.get_full_path()}"
+
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            # print("Subject LIST FROM CACHE")
+            return Response(cached_data)
+
+        # print("Subject LIST FROM DATABASE")
+
+        response = super().list(request, *args, **kwargs)
+
+        cache.set(cache_key, response.data, timeout=60 * 60 * 24)
+
+        return response
 
 
 class SubjectDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -44,19 +58,12 @@ class SubjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = subject_serializers.SubjectSerializer
 
     def get_permissions(self):
-        if self.request.method in permissions.SAFE_METHODS:
-            return [permissions.AllowAny()]
         return [permissions.IsAdminUser()]
 
     def get_object(self):
         queryset = self.get_queryset()
         subject_id = self.kwargs.get("subject_id")
-        subject_slug = self.kwargs.get("subject_slug")
-        return get_object_or_404(queryset, subject_id=subject_id, slug=subject_slug)
-
-    @method_decorator(cache_page(60 * 60 * 24, key_prefix="subject_detail"))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        return get_object_or_404(queryset, subject_id=subject_id)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

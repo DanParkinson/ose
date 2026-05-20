@@ -40,3 +40,27 @@ export const createCoreModelItem = async ({
   const response = await axiosResponse.post(endpoint, data);
   return response.data;
 };
+
+export const updateCoreModelItem = async ({
+  detailEndpoint,
+  id,
+  data,
+}) => {
+  const response = await axiosResponse.patch(
+    `${detailEndpoint}${id}/`,
+    data
+  );
+
+  return response.data;
+};
+
+export const deleteCoreModelItem = async ({
+  detailEndpoint,
+  id,
+}) => {
+  const response = await axiosResponse.delete(
+    `${detailEndpoint}${id}/`
+  );
+
+  return response.data;
+};

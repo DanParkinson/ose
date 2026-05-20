@@ -1,12 +1,15 @@
 import { useState } from "react";
 import useAuth from "../../../hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
+import { HStack } from "@chakra-ui/react";
 
 import FormContainer from "../base/FormContainer";
 import FormSubmitButton from "../base/FormSubmitButton";
 import FormLink from "../base/FormLink";
 import FormError from "../base/FormError";
 import FormTextInput from "../base/FormTextInput";
+
+import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 const LoginForm = () => {
   const { login } = useAuth();
@@ -16,9 +19,13 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setErrors({});
+    if (loading) return;
+
+    setLoading(true);
 
     const response = await login(email, password);
 
@@ -26,6 +33,7 @@ const LoginForm = () => {
       navigate("/");
     } else {
       setErrors(response.errors)
+      setLoading(false);
     }
   };
 
@@ -48,8 +56,14 @@ const LoginForm = () => {
 
       <FormError>{errors.non_field_errors?.[0]}</FormError>
 
-      <FormSubmitButton onClick={handleSubmit}>
-        Login
+      <FormSubmitButton
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        <HStack gap={2} justify="center">
+          {loading && <ButtonSpinner />}
+          <span>{loading ? "Logging in..." : "Login"}</span>
+        </HStack>
       </FormSubmitButton>
 
       <FormLink

@@ -9,6 +9,8 @@
  * 4. Standard fields default to empty strings
  * 5. Multiple field types are initialised correctly together
  * 6. Empty field arrays return empty objects
+ * 7. Existing row values are used when existing data is provided
+ * 8. Missing existing row values fall back to default initial values
  */
 
 import { describe, test, expect } from "vitest";
@@ -179,5 +181,86 @@ describe("getInitialFormData", () => {
     const result = getInitialFormData([]);
 
     expect(result).toEqual({});
+  });
+
+  test("existing row values are used when existing data is provided", () => {
+    /**
+     * Arrange:
+     * Create field configurations and existing row data.
+     *
+     * Act:
+     * Generate initial form data using existing data.
+     *
+     * Assert:
+     * Confirm fields initialise from the existing row values.
+     */
+    const fields = [
+      {
+        name: "title",
+        type: "text",
+      },
+      {
+        name: "level",
+        type: "choice",
+      },
+      {
+        name: "is_published",
+        type: "boolean",
+      },
+    ];
+
+    const existingData = {
+      title: "Mathematics",
+      level: "secondary",
+      is_published: true,
+    };
+
+    const result = getInitialFormData(fields, existingData);
+
+    expect(result).toEqual({
+      title: "Mathematics",
+      level: "secondary",
+      is_published: true,
+    });
+  });
+
+  test("missing existing row values fall back to default initial values", () => {
+    /**
+     * Arrange:
+     * Create field configurations and partial existing row data.
+     *
+     * Act:
+     * Generate initial form data using incomplete existing data.
+     *
+     * Assert:
+     * Confirm missing values fall back to their field defaults.
+     */
+    const fields = [
+      {
+        name: "title",
+        type: "text",
+      },
+      {
+        name: "is_published",
+        type: "boolean",
+      },
+      {
+        name: "subjects",
+        type: "relation",
+        multiple: true,
+      },
+    ];
+
+    const existingData = {
+      title: "Mathematics",
+    };
+
+    const result = getInitialFormData(fields, existingData);
+
+    expect(result).toEqual({
+      title: "Mathematics",
+      is_published: false,
+      subjects: [],
+    });
   });
 });

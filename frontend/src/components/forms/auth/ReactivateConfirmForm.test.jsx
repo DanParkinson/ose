@@ -39,7 +39,11 @@ vi.mock("react-router-dom", () => ({
 }));
 
 vi.mock("@chakra-ui/react", () => ({
+  chakra: (Component) => Component,
+  Input: (props) => <input {...props} />,
   Text: ({ children }) => <p>{children}</p>,
+  Box: ({ children }) => <div>{children}</div>,
+  HStack: ({ children }) => <div>{children}</div>,
 }));
 
 vi.mock("../base/FormContainer", () => ({
@@ -49,6 +53,10 @@ vi.mock("../base/FormContainer", () => ({
       {children}
     </div>
   ),
+}));
+
+vi.mock("../../feedback/ButtonSpinner", () => ({
+  default: () => <span>spinner</span>,
 }));
 
 vi.mock("../base/FormSubmitButton", () => ({

@@ -106,13 +106,7 @@ Current route groups include:
 | Resource Area | Example Purpose |
 |---|---|
 | `subjects` | Subject list, creation, and detail access |
-| `topics` | Topic list, creation, detail access, and subject-based topic access |
-| `lesson_names` | Lesson name list, creation, detail access, and subject-based access |
-| `variations` | Variation list and detail access |
-| `teaching_styles` | Teaching style list and detail access |
-| `resources` | Subject-based resource access |
-| `lessons` | Lesson variant list, creation, detail, and nested resource access |
-| `filter` | Lightweight option lists used by frontend filters |
+
 
 ## List and Create Views
 

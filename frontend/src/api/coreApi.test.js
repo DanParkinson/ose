@@ -19,6 +19,15 @@
  *    - Sends POST requests with the correct data
  *    - Returns response.data
  *
+ * 4. updateCoreModelItem
+ *    - Sends PATCH requests to the correct detail endpoint
+ *    - Sends the correct update data
+ *    - Returns response.data
+ *
+ * 5. deleteCoreModelItem
+ *    - Sends DELETE requests to the correct detail endpoint
+ *    - Returns response.data
+ *
  * Notes:
  * - axiosResponse is mocked to prevent real HTTP requests
  */
@@ -28,6 +37,8 @@ import {
   fetchCoreModelList,
   fetchCoreModelOptions,
   createCoreModelItem,
+  updateCoreModelItem,
+  deleteCoreModelItem,
 } from "./coreApi";
 import { axiosResponse } from "./axiosDefaults";
 
@@ -36,6 +47,8 @@ vi.mock("./axiosDefaults", () => ({
     get: vi.fn(),
     options: vi.fn(),
     post: vi.fn(),
+    patch: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -328,6 +341,86 @@ describe("coreApi", () => {
       expect(axiosResponse.post).toHaveBeenCalledWith(
         "/core/subjects/",
         newSubject
+      );
+
+      expect(result).toEqual(mockData);
+    });
+  });
+
+  describe("updateCoreModelItem", () => {
+    test("updates a core model item using the detail endpoint, id, and data", async () => {
+      /**
+       * Arrange:
+       * Mock a successful PATCH response.
+       * Provide a detail endpoint, item id, and update data.
+       *
+       * Act:
+       * Call updateCoreModelItem.
+       *
+       * Assert:
+       * Confirm axiosResponse.patch is called with the correct detail URL and data.
+       * Confirm response.data is returned.
+       */
+      const updateData = {
+        title: "Updated Mathematics",
+        is_published: false,
+      };
+
+      const mockData = {
+        subject_id: "subject-1",
+        title: "Updated Mathematics",
+        level: "secondary",
+        language: "en",
+        is_published: false,
+        is_protected: false,
+      };
+
+      axiosResponse.patch.mockResolvedValue({
+        data: mockData,
+      });
+
+      const result = await updateCoreModelItem({
+        detailEndpoint: "/core/subjects/",
+        id: "subject-1",
+        data: updateData,
+      });
+
+      expect(axiosResponse.patch).toHaveBeenCalledWith(
+        "/core/subjects/subject-1/",
+        updateData
+      );
+
+      expect(result).toEqual(mockData);
+    });
+  });
+
+  describe("deleteCoreModelItem", () => {
+    test("deletes a core model item using the detail endpoint and id", async () => {
+      /**
+       * Arrange:
+       * Mock a successful DELETE response.
+       * Provide a detail endpoint and item id.
+       *
+       * Act:
+       * Call deleteCoreModelItem.
+       *
+       * Assert:
+       * Confirm axiosResponse.delete is called with the correct detail URL.
+       * Confirm response.data is returned.
+       */
+      const mockData = {};
+
+      axiosResponse.delete.mockResolvedValue({
+        data: mockData,
+      });
+
+      const result = await deleteCoreModelItem({
+        detailEndpoint: "/core/subjects/",
+        id: "subject-1",
+      });
+
+      expect(axiosResponse.delete).toHaveBeenCalledWith(
+        "/core/subjects/subject-1/"
       );
 
       expect(result).toEqual(mockData);

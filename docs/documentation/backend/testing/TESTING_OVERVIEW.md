@@ -34,8 +34,6 @@ core/
     test_subject_views.py
     test_topic_views.py
     test_lesson_name_views.py
-    test_variation_views.py
-    test_teaching_style_views.py
     test_signals.py
 ```
 
@@ -124,6 +122,7 @@ No current need for serializer testing in core
 | Test Area | Overview File |
 |---|---|
 | List/Create API Views | [Test Overview](./core/views/LIST_CREATE_VIEWS.md) |
+| Retrieve/Update/Destroy Views | [Test Overview](./core/views/UPDATE_DESTROY_VIEWS.md) |
 
 #### Signals
 

@@ -114,6 +114,12 @@ It supports:
 |---|---|
 | [Dashboard Components](./features/dashboard/DASHBOARD_COMPONENTS.md) | Shared dashboard structure and reusable dashboard UI components. |
 
+## Forms
+| Documentation | Description |
+|---|---|
+| [Create Form](./features/forms/core/CREATE_FORM.md) | Workflow of CoreModelCreateForm |
+| [Update Delete Form](./features/forms/core/UPDATE_DELETE_FORM.md) | Workflow of CoreModelUpdateDeleteForm |
+
 # Testing
 
 | Documentation | Description |

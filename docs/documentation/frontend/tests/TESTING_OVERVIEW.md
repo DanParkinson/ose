@@ -122,6 +122,13 @@ Assert
 | RegisterForm | [Test Overview](./components/forms/auth/REGISTER_FORM.md) |
 | ResetPasswordForm | [Test Overview](./components/forms/auth/RESET_PASSWORD_FORM.md) |
 
+### Core
+
+| Feature / Module | Overview File |
+|---|---|
+| CoreModelCrateForm| [Test Overview](./components/forms/core/CORE_MODEL_CREATE_FORM.md) |
+| CoreModelUpdateCreateForm| [Test Overview](./components/forms/core/CORE_MODEL_UPDATE_DELETE_FORM.md) |
+
 ## Pagination
 
 | Feature / Module | Overview File |

@@ -93,6 +93,7 @@ The admin dashboard structure components are designed to:
 | `DashboardTableHeader` | Renders table header columns |
 | `DashboardTableRow` | Renders one styled table row |
 | `DashboardTableTitleRow` | Renders a row title with optional actions |
+| `DashboardTablebUTTONRow` | Renders all infomration inside a button |
 | `DashboardPanelBox` | Renders a non-table panel with a dashboard-style header |
 | `DashboardFilterPanel` | Renders grouped filter controls |
 

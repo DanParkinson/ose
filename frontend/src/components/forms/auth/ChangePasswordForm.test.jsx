@@ -46,6 +46,16 @@ vi.mock("../base/FormSuccess", () => ({
   default: ({ children }) => <p>{children}</p>,
 }));
 
+vi.mock("@chakra-ui/react", () => ({
+  Text: ({ children }) => <p>{children}</p>,
+  Box: ({ children }) => <div>{children}</div>,
+  HStack: ({ children }) => <div>{children}</div>,
+}));
+
+vi.mock("../../feedback/ButtonSpinner", () => ({
+  default: () => <span>spinner</span>,
+}));
+
 vi.mock("../base/FormSubmitButton", () => ({
   default: ({ children, onClick }) => (
     <button type="button" onClick={onClick}>

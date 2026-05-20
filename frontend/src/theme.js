@@ -84,6 +84,28 @@ const buttonRecipe = defineRecipe({
           outlineOffset: "2px",
         },
       },
+      dashboardTitleRow: {
+        w: "80%",
+        justifyContent: "flex-start",
+        px: 0,
+        py: 0,
+
+        bg: "transparent",
+        color: "text.light1",
+        fontWeight: "semibold",
+        textAlign: "left",
+
+        _active: {
+          bg: "transparent",
+        },
+
+        _focusVisible: {
+          outline: "2px solid",
+          outlineColor: "focusRing",
+          outlineOffset: "2px",
+          borderRadius: "sm",
+        },
+      },
     },
   },
 });

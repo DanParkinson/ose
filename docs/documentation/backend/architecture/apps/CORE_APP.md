@@ -29,13 +29,6 @@ It is responsible for managing:
 
 ```text
 subjects
-topics
-lesson names
-variations
-teaching styles
-resources
-lesson variants
-lesson-resource relationships
 ```
 
 The app provides the primary backend API consumed by the frontend application.
@@ -72,18 +65,6 @@ The `core` app is built around a layered educational content structure.
 
 ```text
 Subject
-    ↓
-Topic
-    ↓
-Lesson Name
-    ↓
-Teaching Style
-    ↓
-Variation
-    ↓
-Lesson Variant
-    ↓
-Resources
 ```
 
 This allows lessons to exist in multiple reusable variations and teaching approaches.
@@ -110,8 +91,6 @@ Examples:
 subject_id
 topic_id
 lesson_name_id
-lesson_variant_id
-resource_id
 ```
 
 UUIDs are used to:
@@ -192,8 +171,7 @@ author = models.ForeignKey(
 This is primarily used by:
 
 ```text
-resources
-lesson variants
+
 ```
 
 Author ownership supports future moderation and ownership workflows.
@@ -207,8 +185,6 @@ Examples:
 ```text
 unique subject title per level/language
 unique topic title
-unique teaching style title
-unique lesson variant combinations
 ```
 
 This helps preserve data consistency throughout the educational system.

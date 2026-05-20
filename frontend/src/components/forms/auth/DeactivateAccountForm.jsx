@@ -1,15 +1,16 @@
 import { useState } from "react";
+import { HStack, Text, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../../hooks/useAuth";
 import { axiosRequest } from "../../../api/axiosDefaults";
 
-import { Text, Box } from "@chakra-ui/react";
-
 import FormSubmitButtonDanger from "../base/FormSubmitButtonDanger";
 import FormError from "../base/FormError";
 import AccountFormContainer from "../base/AccountFormContainer";
 import FormSubmitButton from "../base/FormSubmitButton";
+
+import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 const DeactivateAccountForm = () => {
   const { logout } = useAuth();
@@ -17,10 +18,15 @@ const DeactivateAccountForm = () => {
 
   const [errors, setErrors] = useState({});
   const [confirming, setConfirming] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleDeactivateAccount = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    setErrors({});
+
     try {
-      setErrors({});
       await axiosRequest.post("/api/account/deactivate/");
       await logout();
       navigate("/");
@@ -30,6 +36,8 @@ const DeactivateAccountForm = () => {
           non_field_errors: ["Account deactivation failed."],
         }
       );
+
+      setLoading(false);
     }
   };
 
@@ -47,13 +55,22 @@ const DeactivateAccountForm = () => {
             Are you sure you want to deactivate your account?
           </Text>
 
-          <FormSubmitButtonDanger onClick={handleDeactivateAccount}>
-            Confirm Deactivation
+          <FormSubmitButtonDanger
+            onClick={handleDeactivateAccount}
+            disabled={loading}
+          >
+            <HStack gap={2} justify="center">
+              {loading && <ButtonSpinner />}
+              <span>
+                {loading ? "Deactivating..." : "Confirm Deactivation"}
+              </span>
+            </HStack>
           </FormSubmitButtonDanger>
 
           <FormSubmitButton
             onClick={() => setConfirming(false)}
             variant="outline"
+            disabled={loading}
           >
             Cancel
           </FormSubmitButton>

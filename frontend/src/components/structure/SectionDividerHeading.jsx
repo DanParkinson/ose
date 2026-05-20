@@ -20,6 +20,7 @@ const SectionDividerHeading = ({ title }) => {
         color="text.light1"
         bg="bg.dark2"
         fontSize="lg"
+        textTransform="capitalize"
       >
         {title}
       </Text>

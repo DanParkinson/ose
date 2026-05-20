@@ -62,3 +62,35 @@ This generates an OpenAPI schema file for the API.
 ```bash
 npm run test
 ```
+
+## Redis Cache Commands
+
+### Open Redis CLI
+
+```bash
+docker exec -it redis redis-cli
+```
+
+### Select Redis Database
+
+```bash
+SELECT 1
+```
+
+### View All Cache Keys
+
+```bash
+KEYS *
+```
+
+### Filter Cache Keys
+
+```bash
+KEYS *list*
+```
+
+Example:
+
+```bash
+KEYS *subject*
+```

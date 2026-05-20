@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import AdminRoute from "./routes/AdminRoute";
 
 import Layout from "./layouts/Layout";
 
@@ -17,6 +18,8 @@ import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
 import ReactivateRequestPage from "./pages/Auth/ReactivateRequestPage";
 import ReactivateConfirmPage from "./pages/Auth/ReactivateConfirmPage";
+import SubjectListPage from "./pages/SubjectList/SubjectListPage";
+import SubjectDashboardPage from "./pages/SubjectDashboard/SubjectDashboardPage";
 
 
 
@@ -38,11 +41,23 @@ function App() {
         />
 
         <Route
+          path="/subjects"
+          element={
+              <SubjectListPage />
+          }
+        />
+
+        <Route
+          path="/subjects/:subjectSlug/:subjectId/"
+          element={<SubjectDashboardPage/>}
+        />
+
+        <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <AdminDashboardPage />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
 

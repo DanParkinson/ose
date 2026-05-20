@@ -6,7 +6,7 @@ const TextSearchFilter = ({
   onChange,
   onSearch,
   placeholder = "Search...",
-  delay = 500,
+  delay = 1000,
 }) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {

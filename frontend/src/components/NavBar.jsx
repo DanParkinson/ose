@@ -62,6 +62,10 @@ function NavBar() {
               </AppLink>
             )}
 
+            <AppLink to="/subjects" variant="navbar">
+              Lesson Bank
+            </AppLink>
+
             <AppLink to="/about" variant="navbar">
               About Us
             </AppLink>
@@ -98,11 +102,15 @@ function NavBar() {
             borderColor="border.dark1"
             display={{ base: "flex", lg: "none" }}
           >
+
             {isAdmin && (
               <AppLink to="/dashboard" variant="navbar">
                 Dashboard
               </AppLink>
             )}
+            <AppLink to="/subjects" variant="navbar">
+              Lesson Bank
+            </AppLink>
             <AppLink to="/about" variant="navbar">
               About Us
             </AppLink>

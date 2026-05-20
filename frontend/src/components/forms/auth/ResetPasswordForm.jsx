@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { HStack, Text } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import { axiosRequest } from "../../../api/axiosDefaults";
 
 import FormContainer from "../base/FormContainer";
@@ -7,7 +9,8 @@ import FormSubmitButton from "../base/FormSubmitButton";
 import FormLink from "../base/FormLink";
 import FormError from "../base/FormError";
 import FormTextInput from "../base/FormTextInput";
-import { Text } from "@chakra-ui/react";
+
+import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 const ResetPasswordForm = () => {
   const { uid, token } = useParams();
@@ -17,14 +20,19 @@ const ResetPasswordForm = () => {
   const [password2, setPassword2] = useState("");
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     setErrors({});
 
     if (password1 !== password2) {
       setErrors({
         new_password2: ["Passwords do not match"],
       });
+      setLoading(false);
       return;
     }
 
@@ -41,7 +49,6 @@ const ResetPasswordForm = () => {
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-
     } catch (error) {
       const data = error.response?.data;
 
@@ -50,6 +57,8 @@ const ResetPasswordForm = () => {
           non_field_errors: ["Invalid or expired reset link"],
         }
       );
+
+      setLoading(false);
     }
   };
 
@@ -76,6 +85,7 @@ const ResetPasswordForm = () => {
               setErrors((prev) => ({ ...prev, new_password1: undefined }));
             }}
           />
+
           <FormError>{errors.new_password1?.[0]}</FormError>
 
           <FormTextInput
@@ -84,15 +94,22 @@ const ResetPasswordForm = () => {
             value={password2}
             onChange={(e) => {
               setPassword2(e.target.value);
-              setErrors((prev) => ({ ...prev, new_password1: undefined }));
+              setErrors((prev) => ({ ...prev, new_password2: undefined }));
             }}
           />
+
           <FormError>{errors.new_password2?.[0]}</FormError>
 
           <FormError>{errors.non_field_errors?.[0]}</FormError>
 
-          <FormSubmitButton onClick={handleSubmit}>
-            Reset Password
+          <FormSubmitButton
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            <HStack gap={2} justify="center">
+              {loading && <ButtonSpinner />}
+              <span>{loading ? "Resetting..." : "Reset Password"}</span>
+            </HStack>
           </FormSubmitButton>
 
           <FormLink

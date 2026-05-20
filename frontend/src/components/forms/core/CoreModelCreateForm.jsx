@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { VStack } from "@chakra-ui/react";
+import { useState } from "react";
+import { HStack, VStack } from "@chakra-ui/react";
 
 import {
   createCoreModelItem,
@@ -8,6 +8,8 @@ import {
 import FormSubmitButton from "../base/FormSubmitButton";
 import FormError from "../base/FormError";
 import FormSuccess from "../base/FormSuccess";
+
+import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 import getInitialFormData from "../../../utils/form_fields/getInitialFormData";
 import getUpdatedRelationValues from "../../../utils/form_fields/relation/getUpdatedRelationValues";
@@ -20,7 +22,10 @@ import useDebouncedValue from "../../../hooks/useDebouncedValue";
 import FormFieldRenderer from "../../renderers/FormFieldRenderer";
 
 const CoreModelCreateForm = ({ model, onCreated }) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(() =>
+    getInitialFormData(model.createFields)
+  );
+
   const [relationSearch, setRelationSearch] = useState({});
   const [fieldErrors, setFieldErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
@@ -29,15 +34,7 @@ const CoreModelCreateForm = ({ model, onCreated }) => {
 
   const fieldOptions = useCoreFieldOptions(model.endpoint);
   const relationOptions = useCoreRelationOptions(model.createFields);
-  const debouncedSearch = useDebouncedValue(relationSearch, 1000);
-
-  useEffect(() => {
-    setFormData(getInitialFormData(model.createFields));
-    setFieldErrors({});
-    setGeneralError("");
-    setSuccess("");
-    setRelationSearch({});
-  }, [model]);
+  const debouncedSearch = useDebouncedValue(relationSearch, 500);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({
@@ -71,6 +68,8 @@ const CoreModelCreateForm = ({ model, onCreated }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
     setFieldErrors({});
     setGeneralError("");
@@ -84,10 +83,7 @@ const CoreModelCreateForm = ({ model, onCreated }) => {
 
       setSuccess(`${model.title} created successfully.`);
 
-      setTimeout(() => {
-        onCreated?.();
-      }, 1000);
-
+      onCreated?.();
     } catch (error) {
       console.error(error.response?.data || error);
 
@@ -95,9 +91,8 @@ const CoreModelCreateForm = ({ model, onCreated }) => {
 
       setFieldErrors(parsedErrors.fieldErrors);
       setGeneralError(parsedErrors.generalError);
-    } finally {
-          setLoading(false);
-        }
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,7 +102,7 @@ const CoreModelCreateForm = ({ model, onCreated }) => {
 
         <FormSuccess>{success}</FormSuccess>
 
-       {model.createFields.map((field) => (
+        {model.createFields.map((field) => (
           <FormFieldRenderer
             key={field.name}
             field={field}
@@ -124,7 +119,10 @@ const CoreModelCreateForm = ({ model, onCreated }) => {
         ))}
 
         <FormSubmitButton disabled={loading}>
-          {loading ? "Creating..." : "Create"}
+          <HStack gap={2} justify="center">
+            {loading && <ButtonSpinner />}
+            <span>{loading ? "Creating..." : "Create"}</span>
+          </HStack>
         </FormSubmitButton>
       </VStack>
     </form>
