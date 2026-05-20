@@ -28,6 +28,7 @@ For more in depth documentation, the following is provided:
 - [Docker Guide](docs/documentation/DOCKER.md)
 - [Backend](docs/documentation/backend/BACKEND.md)
 - [Frontend](docs/documentation/frontend/FRONTEND.md)
+- [Deployment](docs/documentation/deployment/DEPLOYMENT.md)
 
 ## Table of Contents
 

@@ -70,8 +70,15 @@ This document provides an overview of the major backend dependencies currently u
 | Library             | Version | Description                                  | Documentation |
 |---------------------|---------|----------------------------------------------|---|
 | **psycopg**         | 3.3.3   | PostgreSQL database adapter for Python.      | https://www.psycopg.org/psycopg3/docs/ |
+| dj-database-url     | 3.1.2   | Parses database URLs for production deployment environments. | https://pypi.org/project/dj-database-url/ |
 | **django-redis**    | 6.0.0   | Redis integration for caching.               |  https://github.com/jazzband/django-redis |
 | **redis[hiredis]**  | 7.4.0   | Redis client with performance optimisations. | https://redis.readthedocs.io/en/stable/ |
+
+## Production Server
+
+| Library | Version | Description | Documentation |
+|---|---|---|---|
+| **gunicorn** | 23.0.0 | Production WSGI application server for Django deployments. | https://gunicorn.org/ |
 
 ## Development & Debugging Tools
 
@@ -86,6 +93,7 @@ This document provides an overview of the major backend dependencies currently u
 | Library                 | Version | Description                                   | Documentation |
 |-------------------------|---------|-----------------------------------------------|---|
 | **django-cors-headers** | 4.9.0   | Handles Cross-Origin Resource Sharing (CORS). | https://github.com/adamchainz/django-cors-headers |
+| **whitenoise** | 6.12.0 | Serves Django static files efficiently in production environments. | https://whitenoise.readthedocs.io/en/latest/ |
 
 ## Testing Tools
 

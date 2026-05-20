@@ -9,6 +9,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from drf_spectacular.utils import extend_schema
 
 User = get_user_model()
 
@@ -16,6 +17,10 @@ User = get_user_model()
 class AccountDeactivateView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=None,
+        responses={200: {"description": "Account deactivated successfully."}},
+    )
     def post(self, request):
         user = request.user
         user.is_active = False
@@ -36,6 +41,18 @@ class AccountDeactivateView(APIView):
 class ReactivationRequestView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "email": {"type": "string", "format": "email"},
+                },
+                "required": ["email"],
+            }
+        },
+        responses={200: {"description": "Reactivation email sent if account exists."}},
+    )
     def post(self, request):
         email = request.data.get("email")
 
@@ -83,6 +100,22 @@ OSE
 class ReactivationConfirmView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "uid": {"type": "string"},
+                    "token": {"type": "string"},
+                },
+                "required": ["uid", "token"],
+            }
+        },
+        responses={
+            200: {"description": "Account reactivated successfully."},
+            400: {"description": "Invalid or expired reactivation link."},
+        },
+    )
     def post(self, request):
         uid = request.data.get("uid")
         token = request.data.get("token")
