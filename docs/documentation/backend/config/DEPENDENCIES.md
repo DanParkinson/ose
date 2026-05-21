@@ -57,6 +57,7 @@ This document provides an overview of the major backend dependencies currently u
 |---------------------|---------|------------------------------------------------|---|
 | **dj-rest-auth**    | 7.0.1   | Authentication endpoints and JWT integration.  | https://dj-rest-auth.readthedocs.io/ |
 | **django-allauth**  | 65.11.2 | Account management and registration workflows. | https://docs.allauth.org/en/latest/ |
+| **requests** | 2.32.5 | HTTP client library used by authentication and third-party integrations. | https://requests.readthedocs.io/en/latest/ |
 
 ## Filtering & API Utilities
 
