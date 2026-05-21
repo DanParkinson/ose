@@ -1,5 +1,5 @@
 import { Box, Heading, Text, Separator } from "@chakra-ui/react";
-import useAuth from "../../hooks/UseAuth";
+import useAuth from "../../hooks/useAuth";
 
 const AccountProfileSection = () => {
   const { user } = useAuth();
