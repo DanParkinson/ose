@@ -2,7 +2,7 @@ import { useState } from "react";
 import { HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-import useAuth from "../../../hooks/UseAuth";
+import useAuth from "../../../hooks/useAuth";
 
 import FormContainer from "../base/FormContainer";
 import FormSubmitButton from "../base/FormSubmitButton";
