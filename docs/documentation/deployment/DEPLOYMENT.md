@@ -368,3 +368,59 @@ uv run gunicorn config.wsgi:application
 Render automatically provides the production port during deployment.
 
 Gunicorn replaces Django's development server in production environments.
+
+## 4. Render
+
+### PostgreSQL
+
+In render choose to craete a new PostgreSQL database with the following:
+
+```markdown
+Name: ose-db
+Database: ose
+Region: Frankfurt (closest)
+Version: 17
+plan: free
+```
+
+### Redis - Key Value
+
+Create a new key-value with:
+
+```markdown
+Name: ose-redis
+Project: <Project-name>
+Region: Frankfurt (closest)
+MaxMemory Policy: allkeys-lru (best for caching)
+Instance Type: Free
+```
+
+### Backend Web Service
+
+Link the Github repo to the backend service:
+
+```markdown
+Name: ose-drf-api
+Project: <Project-name>
+Language: Python 3
+Branch: Main
+Region: Frankfurt
+Root Directory: backend
+Build Command: uv sync && uv run python manage.py migrate && uv run python manage.py collectstatic --noinput
+Start Command: uv run gunicorn config.wsgi:application
+Instance Type: Free
+```
+
+#### Environment Variables
+
+Setting the following variables allows:
+
+| `NAME_OF_VARIABLE` | `Value`  | Reason |
+| ------------------ | -------- | ------ |
+| `DEBUG`            | `False`  | Required for Production Environment |
+| `SECRET_KEY`       | `<value>`| Django needs it to start |
+| `DATABSE_URL`      | `<postgrSQL internal Databse Key>` | for connecting to the database|
+| `REDIS_URL`        | `<Internal Key Value URL>` | connecting to redis cache |
+|`ALLOWED_HOSTS`|``||
+|`CORS_ALLOWED_ORIGINS`|||
+|`CSRF_TRUSTED_ORIGINS`|||
