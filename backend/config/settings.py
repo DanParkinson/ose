@@ -82,7 +82,7 @@ REST_AUTH = {
     "JWT_AUTH_REFRESH_COOKIE": "refresh",
     "JWT_AUTH_HTTPONLY": True,
     "JWT_AUTH_SECURE": JWT_AUTH_SECURE,
-    "JWT_AUTH_SAMESITE": "Lax",
+    "JWT_AUTH_SAMESITE": None,
     "JWT_AUTH_RETURN_EXPIRATION": True,
     "TOKEN_MODEL": None,
     "REGISTER_SERIALIZER": "accounts.api.serializers.CustomRegisterSerializer",
