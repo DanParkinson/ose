@@ -1,16 +1,18 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.withCredentials = true;
 
 export const axiosRequest = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL:  API_BASE_URL,
   withCredentials: true,
 });
 
 export const axiosResponse = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL:  API_BASE_URL,
   withCredentials: true,
 });
 
