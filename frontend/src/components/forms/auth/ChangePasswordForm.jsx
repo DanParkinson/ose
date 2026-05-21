@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { HStack } from "@chakra-ui/react";
 
-import useAuth from "../../../hooks/UseAuth";
+import useAuth from "../../../hooks/useAuth";
 
 import FormSubmitButton from "../base/FormSubmitButton";
 import FormError from "../base/FormError";
