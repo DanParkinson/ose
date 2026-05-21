@@ -373,7 +373,7 @@ Gunicorn replaces Django's development server in production environments.
 
 ### PostgreSQL
 
-In render choose to craete a new PostgreSQL database with the following:
+In render choose to craete a new PostgreSQL database with the following: 
 
 ```markdown
 Name: ose-db
@@ -413,14 +413,33 @@ Instance Type: Free
 
 #### Environment Variables
 
-Setting the following variables allows:
+Setting the following variables allows the application to run securely in a production environment.
 
-| `NAME_OF_VARIABLE` | `Value`  | Reason |
-| ------------------ | -------- | ------ |
-| `DEBUG`            | `False`  | Required for Production Environment |
-| `SECRET_KEY`       | `<value>`| Django needs it to start |
-| `DATABSE_URL`      | `<postgrSQL internal Databse Key>` | for connecting to the database|
-| `REDIS_URL`        | `<Internal Key Value URL>` | connecting to redis cache |
-|`ALLOWED_HOSTS`|``||
-|`CORS_ALLOWED_ORIGINS`|||
-|`CSRF_TRUSTED_ORIGINS`|||
+| Variable | Example Value | Reason |
+|----------|----------|----------|
+| `DEBUG` | `False` | Enables production mode and activates production security settings. |
+| `SECRET_KEY` | `<generated secret>` | Used by Django for cryptographic signing, sessions, authentication, CSRF protection, and password reset tokens. Required for Django to start. |
+| `DATABASE_URL` | `<Render Internal Database URL>` | Connection string used by Django to connect to the PostgreSQL database. |
+| `REDIS_URL` | `<Render Internal Key Value URL>` | Connection string used by Django to connect to the Redis cache service. |
+| `ALLOWED_HOSTS` | `ose-drf-api.onrender.com` | List of hostnames that Django is allowed to serve. Protects against Host Header attacks. |
+| `CORS_ALLOWED_ORIGINS` | `https://placeholder.com` | List of frontend domains permitted to make browser requests to the API. Replace with the deployed frontend URL after frontend deployment. |
+| `CSRF_TRUSTED_ORIGINS` | `https://placeholder.com` | List of trusted frontend origins allowed to make authenticated requests using cookies. Replace with the deployed frontend URL after frontend deployment. |
+
+### Frontend Static site
+
+Responsible for running the react frontend. 
+
+```markdown
+Name: ose-frontend
+Project <your-project>
+Branch: Main
+Root Directory: frontend
+Build Command: npm install && npm run build
+Publish Directory: dist
+```
+
+#### Environment variables
+
+| Variable | Example Value | Reason |
+|----------|----------|----------|
+| `API_BASE_URL` | `https://ose-drf-api.onrender.com` | ALlows frotnend to communicate to backend api |
