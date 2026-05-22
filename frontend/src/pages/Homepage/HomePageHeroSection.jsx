@@ -67,9 +67,9 @@ const HomePageHeroSection = () => {
           Save time. Teach better.
         </Text>
 
-        <Button as={RouterLink} to="/subjects" variant="cta" mt={3}>
+        {/* <Button as={RouterLink} to="/subjects" variant="cta" mt={3}>
           The lesson bank
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

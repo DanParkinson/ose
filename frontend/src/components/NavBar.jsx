@@ -32,10 +32,6 @@ function NavBar() {
 
   const renderPublicLinks = (handleClick) => (
     <>
-      <AppLink to="/subjects" variant="navbar" onClick={handleClick}>
-        Lesson Bank
-      </AppLink>
-
       <AppLink to="/about" variant="navbar" onClick={handleClick}>
         About Us
       </AppLink>
