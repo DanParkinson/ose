@@ -187,7 +187,7 @@ REST_AUTH = {
     "JWT_AUTH_REFRESH_COOKIE": "refresh",
     "JWT_AUTH_HTTPONLY": True,
     "JWT_AUTH_SECURE": JWT_AUTH_SECURE,
-    "JWT_AUTH_SAMESITE": "Lax",
+    "JWT_AUTH_SAMESITE": "None",
     "JWT_AUTH_RETURN_EXPIRATION": True,
     "TOKEN_MODEL": None,
     "REGISTER_SERIALIZER":
@@ -373,7 +373,7 @@ Gunicorn replaces Django's development server in production environments.
 
 ### PostgreSQL
 
-In render choose to craete a new PostgreSQL database with the following: 
+In render choose to craete a new PostgreSQL database with the following:
 
 ```markdown
 Name: ose-db
@@ -427,7 +427,7 @@ Setting the following variables allows the application to run securely in a prod
 
 ### Frontend Static site
 
-Responsible for running the react frontend. 
+Responsible for running the react frontend.
 
 ```markdown
 Name: ose-frontend
@@ -438,8 +438,225 @@ Build Command: npm install && npm run build
 Publish Directory: dist
 ```
 
-#### Environment variables
+#### Frontend Environment Variables
+
+Vite only exposes variables prefixed with:
+
+```text
+VITE_
+```
 
 | Variable | Example Value | Reason |
 |----------|----------|----------|
-| `API_BASE_URL` | `https://ose-drf-api.onrender.com` | ALlows frotnend to communicate to backend api |
+| `VITE_API_BASE_URL` | `https://ose-drf-api.onrender.com` | ALlows frotnend to communicate to backend api |
+
+## 5. Cross-Domain Authentication
+
+Frontend:
+
+```text
+https://open-source-education.co.uk
+```
+
+Backend:
+
+```text
+https://api.open-source-education.co.uk
+```
+
+Because authentication uses cookies, special configuration is required.
+
+### Axios Credentials
+
+Cookies must be sent with requests.
+
+```javascript
+axios.defaults.withCredentials = true;
+
+export const axiosRequest = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+export const axiosResponse = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+```
+### CORS
+
+Environment Variable:
+
+```env
+CORS_ALLOWED_ORIGINS=https://open-source-education.co.uk,https://www.open-source-education.co.uk
+```
+
+Allows browser requests from frontend.
+
+### CSRF Trusted Origins
+
+Environment Variable:
+
+```env
+CSRF_TRUSTED_ORIGINS=https://open-source-education.co.uk,https://www.open-source-education.co.uk
+```
+
+Allows authenticated cookie requests.
+
+### SameSite Cookie Configuration
+
+Production and development require different cookie settings:
+
+```python
+JWT_AUTH_SAMESITE = "Lax" if DEBUG else "None"
+```
+
+Used in:
+
+```python
+REST_AUTH = {
+    "JWT_AUTH_SAMESITE": JWT_AUTH_SAMESITE,
+}
+```
+
+#### Development (`"Lax"`)
+
+Local development typically runs over HTTP:
+
+```text
+Frontend: http://localhost:5173
+Backend:  http://localhost:8000
+```
+
+Browsers block cookies configured with `SameSite=None` unless they also have the `Secure` attribute and are sent over HTTPS. Because localhost development uses HTTP, `Lax` must be used to allow authentication cookies to function correctly.
+
+#### Production (`"None"`)
+
+Production uses separate frontend and backend domains:
+
+```text
+Frontend: https://open-source-education.co.uk
+Backend:  https://api.open-source-education.co.uk
+```
+
+This is treated as a cross-site request by the browser. To allow authentication cookies to be sent between the frontend and backend domains, `SameSite=None` is required.
+
+Production must also use:
+
+```python
+JWT_AUTH_SECURE = True
+```
+
+because browsers require `SameSite=None` cookies to also be marked as `Secure`.
+
+Without this configuration, login succeeds but authentication cookies are blocked by the browser, resulting in `401 Unauthorized` responses on authenticated requests.
+
+## 6. Custom Domains
+
+### Production Domain Structure
+
+```text
+Frontend:
+https://open-source-education.co.uk
+
+Backend:
+https://api.open-source-education.co.uk
+```
+
+### Backend Domain
+
+Render:
+
+```text
+api.open-source-education.co.uk
+```
+
+GoDaddy DNS:
+
+```text
+Type: CNAME
+Host: api
+Value: ose-drf-api.onrender.com
+```
+
+### Frontend Domain
+
+Render:
+
+```text
+open-source-education.co.uk
+www.open-source-education.co.uk
+```
+
+GoDaddy DNS:
+
+```text
+Type: A
+Host: @
+Value: 216.24.57.1
+```
+
+```text
+Type: CNAME
+Host: www
+Value: ose-frontend.onrender.com
+```
+
+### Common GoDaddy Issue
+
+GoDaddy creates:
+
+```text
+A @ Parked
+```
+
+This conflicts with Render verification.
+
+Delete:
+
+```text
+A @ Parked
+```
+
+Keep:
+
+```text
+A @ 216.24.57.1
+```
+
+### Backend Environment Variables After Domain Verification
+
+```env
+ALLOWED_HOSTS=ose-drf-api.onrender.com,api.open-source-education.co.uk
+
+CORS_ALLOWED_ORIGINS=https://open-source-education.co.uk,https://www.open-source-education.co.uk
+
+CSRF_TRUSTED_ORIGINS=https://open-source-education.co.uk,https://www.open-source-education.co.uk
+```
+
+### Frontend Environment Variables After Domain Verification
+
+```env
+VITE_API_BASE_URL=https://api.open-source-education.co.uk
+```
+
+This routes all frontend API requests through the production API domain.
+
+## Final Production URLs
+
+```text
+Frontend:
+https://open-source-education.co.uk
+
+Frontend (www):
+https://www.open-source-education.co.uk
+
+Backend API:
+https://api.open-source-education.co.uk
+
+Admin:
+https://api.open-source-education.co.uk/admin/
+
+Swagger:
+https://api.open-source-education.co.uk/api/schema/swagger-ui/
+```
