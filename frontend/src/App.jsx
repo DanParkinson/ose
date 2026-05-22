@@ -40,17 +40,17 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/subjects"
           element={
               <SubjectListPage />
           }
-        />
+        /> */}
 
-        <Route
+        {/* <Route
           path="/subjects/:subjectSlug/:subjectId/"
           element={<SubjectDashboardPage/>}
-        />
+        /> */}
 
         <Route
           path="/dashboard"
