@@ -1,6 +1,6 @@
 import { Box, Heading, Text, Stack } from "@chakra-ui/react";
 import ThreeColumnLayout from "../../layouts/ThreeColumnLayout";
-import Advertisement from "../../components/advertisements/Advertisement";
+// import Advertisement from "../../components/advertisements/Advertisement";
 import SectionDividerHeading from "../../components/structure/SectionDividerHeading";
 
 const AboutSection = ({ title, children }) => {
@@ -17,7 +17,7 @@ const AboutSection = ({ title, children }) => {
 const AboutPageHeroSection = () => {
   return (
     <Box as="main" bg="bg.canvas">
-      <ThreeColumnLayout rightSidebar={<Advertisement />}>
+      <ThreeColumnLayout >
         <Stack align="center" >
           <Box w="58px" h="1px" bg="text.dark" />
 
@@ -54,7 +54,7 @@ const AboutPageHeroSection = () => {
         </Stack>
       </ThreeColumnLayout>
 
-      <ThreeColumnLayout rightSidebar={<Advertisement />}>
+      <ThreeColumnLayout >
         <AboutSection title="Open-Source Principles">
           <Text>
             Open source is an idea that comes from programming. Developers often need to solve the
@@ -80,7 +80,7 @@ const AboutPageHeroSection = () => {
         </AboutSection>
       </ThreeColumnLayout>
 
-      <ThreeColumnLayout rightSidebar={<Advertisement />}>
+      <ThreeColumnLayout >
         <AboutSection title="Our Goals">
           <Text>
             By working together, we can build something all teachers can be proud of and use.
@@ -109,7 +109,7 @@ const AboutPageHeroSection = () => {
         </AboutSection>
       </ThreeColumnLayout>
 
-      <ThreeColumnLayout rightSidebar={<Advertisement />}>
+      <ThreeColumnLayout >
         <AboutSection title="The Plan">
           <Text>
             Our plan is to build free-to-use lessons, booklets, units and curriculums that are
