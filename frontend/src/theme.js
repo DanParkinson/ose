@@ -84,6 +84,7 @@ const buttonRecipe = defineRecipe({
           outlineOffset: "2px",
         },
       },
+      
       dashboardTitleRow: {
         w: "80%",
         justifyContent: "flex-start",
@@ -106,6 +107,7 @@ const buttonRecipe = defineRecipe({
           borderRadius: "sm",
         },
       },
+
     },
   },
 });

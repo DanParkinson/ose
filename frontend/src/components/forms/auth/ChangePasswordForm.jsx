@@ -11,6 +11,8 @@ import FormSuccess from "../base/FormSuccess";
 
 import ButtonSpinner from "../../feedback/ButtonSpinner";
 
+import SectionDividerHeading from "../../structure/SectionDividerHeading";
+
 const ChangePasswordForm = () => {
   const { changePassword } = useAuth();
 
@@ -49,6 +51,7 @@ const ChangePasswordForm = () => {
 
   return (
     <AccountFormContainer>
+      <SectionDividerHeading title="Change Password" />
       <FormTextInput
         type="password"
         placeholder="Current password"
