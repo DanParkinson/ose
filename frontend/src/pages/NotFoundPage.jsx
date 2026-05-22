@@ -55,7 +55,6 @@ const NotFoundPage = () => {
             >
               Go Home
             </Button>
-
           </HStack>
         </VStack>
       </Box>
