@@ -66,16 +66,13 @@ So that I can securely use the platform.
 |            |                      |                       | Account Reactivation  | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)
 |            |                      | API Serializers       | Registration          | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)
 |            |                      |                       | User Details          | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)
-|**US 2.2**  | Authentication System| Backend Auth          |                       |
-|            |                      |                       | DJ-Rest-Auth          |
-|            |                      |                       | JWT Cookie Auth       |
-|            |                      | Permissions           |                       |
-|            |                      |                       | Staff Permissions     |
+|**US 2.2**  | Authentication System| Backend Auth          | DJ-Rest-Auth          | [DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/DJ-REST-AUTH.md)
+|            |                      |                       | JWT Cookie Auth       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/JWT-COOKIE-AUTH.md)
+|            |                      | Permissions           | Staff Permissions     |
 |            |                      |                       | User Permissions      |
-| **US 2.3** | Frontend Auth System | Frontend Auth         |                       |
-|            |                      |                       | Auth Context          |
-|            |                      |                       | Protected Routes      |
-|            |                      |                       | Auth Forms            |
+| **US 2.3** | Frontend Auth System | Frontend Auth         | Auth Context          | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)
+|            |                      |                       | Protected Routes      | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)
+|            |                      |                       | Auth Forms            | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)
 
 ### Related Documentation
 
@@ -93,8 +90,7 @@ So that I dont have to sue anyone.
 
 | User Story | Title                | Section               | Sub Section           | Story Specific Documentation |
 | ---------- | -------------------- | --------------------- | --------------------- | ---------------------------- |
-| **US 3.1** | Security Config      | Application Security  |                       |
-|            |                      |                       | CORS                  |
+| **US 3.1** | Security Config      | Application Security  | CORS                  |
 |            |                      |                       | CSRF Trusted Orgins   |
 |            |                      |                       | HTTPS Redirects       |
 |            |                      |                       | Secure Cookies        |
