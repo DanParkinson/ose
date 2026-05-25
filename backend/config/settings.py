@@ -89,6 +89,8 @@ REST_AUTH = {
     "REGISTER_SERIALIZER": "accounts.api.serializers.CustomRegisterSerializer",
     "USER_DETAILS_SERIALIZER": "accounts.api.serializers.CustomUserDetailsSerializer",
     "PASSWORD_RESET_CONFIRM_URL": "reset-password/{uid}/{token}",
+    "OLD_PASSWORD_FIELD_ENABLED": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": False,
 }
 
 SIMPLE_JWT = {

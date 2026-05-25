@@ -6,8 +6,13 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-import ChangePasswordForm from "../../components/forms/auth/ChangePasswordForm";
-import TabButton from "../../components/buttons/TabButton"; 
+// Forms
+import ChangePasswordForm from "../../components/forms/profile/ChangePasswordForm";
+import DeactivateAccountForm from "../../components/forms/profile/DeactivateAccountForm";
+// Buttons
+import TabButton from "../../components/buttons/TabButton";
+
+// Sections
 import SectionDividerHeading from "../../components/structure/SectionDividerHeading";
 
 const AccountSettingsSection = () => {
@@ -52,16 +57,7 @@ const AccountSettingsSection = () => {
             >
               Change Password
             </TabButton>
-
-            <TabButton
-              active={activeForm === "email"}
-              onClick={() =>
-                setActiveForm("email")
-              }
-            >
-              Change Email
-            </TabButton>
-
+            
             <TabButton
               active={activeForm === "deactivate"}
               onClick={() =>
@@ -74,15 +70,17 @@ const AccountSettingsSection = () => {
 
           <Box>
             {activeForm === "password" && (
-                <SectionDividerHeading title="Change Password" />
-            )}
-
-            {activeForm === "email" && (
-                <SectionDividerHeading title="Change Email" />
+                <>
+                    <SectionDividerHeading title="Change Password" />
+                    <ChangePasswordForm />
+                </>
             )}
 
             {activeForm === "deactivate" && (
+              <>
                 <SectionDividerHeading title="Deactivate Account" />
+                <DeactivateAccountForm />
+              </>
             )}
           </Box>
         </Stack>

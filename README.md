@@ -23,80 +23,248 @@ This API intergrates with a frontend built in **React**. It Enables users to **a
 
 For more in depth documentation, the following is provided:
 
-- [Installation Guide](docs/documentation/INSTALLATION.md)
-- [Useful commands](docs/documentation/COMMANDS.md)
-- [Docker Guide](docs/documentation/DOCKER.md)
-- [Backend](docs/documentation/backend/BACKEND.md)
-- [Frontend](docs/documentation/frontend/FRONTEND.md)
-- [Deployment](docs/documentation/deployment/DEPLOYMENT.md)
+- [Installation Guide](./documentation/1.%20User-Stories/1.%20Development-environment-setup/INSTALLATION.md)
 
-## Table of Contents
+# User Stories
 
-- [Introduction](#introduction)
-- [Supporting Docs](#supporting-docs)
-- [User Stories](#user-stories)
-    - [Public User Authentication & Authorisation](#public-user-authentication--authorisation-)
-    - [User Account Management](#user-account-management)
-    - [Subjects](#subjects)
-    - [Topics](#topics)
-    - [Lesson Names](#lesson-names)
+## 1. Development Environment Setup
 
-## User Stories
+```
+As a **Developer**, 
+I want an easy to install environement that works on all machines,
+So that I can quickly begin work.
+```
 
-## **Public User Authentication & Authorisation** ✅❌
+| User Story | Title                | Complete           | Story Specific Documentation |
+| ---------- | -------------------- | ------------------ | ---------------------------- |
+|**US 1.1**  | Django Project Setup | :white_check_mark: |                              |
+|**US 1.2**  | PostgreSQL Setup     | :white_check_mark: |                              |
+|**US 1.3**  | Redis Setup          | :white_check_mark: |                              |
+|**US 1.4**  | React Setup          | :white_check_mark: |                              |
 
-| User Story                  | Description                                                                     | Backend | Frontend |
-| --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **User Registration**       | Secure user registration, login, and token-based authentication.                | ✅     | ✅       |
-| **User Login**              | Secure login so that a user can aquire their token                              | ✅     | ✅       |
-| **User Logout**             | Log out to end the users session                                                | ✅     | ✅       |
-| **User Profile**            | A user profile page to allow a user to access / update personal info            | ❌     | ❌       |
-| **User auto create**        | Account creation auto create an account for the user                            | ✅     | ✅       |
-| **User Account Deactivation** | Users can deactivate their account                                            | ✅     | ✅       |
-| **Reset Password**          | Users can recevie an email to reset their password                              | ✅     | ❌       |
-| **Change Password**         | Users can update their password if needed                                       | ✅     | ❌       |
+### Related Documentation
 
-## **User Account Management**
+- [Installation Guide](./documentation/1.%20User-Stories/1.%20Development-environment-setup/INSTALLATION.md)
+- [Backend Dependencies](./documentation/1.%20User-Stories/1.%20Development-environment-setup/BACKEND-DEPENDENCIES.md)
+- [Frontend Dependencies](./documentation/1.%20User-Stories/1.%20Development-environment-setup/FRONTEND-DEPENDENCIES.md)
+- [Docker Setup](./documentation/1.%20User-Stories/1.%20Development-environment-setup/DEV_ENVIRONMNET.md)
+- [Useful Commands](./documentation/1.%20User-Stories/1.%20Development-environment-setup/COMMANDS.md)
 
-| User Story                  | Description                                                                     | Backend | Frontend |
-| --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **User View Profile**       | Authenticated Users can access their account page                               | ❌     | ❌       |
-| **User Update Profile**     | Authenticated Users can update the account information                          | ❌     | ❌       |
-| **User upload CV**          | Authenticated User can upload their CV                                          | ❌     | ❌       |
+## 2. Authentication & User Management
+
+```
+As a User,
+I want to create and access my account,
+So that I can securely use the platform.
+```
+
+| User Story | Title                | Section               | Sub Section           | Story Specific Documentation |
+| ---------- | -------------------- | --------------------- | --------------------- | ---------------------------- |
+|**US 2.1**  | Accounts App         | User Model            | Email Authentication  | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md)
+|            |                      | User Creation         | Custom User Manager   | [Custom User Manager](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/2.%20User-Creation/CUSTOM-USER-MANAGER.md)
+|            |                      | Account Lifecycle     | Account Deactivation  | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)
+|            |                      |                       | Account Reactivation  | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)
+|            |                      | API Serializers       | Registration          | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)
+|            |                      |                       | User Details          | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)
+|**US 2.2**  | Authentication System| Backend Auth          |                       |
+|            |                      |                       | DJ-Rest-Auth          |
+|            |                      |                       | JWT Cookie Auth       |
+|            |                      | Permissions           |                       |
+|            |                      |                       | Staff Permissions     |
+|            |                      |                       | User Permissions      |
+| **US 2.3** | Frontend Auth System | Frontend Auth         |                       |
+|            |                      |                       | Auth Context          |
+|            |                      |                       | Protected Routes      |
+|            |                      |                       | Auth Forms            |
+
+### Related Documentation
+
+## 3. Security & Application Protection
+
+```
+As a **Developer**, 
+I want to set up a secure platform, 
+So that i dont get sued. 
+
+As a **User**,
+I want to use a secure platform, 
+So that I dont have to sue anyone.
+```
+
+| User Story | Title                | Section               | Sub Section           | Story Specific Documentation |
+| ---------- | -------------------- | --------------------- | --------------------- | ---------------------------- |
+| **US 3.1** | Security Config      | Application Security  |                       |
+|            |                      |                       | CORS                  |
+|            |                      |                       | CSRF Trusted Orgins   |
+|            |                      |                       | HTTPS Redirects       |
+|            |                      |                       | Secure Cookies        |
+|            |                      |                       | HSTS                  |
+
+### Related Documentation
 
 
-## **Admin Dashboard**
+## 4. System Efficiency
 
-### **General**
+```
+As a **Stake Holder**, 
+I want my application to be efficient, 
+So that i can improve performance and reduce cost
 
-| User Story                  | Description                                                                     | Backend | Frontend |
-| --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **Access**                  | **Only Admin User** can access the dashboard                                    | ➖     | ✅       |
-| **Filtering**               | Users can filter by specified filter                                            | ✅     | ✅       |
-| **Searching**               | Users can text search for specified fields                                      | ✅     | ✅       |
-| **Pagination**              | Users can access next and previous buttons with resource counts shown           | ✅     | ✅       |
+As a **User**, 
+I want to have quick response for the website,
+So that I dont have to wait.
+```
 
-### **Subject**
-| User Story                  | Description                                                                     | Backend | Frontend |
-| --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **Subject List**            | **Admin User** can access list of subjects                                      | ✅     | ✅       |
-| **Subject Detail**          | **Admin User** can access Detail of Subject                                     | ✅     | ✅       |
-| **Subject Create**          | **Admin User** can create a subject                                             | ✅     | ✅       |
-| **Subject Update**          | **Admin User** can update a subject                                             | ✅     | ✅       |
-| **Subject Delete**          | **Admin User** can delete a subject                                             | ✅     | ✅       |
-| **Subject Protect**         | Proteced objects cannot be deleted or updated                                   | ✅     | ✅       |
+| User Story | Title                | Section               | Sub Section           | Story Specific Documentation |
+| ---------- | -------------------- | --------------------- | --------------------- | ---------------------------- |
+| **US 4.1** | Caching              | Redis                 |                       |
+|            |                      |                       | Django Configuration  |
+|            |                      |                       | Environment Variables |
+
+## 5. API Communications
+
+```
+As a **Developer**,
+I want a dedicated, reusable system for communication between frontend & backend
+So that development is quicker.
+```
+
+| User Story | Title                    | Section               | Sub Section           | Story Specific Documentation |
+| ---------- | ------------------------ | --------------------- | --------------------- | ---------------------------- |
+| **US 5.1** | Django REST Framework    | Endpoints & URLS      |                       |
+|            |                          |                       | API Endpoints         |
+|            |                          |                       | URL Conventions       |
+|            |                          | Views                 |                       |
+|            |                          |                       | List/Create Views     |
+|            |                          |                       | Filtering & Search    |
+|            |                          |                       | Pagination            |
+|            |                          |                       | Permssions            |
+|            |                          | Serializers           |                       |
+|            |                          |                       | Serializer Pattern    |
+| **US 5.2** | Axios Configuration      | Axios                 |                       |
+|            |                          |                       | Base Configuration    |
+|            |                          |                       | API Base URL          |
+|            |                          |                       | Axios Request         |
+|            |                          |                       | Axios Response        |
+|            |                          |                       | Credentials           |
+| **US 5.3** | Request Handling         | Request Lifecycle     |                       |
+|            |                          |                       | Interceptors          |
+|            |                          |                       | Error Handling        |
+|            |                          |                       | Token Refresh         |
+| **US 5.4** | API Data Management      | Data Fetching         |                       |
+|            |                          |                       | Pagination            |
+|            |                          |                       | Filtering             |
+|            |                          |                       | Searching             |
+
+## 6. Deployment
+```
+As a **Developer**,
+I want documentation of the deployment process,
+So that replication is possible of required.
+```
+
+| User Story | Title                    | Section               | Sub Section           | Story Specific Documentation |
+| ---------- | ------------------------ | --------------------- | --------------------- | ---------------------------- |
+| **US 6.1** | Deployment               | Render                |                       |
+|            |                          |                       | Documentation         |
+
+## 7. Features
+
+```
+As a **User**,
+I want a dedicated list of features, 
+So that I know what i can do
+```
+| User Story | Title                    | Section               | Sub Section           | Implemented        |
+| ---------- | ------------------------ | --------------------- | --------------------- | ------------------ |
+| **US 7.1** | Authentication           | Auth                  |                       |                    |
+|            |                          |                       | Register              | :white_check_mark: |
+|            |                          |                       | Login                 | :white_check_mark: |
+|            |                          |                       | Logout                | :white_check_mark: |
+|            |                          |                       | Reset Password        | :white_check_mark: |
+|            |                          |                       | Reactivate Request    | :white_check_mark: |
+|            |                          |                       | Reactivate Confirm    | :white_check_mark: |
+| **US 7.2** | Account Management       | Structure             |                       |                    |
+|            |                          |                       | Account Sidebar       | :white_check_mark: |
+|            |                          | Profile               |                       |
+|            |                          |                       | View Email            | :white_check_mark: |
+|            |                          | Settings              |                       |
+|            |                          |                       | Change Password       | :white_check_mark: |
+|            |                          |                       | Change email          | :x:                |
+|            |                          |                       | Deactivate Account    | :white_check_mark: |
+|            |                          |                       | Logout                | :white_check_mark: |
 
 
-## **Lesson related Crud**
+## 8. Architecture
+```
+As a **Developer**,
+I want a dedicated list of architecture in place,
+So that I know what i can do
+```
+| User Story | Title         | Section           | Sub Section             | Story Specific Documentation |
+| ---------- | ------------- | ----------------- | ----------------------- | ---------------------------- |
+| **US 8.1** | Dynamic Forms | Configuration     |                         | |
+|            |               |                   | Model Field Definitions | |
+|            |               |                   | Create Fields           | |
+|            |               |                   | Update Fields           | |
+|            |               | Form Entry Points |                         | |
+|            |               |                   | Create Form             | |
+|            |               |                   | Update/Delete Form      | |
+|            |               | Data Preparation  |                         | |
+|            |               |                   | Initial Form Data       | |
+|            |               |                   | Backend OPTIONS Metadata| |
+|            |               |                   | Relation Options        | |
+|            |               | Rendering Flow    |                         | |
+|            |               |                   | FormFieldRenderer       | |
+|            |               |                   | Field Wrapper           | |
+|            |               |                   | Field Label             | |
+|            |               |                   | Field Error             | |
+|            |               | Field Types       |                         | |
+|            |               |                   | Text Field              | |
+|            |               |                   | Choice Field            | |
+|            |               |                   | Boolean Field           | |
+|            |               |                   | Relation Field          | |
+|            |               | User Interaction  |                         | |
+|            |               |                   | Field Changes           | |
+|            |               |                   | Relation Search         | |
+|            |               |                   | Relation Selection      | |
+|            |               | Submission Flow   |                         | |
+|            |               |                   | Create Submission       | |
+|            |               |                   | Update Submission       | |
+|            |               |                   | Delete Submission       | |
+|            |               | Response Handling |                         | |
+|            |               |                   | Field Errors            | |
+|            |               |                   | General Errors          | |
+|            |               |                   | Success Messages        | |
+|            |               | Supporting Logic  |                         | |
+|            |               |                   | Hooks                   | |
+|            |               |                   | Utilities               | |
 
-#### Subjects
-
-| User Story                  | Description                                                                     | Backend | Frontend |
-| --------------------------- | ------------------------------------------------------------------------------- | ------- | -------- |
-| **Subject List**            | **All Users** can access list of subjects                                       | ✅     | ✅       |
-| **Subject Detail**          | **No User** can access Detail of Subject                                        | ❌     | ➖       |
-| **Subject Create**          | **No user** can create a subject                                                | ❌     | ❌       |
-| **Subject Update**          | **No user** can update a subject                                                | ✅     | ❌       |
-| **Subject Delete**          | **No user** can delete a subject                                                | ✅     | ❌       |
-| **Subject Publish**         | **No user** can change the publish status of a subject                          | ✅     | ❌       |
-| **Subject Protect**         | **No user** can set a subject to not protected for delete                       | ✅     | ❌       |
+| User Story | Title                  | Section           | Sub Section          | Story Specific Documentation |
+| ---------- | ---------------------- | ----------------- | -------------------- | ---------------------------- |
+| **US 8.2** | Admin Dashboard System | Configuration     |                      |
+|            |                        |                   | co reModels          |
+|            |                        |                   | Model Definitions    |
+|            |                        |                   | Table Configuration  |
+|            |                        |                   | Filter Configuration |
+|            |                        | Orchestration     | |
+|            |                        |                   | Dashboard Workflow   |
+|            |                        |                   | Model Selection      | 
+|            |                        |                   | Create Flow          |
+|            |                        | Data Loading      | |
+|            |                        |                   | useCoreModelData     |
+|            |                        |                   | fetchCoreModelList   |
+|            |                        | Display System    | |
+|            |                        |                   | Dashboard Layout     |
+|            |                        |                   | Dashboard Tables     |
+|            |                        |                   | ModelFieldRenderer   |
+|            |                        | Search System     | |
+|            |                        |                   | TextSearchFilter     |
+|            |                        |                   | searchInput          |
+|            |                        |                   |  searchQuery         |
+|            |                        |                   | Debounced Search     |
+|            |                        | Filtering System  | |
+|            |                        |                   | DashboardFilterPanel |
+|            |                        |                   | FilterOptions        |
+|            |                        | Pagination System | |
+|            |                        |                   | Pagination Component |

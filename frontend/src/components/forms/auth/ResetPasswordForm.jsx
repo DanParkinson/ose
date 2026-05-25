@@ -2,25 +2,41 @@ import { useState } from "react";
 import { HStack, Text } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 
+// API
 import { axiosRequest } from "../../../api/axiosDefaults";
 
-import FormContainer from "../base/FormContainer";
-import FormSubmitButton from "../base/FormSubmitButton";
-import FormLink from "../base/FormLink";
-import FormError from "../base/FormError";
-import FormTextInput from "../base/FormTextInput";
+// Form Fields
+import FormContainer from "../base/containers/FormContainer";
+import FormFieldText from "../base/form_field/FormFieldText";
+import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormLink from "../base/navigation/FormLink";
 
+// Feedback
 import ButtonSpinner from "../../feedback/ButtonSpinner";
+import FormError from "../base/feedback/FormError";
 
 const ResetPasswordForm = () => {
   const { uid, token } = useParams();
   const navigate = useNavigate();
 
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
+  const [newPassword1, setNewPassword1] = useState("");
+  const [newPassword2, setNewPassword2] = useState("");
+
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const handleFieldChange = (fieldName, value) => {
+    if (fieldName === "new_password1") {
+      setNewPassword1(value);
+      setErrors((prev) => ({ ...prev, new_password1: undefined }));
+    }
+
+    if (fieldName === "new_password2") {
+      setNewPassword2(value);
+      setErrors((prev) => ({ ...prev, new_password2: undefined }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (loading) return;
@@ -28,9 +44,9 @@ const ResetPasswordForm = () => {
     setLoading(true);
     setErrors({});
 
-    if (password1 !== password2) {
+    if (newPassword1 !== newPassword2) {
       setErrors({
-        new_password2: ["Passwords do not match"],
+        new_password2: ["Passwords do not match."],
       });
       setLoading(false);
       return;
@@ -40,8 +56,8 @@ const ResetPasswordForm = () => {
       await axiosRequest.post("/api/auth/password/reset/confirm/", {
         uid,
         token,
-        new_password1: password1,
-        new_password2: password2,
+        new_password1: newPassword1,
+        new_password2: newPassword2,
       });
 
       setSuccess(true);
@@ -50,11 +66,9 @@ const ResetPasswordForm = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      const data = error.response?.data;
-
       setErrors(
-        data || {
-          non_field_errors: ["Invalid or expired reset link"],
+        error.response?.data || {
+          non_field_errors: ["Invalid or expired reset link."],
         }
       );
 
@@ -66,7 +80,9 @@ const ResetPasswordForm = () => {
     <FormContainer title="Reset Password">
       {success ? (
         <>
-          <Text color="text.light2">Password updated. Redirecting...</Text>
+          <Text color="text.light2">
+            Password updated. Redirecting...
+          </Text>
 
           <FormLink
             text="Go to login"
@@ -76,29 +92,29 @@ const ResetPasswordForm = () => {
         </>
       ) : (
         <>
-          <FormTextInput
-            type="password"
-            placeholder="New password"
-            value={password1}
-            onChange={(e) => {
-              setPassword1(e.target.value);
-              setErrors((prev) => ({ ...prev, new_password1: undefined }));
+          <FormFieldText
+            field={{
+              name: "new_password1",
+              label: "New Password",
+              type: "password",
+              placeholder: "New password",
             }}
+            value={newPassword1}
+            error={errors.new_password1?.[0]}
+            onChange={handleFieldChange}
           />
 
-          <FormError>{errors.new_password1?.[0]}</FormError>
-
-          <FormTextInput
-            type="password"
-            placeholder="Confirm password"
-            value={password2}
-            onChange={(e) => {
-              setPassword2(e.target.value);
-              setErrors((prev) => ({ ...prev, new_password2: undefined }));
+          <FormFieldText
+            field={{
+              name: "new_password2",
+              label: "Confirm Password",
+              type: "password",
+              placeholder: "Confirm password",
             }}
+            value={newPassword2}
+            error={errors.new_password2?.[0]}
+            onChange={handleFieldChange}
           />
-
-          <FormError>{errors.new_password2?.[0]}</FormError>
 
           <FormError>{errors.non_field_errors?.[0]}</FormError>
 
@@ -108,7 +124,9 @@ const ResetPasswordForm = () => {
           >
             <HStack gap={2} justify="center">
               {loading && <ButtonSpinner />}
-              <span>{loading ? "Resetting..." : "Reset Password"}</span>
+              <span>
+                {loading ? "Resetting..." : "Reset Password"}
+              </span>
             </HStack>
           </FormSubmitButton>
 

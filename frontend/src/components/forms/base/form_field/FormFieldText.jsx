@@ -1,5 +1,5 @@
+import AppInput from "../../../ui/AppInput";
 import FormFieldWrapper from "./FormFieldWrapper";
-import FormTextInput from "../FormTextInput";
 
 const FormFieldText = ({
   field,
@@ -12,8 +12,10 @@ const FormFieldText = ({
       label={field.label}
       error={error}
     >
-      <FormTextInput
-        placeholder={field.label}
+      <AppInput
+        variant="primary"
+        type={field.type || "text"}
+        placeholder={field.placeholder}
         value={value || ""}
         onChange={(event) =>
           onChange(field.name, event.target.value)

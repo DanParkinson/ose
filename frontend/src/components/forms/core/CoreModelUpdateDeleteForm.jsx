@@ -13,10 +13,10 @@ import useDebouncedValue from "../../../hooks/useDebouncedValue";
 
 // form fields
 import FormFieldRenderer from "../../renderers/FormFieldRenderer";
-import FormError from "../base/FormError";
-import FormSuccess from "../base/FormSuccess";
-import FormSubmitButton from "../base/FormSubmitButton";
-import FormSubmitButtonDanger from "../base/FormSubmitButtonDanger";
+import FormError from "../base/feedback/FormError";
+import FormSuccess from "../base/feedback/FormSuccess";
+import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormSubmitButtonDanger from "../base/buttons/FormSubmitButtonDanger";
 import ButtonSpinner from "../../feedback/ButtonSpinner";
 
 // componenets

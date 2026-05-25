@@ -2,15 +2,19 @@ import { useState } from "react";
 import { HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
+// Hooks
 import useAuth from "../../../hooks/useAuth";
 
-import FormContainer from "../base/FormContainer";
-import FormSubmitButton from "../base/FormSubmitButton";
-import FormLink from "../base/FormLink";
-import FormError from "../base/FormError";
-import FormTextInput from "../base/FormTextInput";
+// Form Fields
+import FormContainer from "../base/containers/FormContainer";
+import FormFieldText from "../base/form_field/FormFieldText";
+import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormFieldError from "../base/form_field/FormFieldError";
+import FormLink from "../base/navigation/FormLink";
 
+// Feedback 
 import ButtonSpinner from "../../feedback/ButtonSpinner";
+import FormError from "../base/feedback/FormError";
 
 const RegisterForm = () => {
   const { register } = useAuth();
@@ -22,6 +26,23 @@ const RegisterForm = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const handleFieldChange = (fieldName, value) => {
+    if (fieldName === "email") {
+      setEmail(value);
+      setErrors((prev) => ({ ...prev, email: undefined }));
+    }
+
+    if (fieldName === "password1") {
+      setPassword1(value);
+      setErrors((prev) => ({ ...prev, password1: undefined }));
+    }
+
+    if (fieldName === "password2") {
+      setPassword2(value);
+      setErrors((prev) => ({ ...prev, password2: undefined }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (loading) return;
@@ -41,31 +62,40 @@ const RegisterForm = () => {
 
   return (
     <FormContainer title="Register">
-      <FormTextInput
-        placeholder="Email"
+      <FormFieldText
+        field={{
+          name: "email",
+          label: "Email",
+          type: "email",
+          placeholder: "me@example.com",
+        }}
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        error={errors.email?.[0]}
+        onChange={handleFieldChange}
       />
 
-      <FormError>{errors.email}</FormError>
-
-      <FormTextInput
-        type="password"
-        placeholder="Password"
+      <FormFieldText
+        field={{
+          name: "password1",
+          label: "Password",
+          type: "password",
+          placeholder: "********",
+        }}
         value={password1}
-        onChange={(e) => setPassword1(e.target.value)}
+        error={errors.password1?.[0]}
+        onChange={handleFieldChange}
       />
-
-      <FormError>{errors.password1}</FormError>
-
-      <FormTextInput
-        type="password"
-        placeholder="Confirm password"
+      <FormFieldText
+        field={{
+          name: "password2",
+          label: "Confirm Password",
+          type: "password",
+          placeholder: "********",
+        }}
         value={password2}
-        onChange={(e) => setPassword2(e.target.value)}
+        error={errors.password2?.[0]}
+        onChange={handleFieldChange}
       />
-
-      <FormError>{errors.password2}</FormError>
 
       <FormError>{errors.non_field_errors?.[0]}</FormError>
 

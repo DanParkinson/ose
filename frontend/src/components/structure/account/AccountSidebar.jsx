@@ -12,6 +12,7 @@ import {
   HiChevronDown,
   HiCog,
   HiUser,
+  HiLogout,
 } from "react-icons/hi";
 
 const accountSections = [
@@ -24,6 +25,11 @@ const accountSections = [
     id: "settings",
     title: "Settings",
     icon: HiCog,
+  },
+  {
+    id: "logout",
+    title: "Logout",
+    icon: HiLogout,
   },
 ];
 
