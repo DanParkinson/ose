@@ -69,7 +69,6 @@ So that I can securely use the platform.
 |**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/DJ-REST-AUTH.md)
 |            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/JWT-COOKIE-AUTH.md)
 |            |                      | Permissions           |
-|            |                      |                       |
 | **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)
 |            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)
 |            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)
@@ -172,19 +171,15 @@ So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Implemented        |
 | ------------------------ | --------------------- | --------------------- | ------------------ |
-| Authentication           | Auth                  |                       |                    |
-|                          |                       | Register              | :white_check_mark: |
+| Authentication           | Auth                  | Register              | :white_check_mark: |
 |                          |                       | Login                 | :white_check_mark: |
 |                          |                       | Logout                | :white_check_mark: |
 |                          |                       | Reset Password        | :white_check_mark: |
 |                          |                       | Reactivate Request    | :white_check_mark: |
 |                          |                       | Reactivate Confirm    | :white_check_mark: |
-| Account Management       | Structure             |                       |                    |
-|                          |                       | Account Sidebar       | :white_check_mark: |
-|                          | Profile               |                       |
-|                          |                       | View Email            | :white_check_mark: |
-|                          | Settings              |                       |
-|                          |                       | Change Password       | :white_check_mark: |
+| Account Management       | Structure             | Account Sidebar       | :white_check_mark: |
+|                          | Profile               | View Email            | :white_check_mark: |
+|                          | Settings              | Change Password       | :white_check_mark: |
 |                          |                       | Change email          | :x:                |
 |                          |                       | Deactivate Account    | :white_check_mark: |
 |                          |                       | Logout                | :white_check_mark: |
@@ -196,70 +191,57 @@ As a **Developer**,
 I want a dedicated list of architecture in place,
 So that I know what i can do
 ```
-| Title         | Section           | Sub Section             | Story Specific Documentation |
-| ------------- | ----------------- | ----------------------- | ---------------------------- |
-| Dynamic Forms | Configuration     |                         | |
-|               |                   | Model Field Definitions | |
-|               |                   | Create Fields           | |
-|               |                   | Update Fields           | |
-|               | Form Entry Points |                         | |
-|               |                   | Create Form             | |
-|               |                   | Update/Delete Form      | |
-|               | Data Preparation  |                         | |
-|               |                   | Initial Form Data       | |
-|               |                   | Backend OPTIONS Metadata| |
-|               |                   | Relation Options        | |
-|               | Rendering Flow    |                         | |
-|               |                   | FormFieldRenderer       | |
-|               |                   | Field Wrapper           | |
-|               |                   | Field Label             | |
-|               |                   | Field Error             | |
-|               | Field Types       |                         | |
-|               |                   | Text Field              | |
-|               |                   | Choice Field            | |
-|               |                   | Boolean Field           | |
-|               |                   | Relation Field          | |
-|               | User Interaction  |                         | |
-|               |                   | Field Changes           | |
-|               |                   | Relation Search         | |
-|               |                   | Relation Selection      | |
-|               | Submission Flow   |                         | |
-|               |                   | Create Submission       | |
-|               |                   | Update Submission       | |
-|               |                   | Delete Submission       | |
-|               | Response Handling |                         | |
-|               |                   | Field Errors            | |
-|               |                   | General Errors          | |
-|               |                   | Success Messages        | |
-|               | Supporting Logic  |                         | |
-|               |                   | Hooks                   | |
-|               |                   | Utilities               | |
+| Title         | Section             | Sub Section |
+| ------------- | ------------------- | ----------- |
+| Dynamic Forms | System Overview     | Architecture Flow |
+|               | Form Model Contract | [Required Config](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/REQUIRED-CONFIG.md) |
+|               |                     | [Create Fields](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/CREATE-FIELDS.md) |
+|               |                     | [Update Fields](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/UPDATE-FIELDS.md) |
+|               |                     | [Endpoint Requirements](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/ENDPOINT-REQUIREMENTS.md) |
+|               | Form Entry Points   | [Create Form](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/3.%20Form-entry-points/CREATE-FORM.md) |
+|               |                     | [Update/Delete Form](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/3.%20Form-entry-points/UPDATE-DELETE-FORM.md) |
+|               | Data Preparation    | [Initial Form Data](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/INITIAL-FORM-DATA.md) |
+|               |                     | [Backend OPTIONS Metadata](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/BACKEND-OPTIONS-METADATA.md) |
+|               |                     | [Relation Options Overview](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTIONS-OVERVIEW.md) |
+|               |                     | [Relation Option Loading](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-LOADING.md) |
+|               |                     | [Relation Option Formatting](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-FORMATTING.md) |
+|               |                     | [Selected Relation Options](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-SELECTED.md)|
+|               | Rendering Flow      | [FormFieldRenderer](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/FORM-FIELD-RENDERER.md) |
+|               |                     | [Field Type Selection](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/FIELD-TYPE-SELECTION.md)|
+|               |                     | [Field Components](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/FORM-FIELD-COMPONENTS.md) |
+|               |                     | [Relation Field Rendering](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/RELATION-FIELD-RENDERING.md) |
+|               | User Interaction    | [Field Changes](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/FIELD-CHANGES.md) |
+|               |                     | [Relation Search](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/RELATION-SEARCH.md) |
+|               |                     | [Relation Selection](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/RELATION-SELECTION.md) |
+|               |                     | [Relation Value Updates](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/RELATION-VALUE-UPDATES.md) |
+|               | Submission Flow     | [Create Submission](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/7.%20submission-flow/CREATE-SUBMISSION.md) |
+|               |                     | [Update Submission](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/7.%20submission-flow/UPDATE-SUBMISSION.md) |
+|               |                     | [Delete Submission](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/7.%20submission-flow/DELETE-SUBMISSION.md) |
+|               | Response Handling   | [Field Errors](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/8.%20Response-handling/FIELD-ERRORS.md) |
+|               |                     | [General Errors](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/8.%20Response-handling/GENERAL-ERRORS.md) |
+|               |                     | [Success Handling](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/8.%20Response-handling/SUCCESS-HANDLING.md) |
+|               | Parent Workflow     | [Parent Callbacks](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/9.%20Parent-callbacks/PARENT-CALLBACKS.md) |
+|               | Supporting Logic    | [Hooks](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/10.%20Supporting-Logic/HOOKS.md)
+|               |                     | [Utilities](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/10.%20Supporting-Logic/UTILS.md) |
 
 | User Story | Title                  | Section           | Sub Section          | Story Specific Documentation |
 | ---------- | ---------------------- | ----------------- | -------------------- | ---------------------------- |
-| Admin Dashboard System | Configuration     |                      |
-|                        |                   | co reModels          |
+| Admin Dashboard System | Configuration     | coreModels           |
 |                        |                   | Model Definitions    |
 |                        |                   | Table Configuration  |
 |                        |                   | Filter Configuration |
-|                        | Orchestration     | |
-|                        |                   | Dashboard Workflow   |
+|                        | Orchestration     | Dashboard Workflow   |
 |                        |                   | Model Selection      | 
 |                        |                   | Create Flow          |
-|                        | Data Loading      | |
-|                        |                   | useCoreModelData     |
+|                        | Data Loading      | useCoreModelData     |
 |                        |                   | fetchCoreModelList   |
-|                        | Display System    | |
-|                        |                   | Dashboard Layout     |
+|                        | Display System    | Dashboard Layout     |
 |                        |                   | Dashboard Tables     |
 |                        |                   | ModelFieldRenderer   |
-|                        | Search System     | |
-|                        |                   | TextSearchFilter     |
+|                        | Search System     | TextSearchFilter     |
 |                        |                   | searchInput          |
 |                        |                   |  searchQuery         |
 |                        |                   | Debounced Search     |
-|                        | Filtering System  | |
-|                        |                   | DashboardFilterPanel |
+|                        | Filtering System  | DashboardFilterPanel |
 |                        |                   | FilterOptions        |
-|                        | Pagination System | |
-|                        |                   | Pagination Component |
+|                        | Pagination System | Pagination Component |
