@@ -1,16 +1,52 @@
+import { useState } from "react";
+
+// hooks
+import useAuth from "../../hooks/useAuth";
+
+// structure
+import PageHeading from "../../components/structure/PageHeading";
 import AccountLayout from "../../layouts/AccountLayout";
-import AccountProfileSection from "../Account/AccountProfileSection";
-import AccountPasswordSection from "../Account/AccountPasswordSection";
-import AccountDeactivateSection from "../Account/AccountDeactivateSection";
+import AccountSidebar from "../../components/structure/account/AccountSidebar";
 
-const Account = () => {
+// sections
+import AccountProfileSection from "./AccountProfileSection";
+import AccountSettingsSection from "./AccountSettingsSection";
+import AccountLogoutSection from "./AccountLogoutSection";
+
+const AccountPage = () => {
+  const { user } = useAuth();
+  const [selectedSection, setSelectedSection] = useState("profile");
+
   return (
-    <AccountLayout>
-      <AccountProfileSection />
-      <AccountPasswordSection />
-      <AccountDeactivateSection />
-    </AccountLayout>
-  );
-}
+    <>
+      <PageHeading
+        title="My Account"
+        description="Manage your profile and account settings."
+      />
 
-export default Account;
+      <AccountLayout
+        sidebar={
+          <AccountSidebar
+            user={user}
+            selectedSection={selectedSection}
+            onSelectSection={setSelectedSection}
+          />
+        }
+      >
+        {selectedSection === "profile" && (
+          <AccountProfileSection user={user} />
+        )}
+
+        {selectedSection === "settings" && (
+          <AccountSettingsSection user={user} />
+        )}
+
+        {selectedSection === "logout" && (
+          <AccountLogoutSection />
+        )}
+      </AccountLayout>
+    </>
+  );
+};
+
+export default AccountPage;

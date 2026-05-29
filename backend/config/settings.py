@@ -44,6 +44,7 @@ SITE_ID = 1
 # Use secure HTTPS-only JWT cookies in production
 # Local development still allows HTTP
 JWT_AUTH_SECURE = not DEBUG
+JWT_AUTH_SAMESITE = "Lax" if DEBUG else "None"
 
 # Automatically redirect all HTTP traffic to HTTPS in production
 SECURE_SSL_REDIRECT = not DEBUG
@@ -82,12 +83,14 @@ REST_AUTH = {
     "JWT_AUTH_REFRESH_COOKIE": "refresh",
     "JWT_AUTH_HTTPONLY": True,
     "JWT_AUTH_SECURE": JWT_AUTH_SECURE,
-    "JWT_AUTH_SAMESITE": "None",
+    "JWT_AUTH_SAMESITE": JWT_AUTH_SAMESITE,
     "JWT_AUTH_RETURN_EXPIRATION": True,
     "TOKEN_MODEL": None,
     "REGISTER_SERIALIZER": "accounts.api.serializers.CustomRegisterSerializer",
     "USER_DETAILS_SERIALIZER": "accounts.api.serializers.CustomUserDetailsSerializer",
     "PASSWORD_RESET_CONFIRM_URL": "reset-password/{uid}/{token}",
+    "OLD_PASSWORD_FIELD_ENABLED": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": False,
 }
 
 SIMPLE_JWT = {

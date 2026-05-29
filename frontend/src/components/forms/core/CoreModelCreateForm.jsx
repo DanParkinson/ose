@@ -1,25 +1,31 @@
 import { useState } from "react";
 import { HStack, VStack } from "@chakra-ui/react";
 
+// api
 import {
   createCoreModelItem,
 } from "../../../api/coreApi";
 
-import FormSubmitButton from "../base/FormSubmitButton";
-import FormError from "../base/FormError";
-import FormSuccess from "../base/FormSuccess";
+// Form Fields
+import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormFieldRenderer from "../../renderers/FormFieldRenderer";
 
+// Feedback
+import FormError from "../base/feedback/FormError";
+import FormSuccess from "../base/feedback/FormSuccess";
 import ButtonSpinner from "../../feedback/ButtonSpinner";
 
+// utils
 import getInitialFormData from "../../../utils/form_fields/getInitialFormData";
 import getUpdatedRelationValues from "../../../utils/form_fields/relation/getUpdatedRelationValues";
 import parseBackendErrors from "../../../utils/form_fields/errors/parseBackendErrors";
 
+// hooks
 import useCoreFieldOptions from "../../../hooks/useCoreFieldOptions";
 import useCoreRelationOptions from "../../../hooks/useCoreRelationOptions";
 import useDebouncedValue from "../../../hooks/useDebouncedValue";
 
-import FormFieldRenderer from "../../renderers/FormFieldRenderer";
+
 
 const CoreModelCreateForm = ({ model, onCreated }) => {
   const [formData, setFormData] = useState(() =>

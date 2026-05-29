@@ -1,7 +1,7 @@
 import { Center, Text } from "@chakra-ui/react";
 
 import FormFieldWrapper from "./FormFieldWrapper";
-import FormTextInput from "../FormTextInput";
+import FormFieldText from "./FormFieldText";
 import SelectableOptionList from "./SelectableOptionList";
 import SelectedOptionList from "./SelectedOptionList";
 import ButtonSpinner from "../../../feedback/ButtonSpinner";
@@ -21,7 +21,7 @@ const FormFieldRelation = ({
 }) => {
   return (
     <FormFieldWrapper label={field.label} error={error}>
-      <FormTextInput
+      <FormFieldText
         placeholder={`Search ${field.label.toLowerCase()}...`}
         value={searchValue}
         onChange={(event) => onSearchChange(field.name, event.target.value)}

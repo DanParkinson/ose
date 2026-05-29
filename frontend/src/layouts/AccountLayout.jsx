@@ -1,25 +1,18 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 
-const AccountLayout = ({ children }) => {
+const AccountLayout = ({ sidebar, children }) => {
   return (
-    <Box
-      minH="100vh"
-      bg="bg.canvas"
-      px={6}
-      py={10}
-      display="flex"
-      justifyContent="center"
-    >
-      {/* MAIN */}
-      <Box
-        w="100%"
-        maxW="700px"
-        display="flex"
-        flexDirection="column"
-        gap={8}
+    <Box px={{ base: 4, md: 8 }} py={8}>
+      <Grid
+        templateColumns={{ base: "1fr", lg: "400px 1fr" }}
+        gap={6}
+        maxW="1500px"
+        mx="auto"
       >
-        {children}
-      </Box>
+        <GridItem>{sidebar}</GridItem>
+
+        <GridItem>{children}</GridItem>
+      </Grid>
     </Box>
   );
 };

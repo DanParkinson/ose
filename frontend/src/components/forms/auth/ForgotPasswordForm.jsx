@@ -1,21 +1,31 @@
 import { useState } from "react";
 import { HStack, Text } from "@chakra-ui/react";
 
+// api
 import { axiosRequest } from "../../../api/axiosDefaults";
 
-import FormContainer from "../base/FormContainer";
-import FormSubmitButton from "../base/FormSubmitButton";
-import FormLink from "../base/FormLink";
-import FormError from "../base/FormError";
-import FormTextInput from "../base/FormTextInput";
+// Form Fields
+import FormContainer from "../base/containers/FormContainer";
+import FormFieldText from "../base/form_field/FormFieldText";
+import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormLink from "../base/navigation/FormLink";
 
+// Feedback
 import ButtonSpinner from "../../feedback/ButtonSpinner";
+import FormError from "../base/feedback/FormError";
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const handleFieldChange = (fieldName, value) => {
+    if (fieldName === "email") {
+      setEmail(value);
+      setErrors((prev) => ({ ...prev, email: undefined }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (loading) return;
@@ -24,13 +34,17 @@ const ForgotPasswordForm = () => {
     setErrors({});
 
     try {
-      await axiosRequest.post("/api/auth/password/reset/", { email });
+      await axiosRequest.post("/api/auth/password/reset/", {
+        email,
+      });
 
       setSubmitted(true);
     } catch (error) {
       setErrors(
         error.response?.data || {
-          non_field_errors: ["Password reset failed. Please try again."],
+          non_field_errors: [
+            "Password reset failed. Please try again.",
+          ],
         }
       );
 
@@ -58,16 +72,17 @@ const ForgotPasswordForm = () => {
             Enter your email to receive a reset link.
           </Text>
 
-          <FormTextInput
-            placeholder="Email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setErrors((prev) => ({ ...prev, email: undefined }));
+          <FormFieldText
+            field={{
+              name: "email",
+              type: "email",
+              placeholder: "Email",
             }}
+            value={email}
+            error={errors.email?.[0]}
+            onChange={handleFieldChange}
           />
 
-          <FormError>{errors.email?.[0]}</FormError>
           <FormError>{errors.non_field_errors?.[0]}</FormError>
 
           <FormSubmitButton
@@ -76,7 +91,9 @@ const ForgotPasswordForm = () => {
           >
             <HStack gap={2} justify="center">
               {loading && <ButtonSpinner />}
-              <span>{loading ? "Sending..." : "Send Reset Email"}</span>
+              <span>
+                {loading ? "Sending..." : "Send Reset Email"}
+              </span>
             </HStack>
           </FormSubmitButton>
 

@@ -2,14 +2,17 @@ import { useState } from "react";
 import { HStack, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 
+// api
 import { axiosRequest } from "../../../api/axiosDefaults";
 
-import FormContainer from "../base/FormContainer";
-import FormSubmitButton from "../base/FormSubmitButton";
-import FormLink from "../base/FormLink";
-import FormError from "../base/FormError";
+// Form Fields
+import FormContainer from "../base/containers/FormContainer";
+import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormLink from "../base/navigation/FormLink";
 
+// Feedback
 import ButtonSpinner from "../../feedback/ButtonSpinner";
+import FormError from "../base/feedback/FormError";
 
 const ReactivateConfirmForm = () => {
   const { uid, token } = useParams();
@@ -35,7 +38,9 @@ const ReactivateConfirmForm = () => {
 
       setErrors(
         error.response?.data || {
-          non_field_errors: ["This reactivation link is invalid or has expired."],
+          non_field_errors: [
+            "This reactivation link is invalid or has expired.",
+          ],
         }
       );
     }

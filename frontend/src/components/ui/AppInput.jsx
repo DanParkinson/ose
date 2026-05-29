@@ -2,14 +2,14 @@ import { chakra, Input } from "@chakra-ui/react";
 
 const AppInput = chakra(Input, {
   base: {
-    bg: "bg.light1",
-    color: "text.dark1",
+    bg: "bg.dark3",
+    color: "text.light2",
     border: "1px solid",
-    borderColor: "border.light3",
+    borderColor: "border.dark3",
     borderRadius: "md",
 
     _placeholder: {
-      color: "text.dark5",
+      color: "text.light2",
     },
 
     _hover: {
@@ -36,11 +36,11 @@ const AppInput = chakra(Input, {
         borderColor: "transparent",
 
         _hover: {
-          borderColor: "bg.primarydark",
+          borderColor: "bg.primarylight",
         },
 
         _focusVisible: {
-          borderColor: "bg.primarydark",
+          borderColor: "bg.light1     ",
           boxShadow: "0 0 0 1px var(--chakra-colors-bg-primarydark)",
         },
       },
