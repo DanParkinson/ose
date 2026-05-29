@@ -5,42 +5,35 @@ from rest_framework.test import APITestCase
 class BaseAccountAPITestCase(APITestCase):
     def setUp(self):
         self.User = get_user_model()
+        self.password = "testpass123"
 
-        # ===========
-        # Users
-        # ===========
-        self.user = self.User.objects.create_user(
-            email="user@example.com",
-            password="testpass123",
+    # =====================
+    # User helpers
+    # =====================
+    def create_user(self, email="user@example.com", password=None, **extra_fields):
+        return self.User.objects.create_user(
+            email=email,
+            password=password or self.password,
+            **extra_fields,
         )
-        self.other_user = self.User.objects.create_user(
-            email="otheruser@example.com",
-            password="testpass123",
-        )
-        self.superuser = self.User.objects.create_superuser(
-            email="admin@example.com",
-            password="testpass123",
-        )
-        self.inactive_user = self.User.objects.create_user(
-            email="inactive@example.com",
-            password="testpass123",
-            is_active=False,
+
+    def create_superuser(
+        self,
+        email="admin@example.com",
+        password=None,
+        **extra_fields,
+    ):
+        return self.User.objects.create_superuser(
+            email=email,
+            password=password or self.password,
+            **extra_fields,
         )
 
     # =====================
     # Auth helpers
     # =====================
-    def authenticate_user(self):
-        self.client.force_authenticate(user=self.user)
-
-    def authenticate_other_user(self):
-        self.client.force_authenticate(user=self.other_user)
-
-    def authenticate_admin(self):
-        self.client.force_authenticate(user=self.superuser)
-
-    def authenticate_inactive_user(self):
-        self.client.force_authenticate(user=self.inactive_user)
+    def authenticate_user(self, user):
+        self.client.force_authenticate(user=user)
 
     def unauthenticate(self):
         self.client.force_authenticate(user=None)
