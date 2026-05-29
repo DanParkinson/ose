@@ -60,8 +60,8 @@ So that I can securely use the platform.
 
 | User Story | Title                | Section               | Sub Section           | Infrastructure Testing |
 | ---------- | -------------------- | --------------------- | --------------------- | ---------------------- |
-|**US 2.1**  | Accounts App         | User Model            | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md) | [Test File]() |
-|            |                      | User Creation         | [Custom User Manager](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/2.%20User-Creation/CUSTOM-USER-MANAGER.md) | [Test File](/backend/accounts/tests/user_creation/test_user_creation_custom_user_manager.py) |
+|**US 2.1**  | Accounts App         | User Model            | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md) | [Custom User Model](/backend/accounts/tests/email_authentication/test_email_custom_user.py)|
+|            |                      | User Creation         | [Custom User Manager](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/2.%20User-Creation/CUSTOM-USER-MANAGER.md) | [Custom User Manager](/backend/accounts/tests/user_creation/test_user_creation_custom_user_manager.py) |
 |            |                      | Account Lifecycle     | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)|
 |            |                      |                       | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)|
 |            |                      | API Serializers       | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)|
