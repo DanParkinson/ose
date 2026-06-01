@@ -60,14 +60,15 @@ So that I can securely use the platform.
 
 | User Story | Title                | Section               | Sub Section           | Infrastructure Testing |
 | ---------- | -------------------- | --------------------- | --------------------- | ---------------------- |
-|**US 2.1**  | Accounts App         | User Model            | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md) | [Custom User Model](/backend/accounts/tests/email_authentication/test_email_custom_user.py), [Register Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
+|**US 2.1**  | Accounts App         | User Model            | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md) | [Custom User Model](/backend/accounts/tests/email_authentication/test_email_custom_user.py), [Registration Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
 |            |                      | User Creation         | [Custom User Manager](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/2.%20User-Creation/CUSTOM-USER-MANAGER.md) | [Custom User Manager](/backend/accounts/tests/user_creation/test_user_creation_custom_user_manager.py) |
 |            |                      | Account Lifecycle     | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)|
 |            |                      |                       | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)|
-|            |                      | API Serializers       | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)|
-|            |                      |                       | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)|
-|**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)|
+|            |                      | API Serializers       | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)| [Registration Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
+|            |                      |                       | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)| [User Details Serializer](/backend/accounts/tests/user_details/test_user_details_serializer.py) |
+|**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py)|
 |            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/JWT-COOKIE-AUTH.md)|
+|            |                      |                       | [Email Verifcation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/EMAIL-VERIFICATION.md) |
 |            |                      | Permissions           |
 | **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)|
 |            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)|
@@ -161,6 +162,25 @@ So that replication is possible of required.
 | User Story | Title                    | Section               | Sub Section           |
 | ---------- | ------------------------ | --------------------- | --------------------- |
 | **US 6.1** | Deployment               | Render                | [Deployment Docs](/documentation/1.%20User-Stories/6.%20Deployment/DEPLOYMENT.md)|
+|            | Email Provider           | Google Workspace      | | 
+
+## 7. Email Infrastructure
+```
+As a **Developer**,
+I want an overview of the email infrastructure that is in place.
+So that configuring emails later is easier.
+```
+
+| User Story | Title                | Section               | Sub Section |
+| ---------- | -------------------- | --------------------- | ----------- |
+| **US 7.1** | Email Infrastructure | Configuration         | SMTP Configuration |
+|            |                      |                       | [Email Backend](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/EMAIL-BACKEND.md) |
+|            |                      |                       | [Default Sender](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/DEFAULT-SENDER.md) |
+|            |                      |                       | [Email Templates](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/EMAIL-TEMPLATES.md) |
+|            |                      | Email Provider        |
+|            |                      | Delivery              | [Email Sending](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Delivery/EMAIL-SENDING.md) |
+|            |                      |                       |
+| **US 7.2** | Email Templates      | Authentication Emails | Email Verification |
 
 ## Features
 
@@ -169,23 +189,25 @@ As a **User**,
 I want a dedicated list of features, 
 So that I know what i can do
 ```
-| Feature                  | Section               | Sub Section           | Implemented        |
-| ------------------------ | --------------------- | --------------------- | ------------------ |
-| Authentication           | Auth                  | Register              | :white_check_mark: |
-|                          |                       | Login                 | :white_check_mark: |
-|                          |                       | Logout                | :white_check_mark: |
-|                          |                       | Reset Password        | :white_check_mark: |
-|                          |                       | Reactivate Request    | :white_check_mark: |
-|                          |                       | Reactivate Confirm    | :white_check_mark: |
-| Account Management       | Structure             | Account Sidebar       | :white_check_mark: |
-|                          | Profile               | View Email            | :white_check_mark: |
-|                          | Settings              | Change Password       | :white_check_mark: |
-|                          |                       | Change email          | :x:                |
-|                          |                       | Deactivate Account    | :white_check_mark: |
-|                          |                       | Logout                | :white_check_mark: |
+| Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
+| ------------------------ | --------------------- | --------------------- | --------------- | ---------------- | -------------- |
+| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py)                |                   |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
+|                          |                       | Email Verification    |
+|                          |                       | Login                 |
+|                          |                       | Login                 |
+|                          |                       | Logout                |
+|                          |                       | Reset Password        |
+|                          |                       | Reactivate Request    |
+|                          |                       | Reactivate Confirm    |
+| Account Management       | Structure             | Account Sidebar       |
+|                          | Profile               | View Email            | 
+|                          | Settings              | Change Password       |
+|                          |                       | Change email          |
+|                          |                       | Deactivate Account    |
+|                          |                       | Logout                |
 
 
-## 8. Architecture
+## Architecture
 ```
 As a **Developer**,
 I want a dedicated list of architecture in place,
@@ -194,56 +216,56 @@ So that I know what i can do
 | Title         | Section             | Sub Section |
 | ------------- | ------------------- | ----------- |
 | Dynamic Forms | System Overview     | Architecture Flow |
-|               | Form Model Contract | [Required Config](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/REQUIRED-CONFIG.md) |
-|               |                     | [Create Fields](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/CREATE-FIELDS.md) |
-|               |                     | [Update Fields](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/UPDATE-FIELDS.md) |
-|               |                     | [Endpoint Requirements](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/2.%20Form-model-contract/ENDPOINT-REQUIREMENTS.md) |
-|               | Form Entry Points   | [Create Form](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/3.%20Form-entry-points/CREATE-FORM.md) |
-|               |                     | [Update/Delete Form](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/3.%20Form-entry-points/UPDATE-DELETE-FORM.md) |
-|               | Data Preparation    | [Initial Form Data](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/INITIAL-FORM-DATA.md) |
-|               |                     | [Backend OPTIONS Metadata](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/BACKEND-OPTIONS-METADATA.md) |
-|               |                     | [Relation Options Overview](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTIONS-OVERVIEW.md) |
-|               |                     | [Relation Option Loading](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-LOADING.md) |
-|               |                     | [Relation Option Formatting](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-FORMATTING.md) |
-|               |                     | [Selected Relation Options](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-SELECTED.md)|
-|               | Rendering Flow      | [FormFieldRenderer](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/FORM-FIELD-RENDERER.md) |
-|               |                     | [Field Type Selection](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/FIELD-TYPE-SELECTION.md)|
-|               |                     | [Field Components](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/FORM-FIELD-COMPONENTS.md) |
-|               |                     | [Relation Field Rendering](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/5.%20Rendering-flow/RELATION-FIELD-RENDERING.md) |
-|               | User Interaction    | [Field Changes](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/FIELD-CHANGES.md) |
-|               |                     | [Relation Search](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/RELATION-SEARCH.md) |
-|               |                     | [Relation Selection](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/RELATION-SELECTION.md) |
-|               |                     | [Relation Value Updates](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/6.%20User-interaction/RELATION-VALUE-UPDATES.md) |
-|               | Submission Flow     | [Create Submission](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/7.%20submission-flow/CREATE-SUBMISSION.md) |
-|               |                     | [Update Submission](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/7.%20submission-flow/UPDATE-SUBMISSION.md) |
-|               |                     | [Delete Submission](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/7.%20submission-flow/DELETE-SUBMISSION.md) |
-|               | Response Handling   | [Field Errors](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/8.%20Response-handling/FIELD-ERRORS.md) |
-|               |                     | [General Errors](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/8.%20Response-handling/GENERAL-ERRORS.md) |
-|               |                     | [Success Handling](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/8.%20Response-handling/SUCCESS-HANDLING.md) |
-|               | Parent Workflow     | [Parent Callbacks](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/9.%20Parent-callbacks/PARENT-CALLBACKS.md) |
-|               | Supporting Logic    | [Hooks](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/10.%20Supporting-Logic/HOOKS.md)
-|               |                     | [Utilities](/documentation/1.%20User-Stories/8.%20Architecture/8.1%20Dynamic-Forms/10.%20Supporting-Logic/UTILS.md) |
+|               | Form Model Contract | [Required Config](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/2.%20Form-model-contract/REQUIRED-CONFIG.md) |
+|               |                     | [Create Fields](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/2.%20Form-model-contract/CREATE-FIELDS.md) |
+|               |                     | [Update Fields](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/2.%20Form-model-contract/UPDATE-FIELDS.md) |
+|               |                     | [Endpoint Requirements](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/2.%20Form-model-contract/ENDPOINT-REQUIREMENTS.md) |
+|               | Form Entry Points   | [Create Form](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/3.%20Form-entry-points/CREATE-FORM.md) |
+|               |                     | [Update/Delete Form](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/3.%20Form-entry-points/UPDATE-DELETE-FORM.md) |
+|               | Data Preparation    | [Initial Form Data](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/4.%20Data-preperation/INITIAL-FORM-DATA.md) |
+|               |                     | [Backend OPTIONS Metadata](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/4.%20Data-preperation/BACKEND-OPTIONS-METADATA.md) |
+|               |                     | [Relation Options Overview](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTIONS-OVERVIEW.md) |
+|               |                     | [Relation Option Loading](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-LOADING.md) |
+|               |                     | [Relation Option Formatting](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-FORMATTING.md) |
+|               |                     | [Selected Relation Options](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/4.%20Data-preperation/RELATION-OPTION-SELECTED.md) |
+|               | Rendering Flow      | [FormFieldRenderer](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/5.%20Rendering-flow/FORM-FIELD-RENDERER.md) |
+|               |                     | [Field Type Selection](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/5.%20Rendering-flow/FIELD-TYPE-SELECTION.md) |
+|               |                     | [Field Components](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/5.%20Rendering-flow/FORM-FIELD-COMPONENTS.md) |
+|               |                     | [Relation Field Rendering](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/5.%20Rendering-flow/RELATION-FIELD-RENDERING.md) |
+|               | User Interaction    | [Field Changes](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/6.%20User-interaction/FIELD-CHANGES.md) |
+|               |                     | [Relation Search](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/6.%20User-interaction/RELATION-SEARCH.md) |
+|               |                     | [Relation Selection](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/6.%20User-interaction/RELATION-SELECTION.md) |
+|               |                     | [Relation Value Updates](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/6.%20User-interaction/RELATION-VALUE-UPDATES.md) |
+|               | Submission Flow     | [Create Submission](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/7.%20submission-flow/CREATE-SUBMISSION.md) |
+|               |                     | [Update Submission](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/7.%20submission-flow/UPDATE-SUBMISSION.md) |
+|               |                     | [Delete Submission](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/7.%20submission-flow/DELETE-SUBMISSION.md) |
+|               | Response Handling   | [Field Errors](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/8.%20Response-handling/FIELD-ERRORS.md) |
+|               |                     | [General Errors](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/8.%20Response-handling/GENERAL-ERRORS.md) |
+|               |                     | [Success Handling](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/8.%20Response-handling/SUCCESS-HANDLING.md) |
+|               | Parent Workflow     | [Parent Callbacks](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/9.%20Parent-callbacks/PARENT-CALLBACKS.md) |
+|               | Supporting Logic    | [Hooks](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/10.%20Supporting-Logic/HOOKS.md) |
+|               |                     | [Utilities](/documentation/1.%20User-Stories/0.1.%20Architecture/1.%20Dynamic-Forms/10.%20Supporting-Logic/UTILS.md) |
 
-| User Story             | Section           | Sub Section          |
-| ---------------------- | ----------------- | -------------------- |
-| Dashboard System       | Overview          | Overview             |
-|                        | Configuration     | [coreModels](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/2.%20Configuration/CORE-MODELS.md)          |
-|                        |                   | [Model Definitions](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/2.%20Configuration/MODEL-DEFINITIONS.md)   |
-|                        |                   | [Table Configuration](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/2.%20Configuration/TABLE-CONFIGURATION.md)  |
-|                        |                   | [Filter Configuration](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/2.%20Configuration/FILTER-CONFIGURATION.md) |
-|                        | Orchestration     | [Dashboard Workflow](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/3.%20Orchestration/DASHBOARD-WORKFLOW.md)  |
-|                        |                   | [Model Selection](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/3.%20Orchestration/MODEL-SELECTION.md)    | 
-|                        |                   | [Create Flow](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/3.%20Orchestration/CREATE-FLOW.md)       |
-|                        |                   | [Update/Delete Flow](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/3.%20Orchestration/UPDATE-DELETE-FLOW.md)   |
-|                        | Data Loading      | [useCoreModelData](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/4.%20Data-loading/USE-CORE-MODEl-DATA.md)     |
-|                        |                   | [fetchCoreModelList](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/4.%20Data-loading/FETCH-CORE-MODEL-LIST.md)   |
-|                        | Display System    | [Dashboard Layout](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/5.%20Display-system/DASHBOARD-LAYOUT.md)     |
-|                        |                   | [Dashboard Tables](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/5.%20Display-system/DASHBOARD-TABLES.md)     |
-|                        |                   | [ModelFieldRenderer](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/5.%20Display-system/MODEL-FIELD-RENDERER.md)   |
-|                        | Search System     | [TextSearchFilter](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/6.%20Search-system/TEXT-SEARCH-FILTER.md)     |
-|                        |                   | [searchInput](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/6.%20Search-system/SEARCH-INPUT.md)          |
-|                        |                   | [searchQuery](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/6.%20Search-system/SEARCH-QUERY.md)         |
-|                        |                   | [Debounced Search](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/6.%20Search-system/DEBOUNCED-SEARCH.md)     |
-|                        | Filtering System  | [DashboardFilterPanel](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/7.%20Filtering-system/DASHBOARD-FILTER-PANEL.md) |
-|                        |                   | [FilterOptions](/documentation/1.%20User-Stories/8.%20Architecture/8.2%20Dashboard/7.%20Filtering-system/FILTER-OPTIONS.md)        |
-|                        | Pagination System | [Pagination Component](/documentation/1.%20User-Stories/) |
+| User Story       | Section           | Sub Section |
+| ---------------- | ----------------- | ----------- |
+| Dashboard System | Overview          | Overview |
+|                  | Configuration     | [coreModels](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/2.%20Configuration/CORE-MODELS.md) |
+|                  |                   | [Model Definitions](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/2.%20Configuration/MODEL-DEFINITIONS.md) |
+|                  |                   | [Table Configuration](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/2.%20Configuration/TABLE-CONFIGURATION.md) |
+|                  |                   | [Filter Configuration](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/2.%20Configuration/FILTER-CONFIGURATION.md) |
+|                  | Orchestration     | [Dashboard Workflow](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/3.%20Orchestration/DASHBOARD-WORKFLOW.md) |
+|                  |                   | [Model Selection](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/3.%20Orchestration/MODEL-SELECTION.md) |
+|                  |                   | [Create Flow](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/3.%20Orchestration/CREATE-FLOW.md) |
+|                  |                   | [Update/Delete Flow](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/3.%20Orchestration/UPDATE-DELETE-FLOW.md) |
+|                  | Data Loading      | [useCoreModelData](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/4.%20Data-loading/USE-CORE-MODEL-DATA.md) |
+|                  |                   | [fetchCoreModelList](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/4.%20Data-loading/FETCH-CORE-MODEL-LIST.md) |
+|                  | Display System    | [Dashboard Layout](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/5.%20Display-system/DASHBOARD-LAYOUT.md) |
+|                  |                   | [Dashboard Tables](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/5.%20Display-system/DASHBOARD-TABLES.md) |
+|                  |                   | [ModelFieldRenderer](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/5.%20Display-system/MODEL-FIELD-RENDERER.md) |
+|                  | Search System     | [TextSearchFilter](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/6.%20Search-system/TEXT-SEARCH-FILTER.md) |
+|                  |                   | [searchInput](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/6.%20Search-system/SEARCH-INPUT.md) |
+|                  |                   | [searchQuery](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/6.%20Search-system/SEARCH-QUERY.md) |
+|                  |                   | [Debounced Search](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/6.%20Search-system/DEBOUNCED-SEARCH.md) |
+|                  | Filtering System  | [DashboardFilterPanel](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/7.%20Filtering-system/DASHBOARD-FILTER-PANEL.md) |
+|                  |                   | [FilterOptions](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/7.%20Filtering-system/FILTER-OPTIONS.md) |
+|                  | Pagination System | [Pagination Component](/documentation/1.%20User-Stories/0.1.%20Architecture/2.%20Dashboard/8.%20Pagination/PAGINATION-COMPONENTS.md) |

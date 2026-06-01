@@ -19,6 +19,7 @@ class LoginTests(BaseDJRestAuthTestCase):
     - Verify login without password fails
     - Verify login with unknown email fails
     - Verify login with incorrect password fails
+    - Verify Login without verification fails
     """
 
     # =====================
@@ -31,7 +32,8 @@ class LoginTests(BaseDJRestAuthTestCase):
         Act: Send a POST request to the login endpoint.
         Assert: Login succeeds.
         """
-        self.create_user(email=self.email)
+        user = self.create_user(email=self.email)
+        self.create_verified_email(user)
 
         payload = self.get_login_payload()
 
@@ -49,7 +51,8 @@ class LoginTests(BaseDJRestAuthTestCase):
         Act: Send a POST request to the login endpoint.
         Assert: Login succeeds because email is used as the login identifier.
         """
-        self.create_user(email=self.email)
+        user = self.create_user(email=self.email)
+        self.create_verified_email(user)
 
         payload = self.get_login_payload()
 
@@ -132,3 +135,29 @@ class LoginTests(BaseDJRestAuthTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unverified_user_cannot_login(self):
+        """
+        Arrange: Create a user without a verified email address.
+        Act: Attempt to login with valid credentials.
+        Assert: Login fails because the email address is not verified.
+        """
+        self.create_user(email=self.email)
+
+        payload = self.get_login_payload()
+
+        response = self.client.post(
+            self.get_login_url(),
+            payload,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertIn(
+            "verified",
+            str(response.data).lower(),
+        )

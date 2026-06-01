@@ -27,7 +27,8 @@ class LogoutTests(BaseDJRestAuthTestCase):
         Act: Send a POST request to the logout endpoint.
         Assert: Logout succeeds.
         """
-        self.create_user(email=self.email)
+        user = self.create_user(email=self.email)
+        self.create_verified_email(user)
 
         login_response = self.client.post(
             self.get_login_url(),

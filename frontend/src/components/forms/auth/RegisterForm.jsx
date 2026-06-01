@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HStack } from "@chakra-ui/react";
+import { HStack, Text, Box, VStack} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 // Hooks
@@ -19,6 +19,7 @@ import FormError from "../base/feedback/FormError";
 const RegisterForm = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [status, setStatus] = useState("idle");
 
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -53,7 +54,8 @@ const RegisterForm = () => {
     const response = await register(email, password1, password2);
 
     if (response.success) {
-      navigate("/login");
+      setStatus("success");
+      setLoading(false);
     } else {
       setErrors(response.errors);
       setLoading(false);
@@ -62,64 +64,96 @@ const RegisterForm = () => {
 
   return (
     <FormContainer title="Register">
-      <FormFieldText
-        field={{
-          name: "email",
-          label: "Email",
-          type: "email",
-          placeholder: "me@example.com",
-        }}
-        value={email}
-        error={errors.email?.[0]}
-        onChange={handleFieldChange}
-      />
+      {status === "idle" && (
+        <>
+          <FormFieldText
+            field={{
+              name: "email",
+              label: "Email",
+              type: "email",
+              placeholder: "me@example.com",
+            }}
+            value={email}
+            error={errors.email?.[0]}
+            onChange={handleFieldChange}
+          />
 
-      <FormFieldText
-        field={{
-          name: "password1",
-          label: "Password",
-          type: "password",
-          placeholder: "********",
-        }}
-        value={password1}
-        error={errors.password1?.[0]}
-        onChange={handleFieldChange}
-      />
-      <FormFieldText
-        field={{
-          name: "password2",
-          label: "Confirm Password",
-          type: "password",
-          placeholder: "********",
-        }}
-        value={password2}
-        error={errors.password2?.[0]}
-        onChange={handleFieldChange}
-      />
+          <FormFieldText
+            field={{
+              name: "password1",
+              label: "Password",
+              type: "password",
+              placeholder: "********",
+            }}
+            value={password1}
+            error={errors.password1?.[0]}
+            onChange={handleFieldChange}
+          />
+          <FormFieldText
+            field={{
+              name: "password2",
+              label: "Confirm Password",
+              type: "password",
+              placeholder: "********",
+            }}
+            value={password2}
+            error={errors.password2?.[0]}
+            onChange={handleFieldChange}
+          />
 
-      <FormError>{errors.non_field_errors?.[0]}</FormError>
+          <FormError>{errors.non_field_errors?.[0]}</FormError>
 
-      <FormSubmitButton
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        <HStack gap={2} justify="center">
-          {loading && <ButtonSpinner />}
-          <span>{loading ? "Registering..." : "Register"}</span>
-        </HStack>
-      </FormSubmitButton>
+          <FormSubmitButton
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            <HStack gap={2} justify="center">
+              {loading && <ButtonSpinner />}
+              <span>{loading ? "Registering..." : "Register"}</span>
+            </HStack>
+          </FormSubmitButton>
 
-      <FormLink
-        text="Already have an account?"
-        to="/login"
-        linkText="Login"
-      />
+          <FormLink
+            text="Already have an account?"
+            to="/login"
+            linkText="Login"
+          />
 
-      <FormLink
-        text="Have an old deactivated account?"
-        to="/reactivate-account"
-        linkText="Reactivate"
-      />
+          <FormLink
+            text="Have an old deactivated account?"
+            to="/reactivate-account"
+            linkText="Reactivate"
+          />
+        </>
+      )}
+
+      {status === "success" && (
+        <Box
+          p={6}
+        >
+          <VStack gap={4} textAlign="center">
+            <Text color="text.light1" fontWeight="semibold">
+              Your account has been created.
+            </Text>
+
+            <Text color="text.light2">
+              Please check your email to verify your account before logging in.
+            </Text>
+
+            <FormLink
+              text="Already verified?"
+              to="/login"
+              linkText="Login"
+            />
+
+            <FormLink
+              text="Didn't receive the email?"
+              to="/resend-verification-email"
+              linkText="Resend verification email"
+            />
+          </VStack>
+        </Box>
+      )}
     </FormContainer>
   );
 };

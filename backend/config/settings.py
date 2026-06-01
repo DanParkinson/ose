@@ -72,9 +72,22 @@ SECURE_HSTS_PRELOAD = not DEBUG
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Emails
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = os.environ["EMAIL_HOST"]
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+    EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+    EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+    EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
+    DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # rest auth
 REST_AUTH = {
