@@ -88,6 +88,7 @@ else:
     EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
     DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
+    EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", 10))
 
 # rest auth
 REST_AUTH = {
