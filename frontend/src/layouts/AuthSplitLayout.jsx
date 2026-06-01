@@ -64,7 +64,7 @@ const AuthSplitLayout = ({ children }) => {
             gap={6}
         >
             {/* IMAGE */}
-            <Box
+            {/* <Box
             w="80%"
             minH="400px"
             bg="bg.light1"
@@ -74,7 +74,7 @@ const AuthSplitLayout = ({ children }) => {
             justifyContent="center"
             >
             Image
-            </Box>
+            </Box> */}
 
             {/* BOTTOM */}
             <Box textAlign="center" color="text.light1">

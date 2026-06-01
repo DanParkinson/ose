@@ -1,0 +1,12 @@
+Hello,
+
+Thank you for registering an account with Open-Source Education.
+
+Please verify your email address by clicking the link below:
+
+http://localhost:5173/verify-email/{{ key }}
+
+If you did not create this account, you can safely ignore this email.
+
+Thanks,
+OSE

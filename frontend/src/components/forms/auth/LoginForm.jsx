@@ -24,6 +24,10 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({});
+  const emailNotVerified =
+    errors.non_field_errors?.[0]?.toLowerCase().includes("verified") ||
+    errors.detail?.toLowerCase().includes("verified");
+  
   const [loading, setLoading] = useState(false);
 
   const handleFieldChange = (fieldName, value) => {
@@ -81,6 +85,14 @@ const LoginForm = () => {
       />
 
       <FormError>{errors.non_field_errors?.[0]}</FormError>
+
+      {emailNotVerified && (
+        <FormLink
+          text="Need a new verification email?"
+          to="/resend-verification-email"
+          linkText="Resend it"
+        />
+      )}
 
       <FormSubmitButton
         onClick={handleSubmit}

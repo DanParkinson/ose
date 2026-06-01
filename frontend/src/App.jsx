@@ -20,7 +20,8 @@ import ReactivateRequestPage from "./pages/Auth/ReactivateRequestPage";
 import ReactivateConfirmPage from "./pages/Auth/ReactivateConfirmPage";
 import SubjectListPage from "./pages/SubjectList/SubjectListPage";
 import SubjectDashboardPage from "./pages/SubjectDashboard/SubjectDashboardPage";
-
+import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
+import VerifyEmailResendPage from "./pages/Auth/VerifyEmailResenPage";
 
 
 
@@ -40,6 +41,23 @@ function App() {
           }
         />
 
+        <Route
+          path="/verify-email/:key"
+          element={
+            <PublicRoute>
+              <VerifyEmailPage />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/resend-verification-email"
+          element={
+            <PublicRoute>
+              <VerifyEmailResendPage />
+            </PublicRoute>
+          }
+        />
         {/* <Route
           path="/subjects"
           element={

@@ -1,20 +1,23 @@
-from ..base import BaseAccountAPITestCase
+from accounts.tests.email_authentication.base_email_authentication import (
+    BaseEmailAuthenticationTestCase,
+)
 
 
-class CustomUserModelTests(BaseAccountAPITestCase):
+class EmailCustomUserTests(BaseEmailAuthenticationTestCase):
     """
-    CUSTOM USER MODEL TEST CHECKLIST
-    ------------------
+    EMAIL AUTHENTICATION USER MODEL TEST CHECKLIST
+    ----------------------------------------------
     Field Configuration
     - Verify username field is removed
-    - Verify email field exists and stores the user email
+    - Verify email field exists
     - Verify email field is unique
-    - Verify deactivated_at allows null values
-    ------------------
+
+    ----------------------------------------------
     Authentication Configuration
     - Verify USERNAME_FIELD is email
     - Verify REQUIRED_FIELDS is empty
-    ------------------
+
+    ----------------------------------------------
     String Representation
     - Verify __str__ returns the user's email address
     """
@@ -33,13 +36,15 @@ class CustomUserModelTests(BaseAccountAPITestCase):
 
         self.assertNotIn("username", field_names)
 
-    def test_email_field_stores_user_email(self):
+    def test_email_field_exists(self):
         """
-        Arrange: Use the default user from the base test setup.
-        Act: Read the user's email field.
-        Assert: The email field stores the expected email address.
+        Arrange: Use the custom user model class.
+        Act: Check whether the email field exists on the model.
+        Assert: The email field is present.
         """
-        self.assertEqual(self.user.email, "user@example.com")
+        field_names = [field.name for field in self.User._meta.fields]
+
+        self.assertIn("email", field_names)
 
     def test_email_field_is_unique(self):
         """
@@ -50,26 +55,6 @@ class CustomUserModelTests(BaseAccountAPITestCase):
         email_field = self.User._meta.get_field("email")
 
         self.assertTrue(email_field.unique)
-
-    def test_deactivated_at_allows_null_values(self):
-        """
-        Arrange: Get the deactivated_at field from the custom user model.
-        Act: Read the field's null configuration.
-        Assert: The field allows null values for active users.
-        """
-        deactivated_at_field = self.User._meta.get_field("deactivated_at")
-
-        self.assertTrue(deactivated_at_field.null)
-
-    def test_deactivated_at_allows_blank_values(self):
-        """
-        Arrange: Get the deactivated_at field from the custom user model.
-        Act: Read the field's blank configuration.
-        Assert: The field allows blank values in forms and admin usage.
-        """
-        deactivated_at_field = self.User._meta.get_field("deactivated_at")
-
-        self.assertTrue(deactivated_at_field.blank)
 
     # =============================
     # Authentication Configuration
@@ -87,7 +72,7 @@ class CustomUserModelTests(BaseAccountAPITestCase):
         """
         Arrange: Use the custom user model class.
         Act: Read the REQUIRED_FIELDS value.
-        Assert: No extra fields are required when creating users or superusers.
+        Assert: No additional fields are required when creating users.
         """
         self.assertEqual(self.User.REQUIRED_FIELDS, [])
 
@@ -97,8 +82,10 @@ class CustomUserModelTests(BaseAccountAPITestCase):
 
     def test_string_representation_returns_email(self):
         """
-        Arrange: Use the default user from the base test setup.
+        Arrange: Create a user with an email address.
         Act: Convert the user object to a string.
         Assert: The string representation returns the user's email address.
         """
-        self.assertEqual(str(self.user), self.user.email)
+        user = self.create_user(email=self.email)
+
+        self.assertEqual(str(user), self.email)
