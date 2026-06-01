@@ -90,6 +90,9 @@ else:
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
     EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", 10))
 
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+ACCOUNT_ADAPTER = "accounts.adapter.CustomAccountAdapter"
+
 # rest auth
 REST_AUTH = {
     "USE_JWT": True,
