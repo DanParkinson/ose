@@ -129,10 +129,9 @@ const RegisterForm = () => {
 
       {status === "success" && (
         <Box
-          p={6}
         >
           <VStack gap={4} textAlign="center">
-            <Text color="text.light1" fontWeight="semibold">
+            <Text color="text.light1" fontWeight="bold">
               Your account has been created.
             </Text>
 
@@ -141,16 +140,16 @@ const RegisterForm = () => {
             </Text>
 
             <FormLink
-              text="Already verified?"
+              to="/resend-verification-email"
+              linkText="Resend verification email"
+            />
+
+            <FormLink
               to="/login"
               linkText="Login"
             />
 
-            <FormLink
-              text="Didn't receive the email?"
-              to="/resend-verification-email"
-              linkText="Resend verification email"
-            />
+
           </VStack>
         </Box>
       )}

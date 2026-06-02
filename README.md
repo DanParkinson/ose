@@ -68,7 +68,11 @@ So that I can securely use the platform.
 |            |                      |                       | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)| [User Details Serializer](/backend/accounts/tests/user_details/test_user_details_serializer.py) |
 |**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py)|
 |            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/JWT-COOKIE-AUTH.md)|
-|            |                      |                       | [Email Verifcation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/EMAIL-VERIFICATION.md) |
+|            |                       | Email Verification | [Overview](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/OVERVIEW.md) |
+|            |                       |                    | [Mandatory Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/MANDATORY-VERIFICATION.md) |
+|            |                       |                    | [Custom Account Adapter](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/CUSTOM-ACCOUNT-ADAPTER.md) |
+|            |                       |                    | [Verification Email Template](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/VERIFICATION-EMAIL-TEMPLATE.md) |
+|            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)|
 |            |                      | Permissions           |
 | **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)|
 |            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)|
@@ -162,7 +166,7 @@ So that replication is possible of required.
 | User Story | Title                    | Section               | Sub Section           |
 | ---------- | ------------------------ | --------------------- | --------------------- |
 | **US 6.1** | Deployment               | Render                | [Deployment Docs](/documentation/1.%20User-Stories/6.%20Deployment/DEPLOYMENT.md)|
-|            | Email Provider           | Google Workspace      | | 
+|            |                          | emails                | [Email setup](/documentation/1.%20User-Stories/6.%20Deployment/EMAIL-SETUP.md) | 
 
 ## 7. Email Infrastructure
 ```
@@ -173,14 +177,18 @@ So that configuring emails later is easier.
 
 | User Story | Title                | Section               | Sub Section |
 | ---------- | -------------------- | --------------------- | ----------- |
-| **US 7.1** | Email Infrastructure | Configuration         | SMTP Configuration |
-|            |                      |                       | [Email Backend](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/EMAIL-BACKEND.md) |
-|            |                      |                       | [Default Sender](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/DEFAULT-SENDER.md) |
-|            |                      |                       | [Email Templates](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/EMAIL-TEMPLATES.md) |
-|            |                      | Email Provider        |
-|            |                      | Delivery              | [Email Sending](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Delivery/EMAIL-SENDING.md) |
-|            |                      |                       |
-| **US 7.2** | Email Templates      | Authentication Emails | Email Verification |
+| **US 7.1** | Email Infrastructure | Configuration         | [Domain](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/DOMAIN.md) |
+|            |                      |                       | [Google Workspace](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/GOOGLE-WORKSPACE.md) |
+|            |                      | Email Authentication  | [SPF](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Email-authentication/SPF.md) |
+|            |                      |                       | [DKIM](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Email-authentication/DKIM.md) |
+|            |                      |                       | [DMARC](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Email-authentication/DMARC.md) |
+|            |                      | Mailboxes             | [Primary Mailbox](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/3.%20Mailboxes/PRIMARY-MAILBOX.md) |
+|            |                      |                       | [Email Aliases](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/3.%20Mailboxes/EMAIL-ALIASES.md) |
+| US 7.2     | Email Delivery       | Configuration         | [SMTP Configuration](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/SMTP-CONFIGURATION.md) |
+|            |                      |                       | [Email Backend](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/EMAIL-BACKEND.md) |
+|            |                      |                       | [Default Sender](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/DEFAULT-SENDER.md) |
+|            |                      |                       | [Frontend URL Configuration](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/FRONTEND-URL-CONFIGURATION.md) |
+
 
 ## Features
 
@@ -191,7 +199,7 @@ So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
 | ------------------------ | --------------------- | --------------------- | --------------- | ---------------- | -------------- |
-| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py)                |                   |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
+| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py) |[Frontend](/frontend/src/components/forms/auth/RegisterForm.test.jsx)                   |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
 |                          |                       | Email Verification    |
 |                          |                       | Login                 |
 |                          |                       | Login                 |

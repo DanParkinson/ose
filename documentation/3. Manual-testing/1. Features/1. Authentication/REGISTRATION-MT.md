@@ -31,11 +31,13 @@ Testing verifies that users can successfully create accounts and that validation
 | Test                                             | Expected Result                   | Actual Result                     | Status               |
 | ------------------------------------------------ | --------------------------------- | --------------------------------- | -------------------- |
 | Register with valid email and matching passwords | User account created successfully | User account created successfully | :white_check_mark:   |
+| Register with valid email and matching passwords | Redirect to verify email page | Redirect to verify email page | :white_check_mark:   |
 
 ### Evidence
 
 ![Enter-details](/documentation/assets/1.%20Manual-testing/Registration/registration-enter-details.png)
 ![Account created](/documentation/assets/1.%20Manual-testing/Registration/registration-account-created.png)
+![Redirect to verify email page](/documentation/assets/1.%20Manual-testing/Registration/registration-redirect-verify-email.png)
 
 ## Validation Testing
 

@@ -1,106 +1,78 @@
 /**
- * RegisterForm Tests
+ * REGISTER FORM TEST CHECKLIST
+ * ----------------------------
+ * Initial Render
+ * - Verify register form content is shown
+ * - Verify register navigation links are shown
  *
- * This test suite verifies:
+ * ----------------------------
+ * User Input
+ * - Verify email, password, and confirm password inputs update correctly
  *
- * 1. Initial register form content is shown
- * 2. Email, password, and confirm password inputs update correctly
- * 3. Successful registration calls register with the correct values
- * 4. Successful registration redirects the user to login
- * 5. Failed registration displays field and non-field errors
+ * ----------------------------
+ * Successful Registration
+ * - Verify register is called with valid email and passwords
+ * - Verify successful registration shows verification message
+ * - Verify successful registration does not redirect automatically
  *
- * Base form components, authentication hooks, and navigation are mocked so
- * these tests focus only on RegisterForm behaviour.
+ * ----------------------------
+ * Loading State
+ * - Verify loading text is displayed while registration is submitting
+ * - Verify submit button is disabled while registration is submitting
+ * - Verify duplicate registration is prevented by the disabled submit button
+ *
+ * ----------------------------
+ * Register Validation
+ * - Verify register displays field errors
+ * - Verify register displays non-field errors
  */
 
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
+import { describe, test, expect, beforeEach, afterEach } from "vitest";
+import { screen, waitFor, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
+import {
+  clearAuthMocks,
+  mockRegister,
+  mockNavigate,
+} from "../../../tests/auth/authFormMocks";
+
+import {
+  renderForm,
+  completeRegisterForm,
+  submitForm,
+} from "../../../tests/auth/authFormHelpers";
+
+import {
+  expectLoginLink,
+  expectReactivateLink,
+  expectResendVerificationLink,
+  expectRegisterSuccess,
+  expectErrors,
+  expectEmailValue,
+  expectPasswordValue,
+  expectConfirmPasswordValue,
+} from "../../../tests/auth/authFormAssertions";
+
 import RegisterForm from "./RegisterForm";
-import useAuth from "../../../hooks/UseAuth";
-import { useNavigate } from "react-router-dom";
-
-vi.mock("../../../hooks/UseAuth", () => ({
-  default: vi.fn(),
-}));
-
-vi.mock("react-router-dom", () => ({
-  useNavigate: vi.fn(),
-}));
-
-vi.mock("@chakra-ui/react", () => ({
-  chakra: (Component) => Component,
-  Input: (props) => <input {...props} />,
-  Text: ({ children }) => <p>{children}</p>,
-  Box: ({ children }) => <div>{children}</div>,
-  HStack: ({ children }) => <div>{children}</div>,
-  Button: ({ children, onClick, disabled }) => (
-    <button onClick={onClick} disabled={disabled}>
-      {children}
-    </button>
-  ),
-  Spinner: () => <span>spinner</span>,
-}));
-
-vi.mock("../base/FormContainer", () => ({
-  default: ({ title, children }) => (
-    <div>
-      <h1>{title}</h1>
-      {children}
-    </div>
-  ),
-}));
-
-vi.mock("../base/FormTextInput", () => ({
-  default: (props) => <input {...props} />,
-}));
-
-vi.mock("../base/FormError", () => ({
-  default: ({ children }) => (children ? <p>{children}</p> : null),
-}));
-
-vi.mock("../../feedback/ButtonSpinner", () => ({
-  default: () => <span>spinner</span>,
-}));
-
-vi.mock("../base/FormSubmitButton", () => ({
-  default: ({ children, onClick }) => (
-    <button onClick={onClick}>{children}</button>
-  ),
-}));
-
-vi.mock("../base/FormLink", () => ({
-  default: ({ text, to, linkText }) => (
-    <p>
-      {text} <a href={to}>{linkText}</a>
-    </p>
-  ),
-}));
+import useAuth from "../../../hooks/useAuth";
 
 describe("RegisterForm", () => {
-  const mockRegister = vi.fn();
-  const mockNavigate = vi.fn();
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    clearAuthMocks();
 
     useAuth.mockReturnValue({
       register: mockRegister,
     });
-
-    useNavigate.mockReturnValue(mockNavigate);
   });
 
   afterEach(() => {
     cleanup();
   });
+
+  // =====================
+  // Initial Render
+  // =====================
 
   test("shows the initial register form", () => {
     /**
@@ -108,36 +80,29 @@ describe("RegisterForm", () => {
      * Render the RegisterForm component.
      *
      * Act:
-     * Query the heading, inputs, buttons, and navigation links.
+     * Query the heading, inputs, and navigation links.
      *
      * Assert:
      * Confirm the register form renders correctly.
      * Confirm navigation links point to the correct routes.
      */
-    render(<RegisterForm />);
+    renderForm(RegisterForm);
 
     expect(
       screen.getByRole("heading", { name: "Register" })
     ).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("me@example.com")).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
+    expect(screen.getAllByPlaceholderText("********")).toHaveLength(2);
 
-    expect(
-      screen.getByPlaceholderText("Confirm password")
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("Login")).toHaveAttribute(
-      "href",
-      "/login"
-    );
-
-    expect(screen.getByText("Reactivate")).toHaveAttribute(
-      "href",
-      "/reactivate-account"
-    );
+    expectLoginLink();
+    expectReactivateLink();
   });
+
+  // =====================
+  // User Input
+  // =====================
 
   test("updates email and password inputs when user types", () => {
     /**
@@ -151,35 +116,24 @@ describe("RegisterForm", () => {
      * Assert:
      * Confirm all input values update correctly.
      */
-    render(<RegisterForm />);
+    renderForm(RegisterForm);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-
-    const passwordInput = screen.getByPlaceholderText("Password");
-
-    const confirmPasswordInput =
-      screen.getByPlaceholderText("Confirm password");
-
-    fireEvent.change(emailInput, {
-      target: { value: "test@example.com" },
+    completeRegisterForm({
+      email: "test@example.com",
+      password: "password123",
+      confirmPassword: "password123",
     });
 
-    fireEvent.change(passwordInput, {
-      target: { value: "password123" },
-    });
-
-    fireEvent.change(confirmPasswordInput, {
-      target: { value: "password123" },
-    });
-
-    expect(emailInput).toHaveValue("test@example.com");
-
-    expect(passwordInput).toHaveValue("password123");
-
-    expect(confirmPasswordInput).toHaveValue("password123");
+    expectEmailValue("test@example.com");
+    expectPasswordValue("password123");
+    expectConfirmPasswordValue("password123");
   });
 
-  test("calls register with entered values and navigates to login on success", async () => {
+  // =====================
+  // Successful Registration
+  // =====================
+
+  test("calls register with entered values and shows success message", async () => {
     /**
      * Arrange:
      * Mock a successful register response.
@@ -191,33 +145,23 @@ describe("RegisterForm", () => {
      *
      * Assert:
      * Confirm register is called with the correct values.
-     * Confirm navigation redirects to the login page.
+     * Confirm the success verification message is displayed.
+     * Confirm the user is not redirected automatically.
      */
     mockRegister.mockResolvedValue({
       success: true,
       errors: null,
     });
 
-    render(<RegisterForm />);
+    renderForm(RegisterForm);
 
-    fireEvent.change(screen.getByPlaceholderText("Email"), {
-      target: { value: "test@example.com" },
+    completeRegisterForm({
+      email: "test@example.com",
+      password: "password123",
+      confirmPassword: "password123",
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password123" },
-    });
-
-    fireEvent.change(
-      screen.getByPlaceholderText("Confirm password"),
-      {
-        target: { value: "password123" },
-      }
-    );
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Register" })
-    );
+    submitForm("Register");
 
     await waitFor(() => {
       expect(mockRegister).toHaveBeenCalledWith(
@@ -227,8 +171,111 @@ describe("RegisterForm", () => {
       );
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    expectRegisterSuccess();
+    expectResendVerificationLink();
+    expectLoginLink();
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  // =====================
+  // Loading State
+  // =====================
+
+  test("displays loading text while registration is submitting", async () => {
+    /**
+     * Arrange:
+     * Mock register so the request stays pending.
+     * Render the RegisterForm component.
+     * Populate all form fields.
+     *
+     * Act:
+     * Submit the register form.
+     *
+     * Assert:
+     * Confirm the loading text is displayed.
+     */
+    mockRegister.mockReturnValue(new Promise(() => {}));
+
+    renderForm(RegisterForm);
+
+    completeRegisterForm({
+      email: "test@example.com",
+      password: "password123",
+      confirmPassword: "password123",
+    });
+
+    submitForm("Register");
+
+    expect(await screen.findByText("Registering...")).toBeInTheDocument();
+  });
+
+  test("disables the submit button while registration is submitting", async () => {
+    /**
+     * Arrange:
+     * Mock register so the request stays pending.
+     * Render the RegisterForm component.
+     * Populate all form fields.
+     *
+     * Act:
+     * Submit the register form.
+     *
+     * Assert:
+     * Confirm the submit button is disabled.
+     */
+    mockRegister.mockReturnValue(new Promise(() => {}));
+
+    renderForm(RegisterForm);
+
+    completeRegisterForm({
+      email: "test@example.com",
+      password: "password123",
+      confirmPassword: "password123",
+    });
+
+    submitForm("Register");
+
+    await screen.findByText("Registering...");
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  test("prevents duplicate registration while loading", async () => {
+    /**
+     * Arrange:
+     * Mock register so the first request stays pending.
+     * Render the RegisterForm component.
+     * Populate all form fields.
+     *
+     * Act:
+     * Submit the register form.
+     *
+     * Assert:
+     * Confirm register is only called once.
+     * Confirm the button remains disabled while loading.
+     */
+    mockRegister.mockReturnValue(new Promise(() => {}));
+
+    renderForm(RegisterForm);
+
+    completeRegisterForm({
+      email: "test@example.com",
+      password: "password123",
+      confirmPassword: "password123",
+    });
+
+    submitForm("Register");
+
+    await screen.findByText("Registering...");
+
+    expect(mockRegister).toHaveBeenCalledTimes(1);
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  // =====================
+  // Register Validation
+  // =====================
 
   test("displays errors when registration fails", async () => {
     /**
@@ -247,38 +294,25 @@ describe("RegisterForm", () => {
     mockRegister.mockResolvedValue({
       success: false,
       errors: {
-        email: "A user is already registered with this email.",
-        password1: "This password is too common.",
-        password2: "The two password fields didn’t match.",
+        email: ["A user is already registered with this email."],
+        password1: ["This password is too common."],
+        password2: ["The two password fields didn’t match."],
         non_field_errors: ["Registration failed."],
       },
     });
 
-    render(<RegisterForm />);
+    renderForm(RegisterForm);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Register" })
-    );
+    submitForm("Register");
 
-    expect(
-      await screen.findByText(
-        "A user is already registered with this email."
-      )
-    ).toBeInTheDocument();
+    await screen.findByText("A user is already registered with this email.");
 
-    expect(
-      screen.getByText("This password is too common.")
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(
-        "The two password fields didn’t match."
-      )
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText("Registration failed.")
-    ).toBeInTheDocument();
+    expectErrors([
+      "A user is already registered with this email.",
+      "This password is too common.",
+      "The two password fields didn’t match.",
+      "Registration failed.",
+    ]);
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });
