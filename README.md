@@ -69,10 +69,10 @@ So that I can securely use the platform.
 |**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py)|
 |            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/JWT-COOKIE-AUTH.md)|
 |            |                       | Email Verification | [Overview](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/OVERVIEW.md) |
-|            |                       |                    | [Mandatory Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/MANDATORY-VERIFICATION.md) |
-|            |                       |                    | [Custom Account Adapter](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/CUSTOM-ACCOUNT-ADAPTER.md) |
+|            |                       |                    | [Mandatory Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/MANDATORY-VERIFICATION.md) | [Email verification](/backend/accounts/tests/email_verification/test_verify_email.py) |
+|            |                       |                    | [Custom Account Adapter](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/CUSTOM-ACCOUNT-ADAPTER.md) | [Account adapter](/backend/accounts/tests/email_verification/test_account_adapter.py) |
 |            |                       |                    | [Verification Email Template](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/VERIFICATION-EMAIL-TEMPLATE.md) |
-|            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)|
+|            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)| [Resend verification](/backend/accounts/tests/email_verification/test_resend_verify_email.py) |
 |            |                      | Permissions           |
 | **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)|
 |            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)|
@@ -199,9 +199,9 @@ So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
 | ------------------------ | --------------------- | --------------------- | --------------- | ---------------- | -------------- |
-| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py) |[Frontend](/frontend/src/components/forms/auth/RegisterForm.test.jsx)                   |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
-|                          |                       | Email Verification    |
-|                          |                       | Login                 |
+| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py) |[Frontend](/frontend/src/components/forms/auth/RegisterForm.test.jsx) |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
+|                          |                       | Email Verification    | [backend](/backend/accounts/tests/email_verification/base_email_verification.py) | [Frontend](/frontend/src/components/forms/auth/VerifyEmailForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/EMAIL-VERIFICATION.md) |
+|                          |                       | Resend Email Verification | [backend](/backend/accounts/tests/email_verification/test_resend_verify_email.py) | [Frontend](/frontend/src/components/forms/auth/VerifyResendEmailForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESEND-EMAIL-VERIFICATION.md) |
 |                          |                       | Login                 |
 |                          |                       | Logout                |
 |                          |                       | Reset Password        |

@@ -91,15 +91,19 @@ const VerifyEmailForm = () => {
       {status === "error" && (
         <>
           <FormError>
-            {errors.non_field_errors?.[0] ||
-              errors.detail ||
-              "This verification link is invalid or has expired."}
+            This verification link is no longer valid. Your email may already be
+            verified, or the link may have expired.
           </FormError>
 
           <FormLink
             text="Need a new verification email?"
             to="/resend-verification-email"
             linkText="Resend it"
+          />
+          <FormLink
+            text="Want to"
+            to="/login"
+            linkText="login?"
           />
         </>
       )}

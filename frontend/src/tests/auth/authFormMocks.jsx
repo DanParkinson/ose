@@ -14,6 +14,8 @@ export const clearAuthMocks = () => {
   vi.clearAllMocks();
 };
 
+export const mockParams = {};
+
 /**
  * useAuth
  */
@@ -32,6 +34,7 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useParams: () => mockParams,
   };
 });
 
