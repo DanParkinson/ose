@@ -18,10 +18,11 @@
  *
  * --------------------------------
  * Verify Email Validation
- * - Verify invalid verification key displays API error
- * - Verify detail error displays when returned by API
- * - Verify missing API error displays fallback error message
+ * - Verify invalid verification key displays generic verification error
+ * - Verify detail error displays generic verification error
+ * - Verify missing API error displays generic verification error
  * - Verify error state shows resend verification link
+ * - Verify error state shows login link
  */
 
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
@@ -46,6 +47,9 @@ vi.mock("../../../api/axiosDefaults", () => ({
     post: vi.fn(),
   },
 }));
+
+const verificationErrorMessage =
+  "This verification link is no longer valid. Your email may already be verified, or the link may have expired.";
 
 describe("VerifyEmailForm", () => {
   beforeEach(() => {
@@ -203,18 +207,18 @@ describe("VerifyEmailForm", () => {
   // Verify Email Validation
   // =====================
 
-  test("displays API error when email verification fails", async () => {
+  test("displays generic error when email verification fails with non-field error", async () => {
     /**
      * Arrange:
-     * Mock a failed verify email response with an API error.
+     * Mock a failed verify email response with a non-field error.
      * Render the VerifyEmailForm component.
      *
      * Act:
      * Submit the verify email form.
      *
      * Assert:
-     * Confirm the API error is displayed.
-     * Confirm the resend verification link is displayed.
+     * Confirm the generic verification error is displayed.
+     * Confirm the resend verification and login links are displayed.
      */
     axiosRequest.post.mockRejectedValue({
       response: {
@@ -231,18 +235,21 @@ describe("VerifyEmailForm", () => {
     submitForm("Verify Email");
 
     expect(
-      await screen.findByText(
-        "This verification link is invalid or has expired."
-      )
+      await screen.findByText(verificationErrorMessage)
     ).toBeInTheDocument();
 
     expect(screen.getByText("Resend it")).toHaveAttribute(
       "href",
       "/resend-verification-email"
     );
+
+    expect(screen.getByText("login?")).toHaveAttribute(
+      "href",
+      "/login"
+    );
   });
 
-  test("displays detail error when email verification fails with detail response", async () => {
+  test("displays generic error when email verification fails with detail response", async () => {
     /**
      * Arrange:
      * Mock a failed verify email response with a detail error.
@@ -252,8 +259,8 @@ describe("VerifyEmailForm", () => {
      * Submit the verify email form.
      *
      * Assert:
-     * Confirm the detail error is displayed.
-     * Confirm the resend verification link is displayed.
+     * Confirm the generic verification error is displayed.
+     * Confirm the resend verification and login links are displayed.
      */
     axiosRequest.post.mockRejectedValue({
       response: {
@@ -267,15 +274,22 @@ describe("VerifyEmailForm", () => {
 
     submitForm("Verify Email");
 
-    expect(await screen.findByText("Not found.")).toBeInTheDocument();
+    expect(
+      await screen.findByText(verificationErrorMessage)
+    ).toBeInTheDocument();
 
     expect(screen.getByText("Resend it")).toHaveAttribute(
       "href",
       "/resend-verification-email"
     );
+
+    expect(screen.getByText("login?")).toHaveAttribute(
+      "href",
+      "/login"
+    );
   });
 
-  test("displays fallback error when email verification fails without API response", async () => {
+  test("displays generic error when email verification fails without API response", async () => {
     /**
      * Arrange:
      * Mock a failed verify email response without response data.
@@ -285,8 +299,8 @@ describe("VerifyEmailForm", () => {
      * Submit the verify email form.
      *
      * Assert:
-     * Confirm the fallback error message is displayed.
-     * Confirm the resend verification link is displayed.
+     * Confirm the generic verification error is displayed.
+     * Confirm the resend verification and login links are displayed.
      */
     axiosRequest.post.mockRejectedValue({});
 
@@ -295,14 +309,17 @@ describe("VerifyEmailForm", () => {
     submitForm("Verify Email");
 
     expect(
-      await screen.findByText(
-        "This verification link is invalid or has expired."
-      )
+      await screen.findByText(verificationErrorMessage)
     ).toBeInTheDocument();
 
     expect(screen.getByText("Resend it")).toHaveAttribute(
       "href",
       "/resend-verification-email"
+    );
+
+    expect(screen.getByText("login?")).toHaveAttribute(
+      "href",
+      "/login"
     );
   });
 });

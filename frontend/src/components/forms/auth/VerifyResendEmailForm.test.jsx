@@ -36,7 +36,6 @@ import "@testing-library/jest-dom/vitest";
 
 import {
   clearAuthMocks,
-  mockNavigate,
 } from "../../../tests/auth/authFormMocks";
 
 import {
@@ -48,7 +47,6 @@ import {
 import {
   expectLoginLink,
   expectEmailValue,
-  expectErrors,
 } from "../../../tests/auth/authFormAssertions";
 
 import VerifyEmailResendForm from "./VerifyEmailResendForm";

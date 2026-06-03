@@ -47,6 +47,12 @@ vi.mock("@chakra-ui/react", () => ({
   Text: ({ children }) => <p>{children}</p>,
   HStack: ({ children }) => <div>{children}</div>,
   VStack: ({ children }) => <div>{children}</div>,
+
+  Button: ({ children, onClick, disabled }) => (
+    <button onClick={onClick} disabled={disabled}>
+      {children}
+    </button>
+  ),
 }));
 
 /**

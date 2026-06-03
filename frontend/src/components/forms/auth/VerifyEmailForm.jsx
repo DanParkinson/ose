@@ -18,13 +18,11 @@ const VerifyEmailForm = () => {
   const { key } = useParams();
 
   const [status, setStatus] = useState("idle");
-  const [errors, setErrors] = useState({});
 
   const handleVerifyEmail = async () => {
     if (status === "loading") return;
 
     setStatus("loading");
-    setErrors({});
 
     try {
       await axiosRequest.post("/api/auth/registration/verify-email/", {
@@ -32,16 +30,8 @@ const VerifyEmailForm = () => {
       });
 
       setStatus("success");
-    } catch (error) {
+    } catch {
       setStatus("error");
-
-      setErrors(
-        error.response?.data || {
-          non_field_errors: [
-            "This verification link is invalid or has expired.",
-          ],
-        }
-      );
     }
   };
 

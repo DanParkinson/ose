@@ -30,7 +30,7 @@ For more in depth documentation, the following is provided:
 ## 1. Development Environment Setup
 
 ```
-As a **Developer**, 
+As a **Developer**,
 I want an easy to install environement that works on all machines,
 So that I can quickly begin work.
 ```
@@ -62,11 +62,11 @@ So that I can securely use the platform.
 | ---------- | -------------------- | --------------------- | --------------------- | ---------------------- |
 |**US 2.1**  | Accounts App         | User Model            | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md) | [Custom User Model](/backend/accounts/tests/email_authentication/test_email_custom_user.py), [Registration Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
 |            |                      | User Creation         | [Custom User Manager](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/2.%20User-Creation/CUSTOM-USER-MANAGER.md) | [Custom User Manager](/backend/accounts/tests/user_creation/test_user_creation_custom_user_manager.py) |
-|            |                      | Account Lifecycle     | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)|
-|            |                      |                       | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)|
+|            |                      | Account Lifecycle     | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)| [Account Deactivation](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py)|
+|            |                      |                       | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)| [Reactivation Request](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py), [Reactivation Confirm](/backend/accounts/tests/account_lifecycle/test_account_reactivation_confirm.py)   |
 |            |                      | API Serializers       | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)| [Registration Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
 |            |                      |                       | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)| [User Details Serializer](/backend/accounts/tests/user_details/test_user_details_serializer.py) |
-|**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py)|
+|**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py), [Password Reset Request](/backend/accounts/tests/reset_password/test_password_reset_request.py), [Password Reser Confirm](/backend/accounts/tests/reset_password/test_password_reset_confirm.py)|
 |            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/JWT-COOKIE-AUTH.md)|
 |            |                       | Email Verification | [Overview](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/OVERVIEW.md) |
 |            |                       |                    | [Mandatory Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/MANDATORY-VERIFICATION.md) | [Email verification](/backend/accounts/tests/email_verification/test_verify_email.py) |
@@ -83,12 +83,12 @@ So that I can securely use the platform.
 ## 3. Security & Application Protection
 
 ```
-As a **Developer**, 
-I want to set up a secure platform, 
-So that i dont get sued. 
+As a **Developer**,
+I want to set up a secure platform,
+So that i dont get sued.
 
 As a **User**,
-I want to use a secure platform, 
+I want to use a secure platform,
 So that I dont have to sue anyone.
 ```
 
@@ -106,11 +106,11 @@ So that I dont have to sue anyone.
 ## 4. System Efficiency
 
 ```
-As a **Stake Holder**, 
-I want my application to be efficient, 
+As a **Stake Holder**,
+I want my application to be efficient,
 So that i can improve performance and reduce cost
 
-As a **User**, 
+As a **User**,
 I want to have quick response for the website,
 So that I dont have to wait.
 ```
@@ -133,7 +133,7 @@ So that development is quicker.
 
 | User Story | Title                    | Section          | Sub Section           |
 | ---------- | ------------------------ | ---------------- | --------------------- |
-| **US 5.1** | Django REST Framework    | Endpoints & URLS | [Auth](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/AUTH-ENDPOINTS.md) 
+| **US 5.1** | Django REST Framework    | Endpoints & URLS | [Auth](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/AUTH-ENDPOINTS.md)
 |            |                          |                  | [Account](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/ACCOUNT-ENDPOINTS.md)|
 |            |                          |                  | [Core](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/CORE-ENDPOINTS.md)|
 |            |                          |                  | [URL COnventions](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/URL-CONVENTIONS.md)
@@ -166,7 +166,7 @@ So that replication is possible of required.
 | User Story | Title                    | Section               | Sub Section           |
 | ---------- | ------------------------ | --------------------- | --------------------- |
 | **US 6.1** | Deployment               | Render                | [Deployment Docs](/documentation/1.%20User-Stories/6.%20Deployment/DEPLOYMENT.md)|
-|            |                          | emails                | [Email setup](/documentation/1.%20User-Stories/6.%20Deployment/EMAIL-SETUP.md) | 
+|            |                          | emails                | [Email setup](/documentation/1.%20User-Stories/6.%20Deployment/EMAIL-SETUP.md) |
 
 ## 7. Email Infrastructure
 ```
@@ -194,7 +194,7 @@ So that configuring emails later is easier.
 
 ```
 As a **User**,
-I want a dedicated list of features, 
+I want a dedicated list of features,
 So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
@@ -204,14 +204,15 @@ So that I know what i can do
 |                          |                       | Resend Email Verification | [backend](/backend/accounts/tests/email_verification/test_resend_verify_email.py) | [Frontend](/frontend/src/components/forms/auth/VerifyResendEmailForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESEND-EMAIL-VERIFICATION.md) |
 |                          |                       | Login                 | [Backend](/backend/accounts/tests/dj_rest_auth/test_login.py) | [Frontend](/frontend/src/components/forms/auth/LoginForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/LOGIN-MT.md) |
 |                          |                       | Logout                | [Backend](/backend/accounts/tests/dj_rest_auth/test_logout.py) | [Frontend](/frontend/src/components/forms/auth/LogoutForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/LOGOUT-MT.md) |
-|                          |                       | Reset Password        |
-|                          |                       | Reactivate Request    |
-|                          |                       | Reactivate Confirm    |
+|                          |                       | Reset Password request| [Backend](/backend/accounts/tests/reset_password/test_password_reset_request.py) | [Frontend](/frontend/src/components/forms/auth/ForgotPasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESET-PASSWORD-REQUEST-MT.md) |
+|                          |                       | Reset Password confirm| [Backend](/backend/accounts/tests/reset_password/test_password_reset_confirm.py) | [Frontend](/frontend/src/components/forms/auth/ResetPasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESET-PASSWORD-CONFIRM-MT.md) |
+|                          |                       | Reactivate Request    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateRequestForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-REQUEST.md) |
+|                          |                       | Reactivate Confirm    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateConfirmForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-CONFIRM-MT.md) |
 | Account Management       | Structure             | Account Sidebar       |
-|                          | Profile               | View Email            | 
+|                          | Profile               | View Email            |
 |                          | Settings              | Change Password       |
 |                          |                       | Change email          |
-|                          |                       | Deactivate Account    |
+|                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) |
 |                          |                       | Logout                |
 
 

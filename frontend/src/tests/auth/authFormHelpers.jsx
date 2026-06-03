@@ -4,13 +4,15 @@ import {
   fireEvent,
 } from "@testing-library/react";
 
+import { createElement } from "react";
+
 /**
  * Render
  */
-
-export const renderForm = (Component) => {
-  render(<Component />);
+export const renderForm = (FormComponent) => {
+  render(createElement(FormComponent));
 };
+
 
 /**
  * Inputs

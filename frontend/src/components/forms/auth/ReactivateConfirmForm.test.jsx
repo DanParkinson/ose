@@ -1,32 +1,45 @@
 /**
- * ReactivateConfirmForm Tests
+ * REACTIVATE CONFIRM FORM TEST CHECKLIST
+ * --------------------------------------
+ * Initial Render
+ * - Verify reactivate account form content is shown
+ * - Verify reactivate account button is shown
  *
- * This test suite verifies:
+ * --------------------------------------
+ * Account Reactivation
+ * - Verify reactivation request sends uid and token to confirm endpoint
+ * - Verify successful reactivation shows success message
+ * - Verify successful reactivation shows login link
  *
- * 1. Initial idle state is shown
- * 2. Clicking reactivate triggers API call with uid/token
- * 3. Loading state is displayed during request
- * 4. Success state shows confirmation and login link
- * 5. Backend errors are displayed
- * 6. Fallback error is displayed when no backend data exists
+ * --------------------------------------
+ * Loading State
+ * - Verify loading message is displayed while reactivation is submitting
+ * - Verify submit button is disabled while reactivation is submitting
  *
- * Base components, Chakra components, and routing are mocked so tests focus
- * only on ReactivateConfirmForm behaviour.
+ * --------------------------------------
+ * Reactivation Validation
+ * - Verify API non-field error displays
+ * - Verify API detail error displays
+ * - Verify fallback error displays when no API response is returned
+ * - Verify error state shows request another link
  */
 
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
+import { screen, waitFor, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
+
+import {
+  clearAuthMocks,
+  mockParams,
+} from "../../../tests/auth/authFormMocks";
+
+import {
+  renderForm,
+  submitForm,
+} from "../../../tests/auth/authFormHelpers";
 
 import ReactivateConfirmForm from "./ReactivateConfirmForm";
 import { axiosRequest } from "../../../api/axiosDefaults";
-import { useParams } from "react-router-dom";
 
 vi.mock("../../../api/axiosDefaults", () => ({
   axiosRequest: {
@@ -34,75 +47,34 @@ vi.mock("../../../api/axiosDefaults", () => ({
   },
 }));
 
-vi.mock("react-router-dom", () => ({
-  useParams: vi.fn(),
-}));
-
-vi.mock("@chakra-ui/react", () => ({
-  chakra: (Component) => Component,
-  Input: (props) => <input {...props} />,
-  Text: ({ children }) => <p>{children}</p>,
-  Box: ({ children }) => <div>{children}</div>,
-  HStack: ({ children }) => <div>{children}</div>,
-}));
-
-vi.mock("../base/FormContainer", () => ({
-  default: ({ title, children }) => (
-    <div>
-      <h1>{title}</h1>
-      {children}
-    </div>
-  ),
-}));
-
-vi.mock("../../feedback/ButtonSpinner", () => ({
-  default: () => <span>spinner</span>,
-}));
-
-vi.mock("../base/FormSubmitButton", () => ({
-  default: ({ children, onClick }) => (
-    <button onClick={onClick}>{children}</button>
-  ),
-}));
-
-vi.mock("../base/FormError", () => ({
-  default: ({ children }) => (children ? <p>{children}</p> : null),
-}));
-
-vi.mock("../base/FormLink", () => ({
-  default: ({ text, to, linkText }) => (
-    <p>
-      {text} <a href={to}>{linkText}</a>
-    </p>
-  ),
-}));
-
 describe("ReactivateConfirmForm", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    clearAuthMocks();
 
-    useParams.mockReturnValue({
-      uid: "abc123",
-      token: "token123",
-    });
+    mockParams.uid = "abc123";
+    mockParams.token = "token123";
   });
 
   afterEach(() => {
     cleanup();
   });
 
-  test("shows initial idle state", () => {
+  // =====================
+  // Initial Render
+  // =====================
+
+  test("shows the initial reactivate confirm form", () => {
     /**
      * Arrange:
      * Render the ReactivateConfirmForm component.
      *
      * Act:
-     * Query the heading, helper text, and reactivate button.
+     * Query the heading, instruction text, and reactivate button.
      *
      * Assert:
-     * Confirm the initial idle state is displayed correctly.
+     * Confirm the initial reactivate confirm form renders correctly.
      */
-    render(<ReactivateConfirmForm />);
+    renderForm(ReactivateConfirmForm);
 
     expect(
       screen.getByRole("heading", { name: "Reactivate Account" })
@@ -117,7 +89,11 @@ describe("ReactivateConfirmForm", () => {
     ).toBeInTheDocument();
   });
 
-  test("calls API with uid and token when button is clicked", async () => {
+  // =====================
+  // Account Reactivation
+  // =====================
+
+  test("sends uid and token to reactivate confirm endpoint", async () => {
     /**
      * Arrange:
      * Mock a successful reactivation response.
@@ -125,18 +101,17 @@ describe("ReactivateConfirmForm", () => {
      * Render the ReactivateConfirmForm component.
      *
      * Act:
-     * Click the Reactivate Account button.
+     * Submit the reactivate confirm form.
      *
      * Assert:
-     * Confirm the API is called with the correct uid and token values.
+     * Confirm the API request is sent to the correct endpoint
+     * with the uid and token from the URL params.
      */
     axiosRequest.post.mockResolvedValue({});
 
-    render(<ReactivateConfirmForm />);
+    renderForm(ReactivateConfirmForm);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Reactivate Account" })
-    );
+    submitForm("Reactivate Account");
 
     await waitFor(() => {
       expect(axiosRequest.post).toHaveBeenCalledWith(
@@ -149,59 +124,24 @@ describe("ReactivateConfirmForm", () => {
     });
   });
 
-  test("shows loading state while request is in progress", async () => {
-    /**
-     * Arrange:
-     * Mock a pending reactivation request.
-     * Render the ReactivateConfirmForm component.
-     *
-     * Act:
-     * Click the Reactivate Account button.
-     *
-     * Assert:
-     * Confirm the loading state message is displayed while waiting.
-     */
-    let resolvePromise;
-
-    axiosRequest.post.mockReturnValue(
-      new Promise((resolve) => {
-        resolvePromise = resolve;
-      })
-    );
-
-    render(<ReactivateConfirmForm />);
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Reactivate Account" })
-    );
-
-    expect(
-      screen.getByText("Reactivating account...")
-    ).toBeInTheDocument();
-
-    resolvePromise({});
-  });
-
-  test("shows success state after successful reactivation", async () => {
+  test("shows success message when account reactivation succeeds", async () => {
     /**
      * Arrange:
      * Mock a successful reactivation response.
      * Render the ReactivateConfirmForm component.
      *
      * Act:
-     * Click the Reactivate Account button.
+     * Submit the reactivate confirm form.
      *
      * Assert:
      * Confirm the success message is displayed.
-     * Confirm the login link is displayed correctly.
+     * Confirm the login link is displayed.
      */
     axiosRequest.post.mockResolvedValue({});
 
-    render(<ReactivateConfirmForm />);
+    renderForm(ReactivateConfirmForm);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Reactivate Account" })
-    );
+    submitForm("Reactivate Account");
 
     expect(
       await screen.findByText("Your account has been reactivated.")
@@ -213,18 +153,74 @@ describe("ReactivateConfirmForm", () => {
     );
   });
 
-  test("shows backend error when request fails", async () => {
+  // =====================
+  // Loading State
+  // =====================
+
+  test("displays loading message while account is reactivating", async () => {
     /**
      * Arrange:
-     * Mock a failed reactivation response with backend error data.
+     * Mock reactivation request so the request stays pending.
      * Render the ReactivateConfirmForm component.
      *
      * Act:
-     * Click the Reactivate Account button.
+     * Submit the reactivate confirm form.
      *
      * Assert:
-     * Confirm the backend error message is displayed.
-     * Confirm the reactivation request link is displayed correctly.
+     * Confirm the loading message and loading button text are displayed.
+     */
+    axiosRequest.post.mockReturnValue(new Promise(() => {}));
+
+    renderForm(ReactivateConfirmForm);
+
+    submitForm("Reactivate Account");
+
+    expect(
+      await screen.findByText("Reactivating account...")
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("Reactivating...")).toBeInTheDocument();
+  });
+
+  test("disables the submit button while account is reactivating", async () => {
+    /**
+     * Arrange:
+     * Mock reactivation request so the request stays pending.
+     * Render the ReactivateConfirmForm component.
+     *
+     * Act:
+     * Submit the reactivate confirm form.
+     *
+     * Assert:
+     * Confirm the submit button is disabled while loading.
+     */
+    axiosRequest.post.mockReturnValue(new Promise(() => {}));
+
+    renderForm(ReactivateConfirmForm);
+
+    submitForm("Reactivate Account");
+
+    await screen.findByText("Reactivating...");
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  // =====================
+  // Reactivation Validation
+  // =====================
+
+  test("displays API non-field error when reactivation fails", async () => {
+    /**
+     * Arrange:
+     * Mock a failed reactivation response with a non-field error.
+     * Render the ReactivateConfirmForm component.
+     *
+     * Act:
+     * Submit the reactivate confirm form.
+     *
+     * Assert:
+     * Confirm the API error is displayed.
+     * Confirm the request another link is displayed.
      */
     axiosRequest.post.mockRejectedValue({
       response: {
@@ -234,11 +230,9 @@ describe("ReactivateConfirmForm", () => {
       },
     });
 
-    render(<ReactivateConfirmForm />);
+    renderForm(ReactivateConfirmForm);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Reactivate Account" })
-    );
+    submitForm("Reactivate Account");
 
     expect(
       await screen.findByText("Invalid or expired link.")
@@ -250,30 +244,67 @@ describe("ReactivateConfirmForm", () => {
     );
   });
 
-  test("shows fallback error when no backend data exists", async () => {
+  test("displays API detail error when reactivation fails", async () => {
     /**
      * Arrange:
-     * Mock a failed reactivation request without backend error data.
+     * Mock a failed reactivation response with a detail error.
      * Render the ReactivateConfirmForm component.
      *
      * Act:
-     * Click the Reactivate Account button.
+     * Submit the reactivate confirm form.
+     *
+     * Assert:
+     * Confirm the detail error is displayed.
+     * Confirm the request another link is displayed.
+     */
+    axiosRequest.post.mockRejectedValue({
+      response: {
+        data: {
+          detail: "Not found.",
+        },
+      },
+    });
+
+    renderForm(ReactivateConfirmForm);
+
+    submitForm("Reactivate Account");
+
+    expect(await screen.findByText("Not found.")).toBeInTheDocument();
+
+    expect(screen.getByText("Request one")).toHaveAttribute(
+      "href",
+      "/reactivate-account"
+    );
+  });
+
+  test("displays fallback error when reactivation fails without API response", async () => {
+    /**
+     * Arrange:
+     * Mock a failed reactivation response without response data.
+     * Render the ReactivateConfirmForm component.
+     *
+     * Act:
+     * Submit the reactivate confirm form.
      *
      * Assert:
      * Confirm the fallback error message is displayed.
+     * Confirm the request another link is displayed.
      */
-    axiosRequest.post.mockRejectedValue(new Error("Network error"));
+    axiosRequest.post.mockRejectedValue({});
 
-    render(<ReactivateConfirmForm />);
+    renderForm(ReactivateConfirmForm);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Reactivate Account" })
-    );
+    submitForm("Reactivate Account");
 
     expect(
       await screen.findByText(
         "This reactivation link is invalid or has expired."
       )
     ).toBeInTheDocument();
+
+    expect(screen.getByText("Request one")).toHaveAttribute(
+      "href",
+      "/reactivate-account"
+    );
   });
 });

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { HStack, Text, Box, VStack} from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 
 // Hooks
 import useAuth from "../../../hooks/useAuth";
@@ -12,13 +11,12 @@ import FormSubmitButton from "../base/buttons/FormSubmitButton";
 import FormFieldError from "../base/form_field/FormFieldError";
 import FormLink from "../base/navigation/FormLink";
 
-// Feedback 
+// Feedback
 import ButtonSpinner from "../../feedback/ButtonSpinner";
 import FormError from "../base/feedback/FormError";
 
 const RegisterForm = () => {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const [status, setStatus] = useState("idle");
 
   const [email, setEmail] = useState("");
