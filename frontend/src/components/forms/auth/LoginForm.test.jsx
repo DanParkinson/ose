@@ -1,104 +1,75 @@
 /**
- * LoginForm Tests
+ * LOGIN FORM TEST CHECKLIST
+ * -------------------------
+ * Initial Render
+ * - Verify login form content is shown
+ * - Verify login navigation links are shown
  *
- * This test suite verifies:
+ * -------------------------
+ * User Input
+ * - Verify email and password inputs update correctly
  *
- * 1. Initial login form content is shown
- * 2. Email and password inputs update correctly
- * 3. Successful login calls login with the correct values
- * 4. Successful login redirects the user home
- * 5. Failed login displays field and non-field errors
+ * -------------------------
+ * Successful Login
+ * - Verify login is called with valid email and password
+ * - Verify successful login redirects user home
  *
- * Base form components, authentication hooks, and navigation are mocked so
- * these tests focus only on LoginForm behaviour.
+ * -------------------------
+ * Loading State
+ * - Verify loading text is displayed while login is submitting
+ * - Verify submit button is disabled while login is submitting
+ * - Verify duplicate login is prevented by the disabled submit button
+ *
+ * -------------------------
+ * Login Validation
+ * - Verify login displays field errors
+ * - Verify login displays non-field errors
+ * - Verify unverified email error displays resend verification link
  */
 
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
+import { describe, test, expect, beforeEach, afterEach } from "vitest";
+import { screen, waitFor, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
+import {
+  clearAuthMocks,
+  mockLogin,
+  mockNavigate,
+} from "../../../tests/auth/authFormMocks";
+
+import {
+  renderForm,
+  completeLoginForm,
+  submitForm,
+} from "../../../tests/auth/authFormHelpers";
+
+import {
+  expectRegisterLink,
+  expectReactivateLink,
+  expectEmailValue,
+  expectPasswordValue,
+  expectErrors,
+} from "../../../tests/auth/authFormAssertions";
+
 import LoginForm from "./LoginForm";
-import useAuth from "../../../hooks/UseAuth";
-import { useNavigate } from "react-router-dom";
-
-vi.mock("../../../hooks/UseAuth", () => ({
-  default: vi.fn(),
-}));
-
-vi.mock("../../../hooks/useAuth", () => ({
-  default: vi.fn(),
-}));
-
-vi.mock("react-router-dom", () => ({
-  useNavigate: vi.fn(),
-}));
-
-vi.mock("@chakra-ui/react", () => ({
-  chakra: (Component) => Component,
-  Input: (props) => <input {...props} />,
-  Text: ({ children }) => <p>{children}</p>,
-  Box: ({ children }) => <div>{children}</div>,
-  HStack: ({ children }) => <div>{children}</div>,
-}));
-
-vi.mock("../base/FormContainer", () => ({
-  default: ({ title, children }) => (
-    <div>
-      <h1>{title}</h1>
-      {children}
-    </div>
-  ),
-}));
-
-vi.mock("../base/FormTextInput", () => ({
-  default: (props) => <input {...props} />,
-}));
-
-vi.mock("../base/FormError", () => ({
-  default: ({ children }) => (children ? <p>{children}</p> : null),
-}));
-
-vi.mock("../../feedback/ButtonSpinner", () => ({
-  default: () => <span>spinner</span>,
-}));
-
-vi.mock("../base/FormSubmitButton", () => ({
-  default: ({ children, onClick }) => (
-    <button onClick={onClick}>{children}</button>
-  ),
-}));
-
-vi.mock("../base/FormLink", () => ({
-  default: ({ text, to, linkText }) => (
-    <p>
-      {text} <a href={to}>{linkText}</a>
-    </p>
-  ),
-}));
+import useAuth from "../../../hooks/useAuth";
 
 describe("LoginForm", () => {
-  const mockLogin = vi.fn();
-  const mockNavigate = vi.fn();
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    clearAuthMocks();
 
     useAuth.mockReturnValue({
       login: mockLogin,
     });
-
-    useNavigate.mockReturnValue(mockNavigate);
   });
 
   afterEach(() => {
     cleanup();
   });
+
+  // =====================
+  // Initial Render
+  // =====================
 
   test("shows the initial login form", () => {
     /**
@@ -106,37 +77,38 @@ describe("LoginForm", () => {
      * Render the LoginForm component.
      *
      * Act:
-     * Query the form heading, inputs, and navigation links.
+     * Query the heading, inputs, submit button, and navigation links.
      *
      * Assert:
      * Confirm the login form renders correctly.
-     * Confirm all navigation links point to the correct routes.
+     * Confirm navigation links point to the correct routes.
      */
-    render(<LoginForm />);
+    renderForm(LoginForm);
 
     expect(
       screen.getByRole("heading", { name: "Login" })
     ).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("me@example.com")).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("********")).toBeInTheDocument();
 
-    expect(screen.getByText("Register")).toHaveAttribute(
-      "href",
-      "/register"
-    );
+    expect(
+      screen.getByRole("button", { name: "Login" })
+    ).toBeInTheDocument();
 
-    expect(screen.getByText("Reactivate")).toHaveAttribute(
-      "href",
-      "/reactivate-account"
-    );
+    expectRegisterLink();
+    expectReactivateLink();
 
     expect(screen.getByText("Reset it")).toHaveAttribute(
       "href",
       "/forgot-password"
     );
   });
+
+  // =====================
+  // User Input
+  // =====================
 
   test("updates email and password inputs when user types", () => {
     /**
@@ -147,36 +119,35 @@ describe("LoginForm", () => {
      * Type values into the email and password inputs.
      *
      * Assert:
-     * Confirm both inputs update correctly.
+     * Confirm both input values update correctly.
      */
-    render(<LoginForm />);
+    renderForm(LoginForm);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const passwordInput = screen.getByPlaceholderText("Password");
-
-    fireEvent.change(emailInput, {
-      target: { value: "test@example.com" },
+    completeLoginForm({
+      email: "test@example.com",
+      password: "password123",
     });
 
-    fireEvent.change(passwordInput, {
-      target: { value: "password123" },
-    });
-
-    expect(emailInput).toHaveValue("test@example.com");
-    expect(passwordInput).toHaveValue("password123");
+    expectEmailValue("test@example.com");
+    expectPasswordValue("password123");
   });
 
-  test("calls login with entered values and navigates home on success", async () => {
+  // =====================
+  // Successful Login
+  // =====================
+
+  test("calls login with entered values and redirects home on success", async () => {
     /**
      * Arrange:
      * Mock a successful login response.
-     * Render the form and enter login credentials.
+     * Render the LoginForm component.
+     * Populate all form fields.
      *
      * Act:
      * Submit the login form.
      *
      * Assert:
-     * Confirm login is called with the entered credentials.
+     * Confirm login is called with the correct values.
      * Confirm the user is redirected to the home page.
      */
     mockLogin.mockResolvedValue({
@@ -184,17 +155,14 @@ describe("LoginForm", () => {
       errors: null,
     });
 
-    render(<LoginForm />);
+    renderForm(LoginForm);
 
-    fireEvent.change(screen.getByPlaceholderText("Email"), {
-      target: { value: "test@example.com" },
+    completeLoginForm({
+      email: "test@example.com",
+      password: "password123",
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password123" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    submitForm("Login");
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith(
@@ -206,47 +174,211 @@ describe("LoginForm", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
+  // =====================
+  // Loading State
+  // =====================
+
+  test("displays loading text while login is submitting", async () => {
+    /**
+     * Arrange:
+     * Mock login so the request stays pending.
+     * Render the LoginForm component.
+     * Populate all form fields.
+     *
+     * Act:
+     * Submit the login form.
+     *
+     * Assert:
+     * Confirm the loading text is displayed.
+     */
+    mockLogin.mockReturnValue(new Promise(() => {}));
+
+    renderForm(LoginForm);
+
+    completeLoginForm({
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    submitForm("Login");
+
+    expect(await screen.findByText("Logging in...")).toBeInTheDocument();
+  });
+
+  test("disables the submit button while login is submitting", async () => {
+    /**
+     * Arrange:
+     * Mock login so the request stays pending.
+     * Render the LoginForm component.
+     * Populate all form fields.
+     *
+     * Act:
+     * Submit the login form.
+     *
+     * Assert:
+     * Confirm the submit button is disabled while loading.
+     */
+    mockLogin.mockReturnValue(new Promise(() => {}));
+
+    renderForm(LoginForm);
+
+    completeLoginForm({
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    submitForm("Login");
+
+    await screen.findByText("Logging in...");
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  test("prevents duplicate login while loading", async () => {
+    /**
+     * Arrange:
+     * Mock login so the first request stays pending.
+     * Render the LoginForm component.
+     * Populate all form fields.
+     *
+     * Act:
+     * Submit the login form.
+     *
+     * Assert:
+     * Confirm login is only called once.
+     * Confirm the button remains disabled while loading.
+     */
+    mockLogin.mockReturnValue(new Promise(() => {}));
+
+    renderForm(LoginForm);
+
+    completeLoginForm({
+      email: "test@example.com",
+      password: "password123",
+    });
+
+    submitForm("Login");
+
+    await screen.findByText("Logging in...");
+
+    expect(mockLogin).toHaveBeenCalledTimes(1);
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  // =====================
+  // Login Validation
+  // =====================
+
   test("displays errors when login fails", async () => {
     /**
      * Arrange:
-     * Mock a failed login response with field and non-field errors.
+     * Mock a failed login response containing
+     * field and non-field validation errors.
      * Render the LoginForm component.
      *
      * Act:
      * Submit the login form.
      *
      * Assert:
-     * Confirm all returned errors are displayed.
+     * Confirm all returned validation errors display correctly.
      * Confirm navigation does not occur.
      */
     mockLogin.mockResolvedValue({
       success: false,
       errors: {
-        email: "Enter a valid email address.",
-        password: "Password is required.",
+        email: ["Enter a valid email address."],
+        password: ["Password is required."],
         non_field_errors: [
           "Unable to log in with provided credentials.",
         ],
       },
     });
 
-    render(<LoginForm />);
+    renderForm(LoginForm);
 
-    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    submitForm("Login");
+
+    await screen.findByText("Enter a valid email address.");
+
+    expectErrors([
+      "Enter a valid email address.",
+      "Password is required.",
+      "Unable to log in with provided credentials.",
+    ]);
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  test("shows resend verification link when login fails because email is unverified", async () => {
+    /**
+     * Arrange:
+     * Mock a failed login response containing
+     * a non-field error that mentions verification.
+     * Render the LoginForm component.
+     *
+     * Act:
+     * Submit the login form.
+     *
+     * Assert:
+     * Confirm the verification error is displayed.
+     * Confirm the resend verification link is shown.
+     */
+    mockLogin.mockResolvedValue({
+      success: false,
+      errors: {
+        non_field_errors: [
+          "Email address is not verified.",
+        ],
+      },
+    });
+
+    renderForm(LoginForm);
+
+    submitForm("Login");
 
     expect(
-      await screen.findByText("Enter a valid email address.")
+      await screen.findByText("Email address is not verified.")
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Password is required.")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Resend it")).toHaveAttribute(
+      "href",
+      "/resend-verification-email"
+    );
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  test("shows resend verification link when detail error mentions verification", async () => {
+    /**
+     * Arrange:
+     * Mock a failed login response containing
+     * a detail error that mentions verification.
+     * Render the LoginForm component.
+     *
+     * Act:
+     * Submit the login form.
+     *
+     * Assert:
+     * Confirm the resend verification link is shown.
+     */
+    mockLogin.mockResolvedValue({
+      success: false,
+      errors: {
+        detail: "This account has not been verified.",
+      },
+    });
+
+    renderForm(LoginForm);
+
+    submitForm("Login");
 
     expect(
-      screen.getByText(
-        "Unable to log in with provided credentials."
-      )
-    ).toBeInTheDocument();
+      await screen.findByText("Resend it")
+    ).toHaveAttribute(
+      "href",
+      "/resend-verification-email"
+    );
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });
