@@ -4,7 +4,7 @@ import {
   useState,
 } from "react";
 
-import { axiosRequest } from "../api/axiosDefaults";
+import { axiosRequest, axiosResponse } from "../api/axiosDefaults";
 
 const AuthContext = createContext(null);
 
@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axiosRequest.get("/api/auth/user/");
+      const { data } = await axiosResponse.get("/api/auth/user/");
       setUser(data);
     } catch {
       setUser(null);
