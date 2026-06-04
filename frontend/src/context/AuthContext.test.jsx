@@ -1,15 +1,39 @@
 /**
- * AuthContext Tests
+ * AUTH CONTEXT TEST CHECKLIST
+ * ---------------------------
+ * Initial Session Check
+ * - Verify AuthProvider fetches current user on mount
+ * - Verify user is stored when current user request succeeds
+ * - Verify user is null when current user request fails
+ * - Verify loading becomes false after session check
  *
- * This test suite verifies:
+ * ---------------------------
+ * Login
+ * - Verify login posts email and password to login endpoint
+ * - Verify login fetches current user after successful login
+ * - Verify login returns success response on success
+ * - Verify login returns backend errors on failure
+ * - Verify login returns fallback error when no backend data exists
  *
- * 1. Initial authentication check
- * 2. Login behaviour
- * 3. Logout behaviour
- * 4. Register behaviour
- * 5. Change password behaviour
+ * ---------------------------
+ * Logout
+ * - Verify logout posts to logout endpoint
+ * - Verify logout clears user
+ * - Verify logout clears user even when logout request fails
  *
- * These tests mock axiosRequest so no real API requests are made.
+ * ---------------------------
+ * Register
+ * - Verify register posts email and passwords to registration endpoint
+ * - Verify register returns success response on success
+ * - Verify register returns backend errors on failure
+ * - Verify register returns fallback error when no backend data exists
+ *
+ * ---------------------------
+ * Change Password
+ * - Verify changePassword posts old and new passwords to password change endpoint
+ * - Verify changePassword returns success response on success
+ * - Verify changePassword returns backend errors on failure
+ * - Verify changePassword returns fallback error when no backend data exists
  */
 
 import { useContext } from "react";
@@ -17,22 +41,31 @@ import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   render,
   screen,
-  waitFor,
   fireEvent,
+  waitFor,
   cleanup,
 } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 import AuthContext, { AuthProvider } from "./AuthContext";
-import { axiosRequest } from "../api/axiosDefaults";
+import { axiosRequest, axiosResponse } from "../api/axiosDefaults";
 
 vi.mock("../api/axiosDefaults", () => ({
   axiosRequest: {
-    get: vi.fn(),
     post: vi.fn(),
   },
-  axiosResponse: {},
+  axiosResponse: {
+    get: vi.fn(),
+  },
 }));
+
+const saveResult = (result) => {
+  document.body.setAttribute("data-result", JSON.stringify(result));
+};
+
+const getSavedResult = () => {
+  return JSON.parse(document.body.getAttribute("data-result"));
+};
 
 const TestConsumer = () => {
   const {
@@ -44,33 +77,31 @@ const TestConsumer = () => {
     changePassword,
   } = useContext(AuthContext);
 
-  const saveResult = (result) => {
-    document.body.setAttribute(
-      "data-result",
-      JSON.stringify(result)
-    );
-  };
-
   return (
     <div>
       <p>User: {user ? user.email : "No user"}</p>
       <p>Loading: {loading ? "true" : "false"}</p>
 
       <button
+        type="button"
         onClick={async () => {
-          saveResult(
-            await login("test@example.com", "password123")
-          );
+          saveResult(await login("test@example.com", "password123"));
         }}
       >
         Login
       </button>
 
-      <button onClick={logout}>
+      <button
+        type="button"
+        onClick={async () => {
+          await logout();
+        }}
+      >
         Logout
       </button>
 
       <button
+        type="button"
         onClick={async () => {
           saveResult(
             await register(
@@ -85,12 +116,13 @@ const TestConsumer = () => {
       </button>
 
       <button
+        type="button"
         onClick={async () => {
           saveResult(
             await changePassword(
-              "oldpassword",
-              "newpassword123",
-              "newpassword123"
+              "oldPassword123",
+              "newPassword123",
+              "newPassword123"
             )
           );
         }}
@@ -101,12 +133,13 @@ const TestConsumer = () => {
   );
 };
 
-const renderAuthProvider = () =>
+const renderAuthProvider = () => {
   render(
     <AuthProvider>
       <TestConsumer />
     </AuthProvider>
   );
+};
 
 describe("AuthContext", () => {
   beforeEach(() => {
@@ -118,547 +151,346 @@ describe("AuthContext", () => {
     cleanup();
   });
 
-  describe("initial user fetch", () => {
-    test("fetches and sets user on mount when request succeeds", async () => {
-      /**
-       * Arrange:
-       * Mock a successful initial user request.
-       *
-       * Act:
-       * Render AuthProvider with a test consumer.
-       *
-       * Assert:
-       * Confirm the authenticated user is stored in context.
-       * Confirm loading becomes false.
-       * Confirm the user endpoint is called.
-       */
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+  // =====================
+  // Initial Session Check
+  // =====================
 
-      renderAuthProvider();
-
-      expect(
-        await screen.findByText("User: test@example.com")
-      ).toBeInTheDocument();
-
-      expect(
-        screen.getByText("Loading: false")
-      ).toBeInTheDocument();
-
-      expect(axiosRequest.get).toHaveBeenCalledWith(
-        "/api/auth/user/"
-      );
+  test("fetches and stores current user on mount when request succeeds", async () => {
+    axiosResponse.get.mockResolvedValue({
+      data: {
+        email: "test@example.com",
+      },
     });
 
-    test("sets user to null on mount when fetchUser fails", async () => {
-      /**
-       * Arrange:
-       * Mock a failed initial user request.
-       *
-       * Act:
-       * Render AuthProvider with a test consumer.
-       *
-       * Assert:
-       * Confirm user is set to null.
-       * Confirm loading becomes false.
-       */
-      axiosRequest.get.mockRejectedValue(
-        new Error("Not authenticated")
-      );
+    renderAuthProvider();
 
-      renderAuthProvider();
+    expect(
+      await screen.findByText("User: test@example.com")
+    ).toBeInTheDocument();
 
-      expect(
-        await screen.findByText("User: No user")
-      ).toBeInTheDocument();
+    expect(screen.getByText("Loading: false")).toBeInTheDocument();
 
-      expect(
-        screen.getByText("Loading: false")
-      ).toBeInTheDocument();
-    });
+    expect(axiosResponse.get).toHaveBeenCalledWith("/api/auth/user/");
   });
 
-  describe("login", () => {
-    test("posts credentials and fetches user on success", async () => {
-      /**
-       * Arrange:
-       * Mock the initial user fetch and login request as successful.
-       *
-       * Act:
-       * Click the Login button.
-       *
-       * Assert:
-       * Confirm credentials are posted to the login endpoint.
-       * Confirm the user is fetched again after login.
-       * Confirm login returns a success result.
-       */
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+  test("sets user to null on mount when current user request fails", async () => {
+    axiosResponse.get.mockRejectedValue(new Error("Not authenticated"));
 
-      axiosRequest.post.mockResolvedValue({});
+    renderAuthProvider();
 
-      renderAuthProvider();
+    expect(await screen.findByText("User: No user")).toBeInTheDocument();
 
-      await screen.findByText("Loading: false");
+    expect(screen.getByText("Loading: false")).toBeInTheDocument();
 
-      fireEvent.click(screen.getByText("Login"));
+    expect(axiosResponse.get).toHaveBeenCalledWith("/api/auth/user/");
+  });
 
-      await waitFor(() => {
-        expect(axiosRequest.post).toHaveBeenCalledWith(
-          "/api/auth/login/",
-          {
-            email: "test@example.com",
-            password: "password123",
-          }
-        );
-      });
+  // =====================
+  // Login
+  // =====================
 
-      expect(axiosRequest.get).toHaveBeenCalledTimes(2);
-
-      const result = JSON.parse(
-        document.body.getAttribute("data-result")
-      );
-
-      expect(result).toEqual({
-        success: true,
-        errors: null,
-      });
-    });
-
-    test("returns backend errors when login request fails", async () => {
-      /**
-       * Arrange:
-       * Mock unauthenticated initial state.
-       * Mock a failed login request with backend error data.
-       *
-       * Act:
-       * Click the Login button.
-       *
-       * Assert:
-       * Confirm login returns the backend validation errors.
-       */
-      axiosRequest.get.mockRejectedValue(
-        new Error("Not authenticated")
-      );
-
-      axiosRequest.post.mockRejectedValue({
-        response: {
-          data: {
-            non_field_errors: ["Unable to log in."],
-          },
+  test("posts credentials and fetches current user on successful login", async () => {
+    axiosResponse.get
+      .mockRejectedValueOnce(new Error("Not authenticated"))
+      .mockResolvedValueOnce({
+        data: {
+          email: "test@example.com",
         },
       });
 
-      renderAuthProvider();
+    axiosRequest.post.mockResolvedValue({});
 
-      await screen.findByText("Loading: false");
+    renderAuthProvider();
 
-      fireEvent.click(screen.getByText("Login"));
+    await screen.findByText("Loading: false");
 
-      await waitFor(() => {
-        const result = JSON.parse(
-          document.body.getAttribute("data-result")
-        );
+    fireEvent.click(screen.getByText("Login"));
 
-        expect(result).toEqual({
-          success: false,
-          errors: {
-            non_field_errors: ["Unable to log in."],
-          },
-        });
+    await waitFor(() => {
+      expect(axiosRequest.post).toHaveBeenCalledWith("/api/auth/login/", {
+        email: "test@example.com",
+        password: "password123",
       });
     });
 
-    test("returns fallback error when login fails without backend error data", async () => {
-      /**
-       * Arrange:
-       * Mock unauthenticated initial state.
-       * Mock a failed login request without backend error data.
-       *
-       * Act:
-       * Click the Login button.
-       *
-       * Assert:
-       * Confirm login returns the fallback login error.
-       */
-      axiosRequest.get.mockRejectedValue(
-        new Error("Not authenticated")
-      );
+    expect(axiosResponse.get).toHaveBeenCalledTimes(2);
 
-      axiosRequest.post.mockRejectedValue(
-        new Error("Network error")
-      );
+    expect(await screen.findByText("User: test@example.com")).toBeInTheDocument();
 
-      renderAuthProvider();
-
-      await screen.findByText("Loading: false");
-
-      fireEvent.click(screen.getByText("Login"));
-
-      await waitFor(() => {
-        const result = JSON.parse(
-          document.body.getAttribute("data-result")
-        );
-
-        expect(result).toEqual({
-          success: false,
-          errors: {
-            non_field_errors: ["Login failed."],
-          },
-        });
-      });
+    expect(getSavedResult()).toEqual({
+      success: true,
+      errors: null,
     });
   });
 
-  describe("logout", () => {
-    test("posts to logout endpoint and clears user", async () => {
-      /**
-       * Arrange:
-       * Mock an authenticated user and successful logout request.
-       *
-       * Act:
-       * Click the Logout button.
-       *
-       * Assert:
-       * Confirm logout endpoint is called.
-       * Confirm user is cleared from context.
-       */
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+  test("returns backend errors when login fails", async () => {
+    axiosResponse.get.mockRejectedValue(new Error("Not authenticated"));
 
-      axiosRequest.post.mockResolvedValue({});
-
-      renderAuthProvider();
-
-      await screen.findByText("User: test@example.com");
-
-      fireEvent.click(screen.getByText("Logout"));
-
-      await waitFor(() => {
-        expect(axiosRequest.post).toHaveBeenCalledWith(
-          "/api/auth/logout/"
-        );
-
-        expect(
-          screen.getByText("User: No user")
-        ).toBeInTheDocument();
-      });
+    axiosRequest.post.mockRejectedValue({
+      response: {
+        data: {
+          non_field_errors: ["Unable to log in."],
+        },
+      },
     });
 
-    test("clears user even when logout request fails", async () => {
-      /**
-       * Arrange:
-       * Mock an authenticated user.
-       * Mock a failed logout request.
-       * Spy on console.error to avoid noisy test output.
-       *
-       * Act:
-       * Click the Logout button.
-       *
-       * Assert:
-       * Confirm the user is still cleared from context.
-       */
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+    renderAuthProvider();
 
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+    await screen.findByText("Loading: false");
 
-      axiosRequest.post.mockRejectedValue(
-        new Error("Logout failed")
-      );
+    fireEvent.click(screen.getByText("Login"));
 
-      renderAuthProvider();
-
-      await screen.findByText("User: test@example.com");
-
-      fireEvent.click(screen.getByText("Logout"));
-
-      await waitFor(() => {
-        expect(
-          screen.getByText("User: No user")
-        ).toBeInTheDocument();
-      });
-
-      consoleErrorSpy.mockRestore();
-    });
-  });
-
-  describe("register", () => {
-    test("posts user details and returns success", async () => {
-      /**
-       * Arrange:
-       * Mock unauthenticated initial state.
-       * Mock a successful registration request.
-       *
-       * Act:
-       * Click the Register button.
-       *
-       * Assert:
-       * Confirm registration data is posted correctly.
-       * Confirm register returns a success result.
-       */
-      axiosRequest.get.mockRejectedValue(
-        new Error("Not authenticated")
-      );
-
-      axiosRequest.post.mockResolvedValue({});
-
-      renderAuthProvider();
-
-      await screen.findByText("Loading: false");
-
-      fireEvent.click(screen.getByText("Register"));
-
-      await waitFor(() => {
-        expect(axiosRequest.post).toHaveBeenCalledWith(
-          "/api/auth/registration/",
-          {
-            email: "test@example.com",
-            password1: "password123",
-            password2: "password123",
-          }
-        );
-      });
-
-      const result = JSON.parse(
-        document.body.getAttribute("data-result")
-      );
-
-      expect(result).toEqual({
-        success: true,
-        errors: null,
-      });
-    });
-
-    test("returns backend errors when register request fails", async () => {
-      /**
-       * Arrange:
-       * Mock unauthenticated initial state.
-       * Mock a failed registration request with backend error data.
-       *
-       * Act:
-       * Click the Register button.
-       *
-       * Assert:
-       * Confirm register returns the backend validation errors.
-       */
-      axiosRequest.get.mockRejectedValue(
-        new Error("Not authenticated")
-      );
-
-      axiosRequest.post.mockRejectedValue({
-        response: {
-          data: {
-            email: [
-              "A user is already registered with this email.",
-            ],
-          },
+    await waitFor(() => {
+      expect(getSavedResult()).toEqual({
+        success: false,
+        errors: {
+          non_field_errors: ["Unable to log in."],
         },
       });
-
-      renderAuthProvider();
-
-      await screen.findByText("Loading: false");
-
-      fireEvent.click(screen.getByText("Register"));
-
-      await waitFor(() => {
-        const result = JSON.parse(
-          document.body.getAttribute("data-result")
-        );
-
-        expect(result).toEqual({
-          success: false,
-          errors: {
-            email: [
-              "A user is already registered with this email.",
-            ],
-          },
-        });
-      });
     });
+  });
 
-    test("returns fallback error when register fails without backend error data", async () => {
-      /**
-       * Arrange:
-       * Mock unauthenticated initial state.
-       * Mock a failed registration request without backend error data.
-       *
-       * Act:
-       * Click the Register button.
-       *
-       * Assert:
-       * Confirm register returns the fallback registration error.
-       */
-      axiosRequest.get.mockRejectedValue(
-        new Error("Not authenticated")
-      );
+  test("returns fallback error when login fails without backend data", async () => {
+    axiosResponse.get.mockRejectedValue(new Error("Not authenticated"));
 
-      axiosRequest.post.mockRejectedValue(
-        new Error("Network error")
-      );
+    axiosRequest.post.mockRejectedValue(new Error("Network error"));
 
-      renderAuthProvider();
+    renderAuthProvider();
 
-      await screen.findByText("Loading: false");
+    await screen.findByText("Loading: false");
 
-      fireEvent.click(screen.getByText("Register"));
+    fireEvent.click(screen.getByText("Login"));
 
-      await waitFor(() => {
-        const result = JSON.parse(
-          document.body.getAttribute("data-result")
-        );
-
-        expect(result).toEqual({
-          success: false,
-          errors: {
-            non_field_errors: ["Registration failed."],
-          },
-        });
+    await waitFor(() => {
+      expect(getSavedResult()).toEqual({
+        success: false,
+        errors: {
+          non_field_errors: ["Login failed."],
+        },
       });
     });
   });
 
-  describe("changePassword", () => {
-    test("posts password details and returns success", async () => {
-      /**
-       * Arrange:
-       * Mock authenticated initial state.
-       * Mock a successful password change request.
-       *
-       * Act:
-       * Click the Change Password button.
-       *
-       * Assert:
-       * Confirm password data is posted correctly.
-       * Confirm changePassword returns a success result.
-       */
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+  // =====================
+  // Logout
+  // =====================
 
-      axiosRequest.post.mockResolvedValue({});
-
-      renderAuthProvider();
-
-      await screen.findByText("Loading: false");
-
-      fireEvent.click(screen.getByText("Change Password"));
-
-      await waitFor(() => {
-        expect(axiosRequest.post).toHaveBeenCalledWith(
-          "/api/auth/password/change/",
-          {
-            old_password: "oldpassword",
-            new_password1: "newpassword123",
-            new_password2: "newpassword123",
-          }
-        );
-      });
-
-      const result = JSON.parse(
-        document.body.getAttribute("data-result")
-      );
-
-      expect(result).toEqual({
-        success: true,
-        errors: null,
-      });
+  test("posts to logout endpoint and clears user", async () => {
+    axiosResponse.get.mockResolvedValue({
+      data: {
+        email: "test@example.com",
+      },
     });
 
-    test("returns backend errors when changePassword request fails", async () => {
-      /**
-       * Arrange:
-       * Mock authenticated initial state.
-       * Mock a failed password change request with backend error data.
-       *
-       * Act:
-       * Click the Change Password button.
-       *
-       * Assert:
-       * Confirm changePassword returns the backend validation errors.
-       */
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+    axiosRequest.post.mockResolvedValue({});
 
-      axiosRequest.post.mockRejectedValue({
-        response: {
-          data: {
-            old_password: [
-              "Your old password was entered incorrectly.",
-            ],
-          },
+    renderAuthProvider();
+
+    await screen.findByText("User: test@example.com");
+
+    fireEvent.click(screen.getByText("Logout"));
+
+    await waitFor(() => {
+      expect(axiosRequest.post).toHaveBeenCalledWith("/api/auth/logout/");
+    });
+
+    expect(screen.getByText("User: No user")).toBeInTheDocument();
+  });
+
+  test("clears user even when logout request fails", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    axiosResponse.get.mockResolvedValue({
+      data: {
+        email: "test@example.com",
+      },
+    });
+
+    axiosRequest.post.mockRejectedValue(new Error("Logout failed"));
+
+    renderAuthProvider();
+
+    await screen.findByText("User: test@example.com");
+
+    fireEvent.click(screen.getByText("Logout"));
+
+    await waitFor(() => {
+      expect(screen.getByText("User: No user")).toBeInTheDocument();
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  // =====================
+  // Register
+  // =====================
+
+  test("posts registration details and returns success", async () => {
+    axiosResponse.get.mockRejectedValue(new Error("Not authenticated"));
+
+    axiosRequest.post.mockResolvedValue({});
+
+    renderAuthProvider();
+
+    await screen.findByText("Loading: false");
+
+    fireEvent.click(screen.getByText("Register"));
+
+    await waitFor(() => {
+      expect(axiosRequest.post).toHaveBeenCalledWith(
+        "/api/auth/registration/",
+        {
+          email: "test@example.com",
+          password1: "password123",
+          password2: "password123",
+        }
+      );
+    });
+
+    expect(getSavedResult()).toEqual({
+      success: true,
+      errors: null,
+    });
+  });
+
+  test("returns backend errors when register fails", async () => {
+    axiosResponse.get.mockRejectedValue(new Error("Not authenticated"));
+
+    axiosRequest.post.mockRejectedValue({
+      response: {
+        data: {
+          email: ["A user is already registered with this email."],
+        },
+      },
+    });
+
+    renderAuthProvider();
+
+    await screen.findByText("Loading: false");
+
+    fireEvent.click(screen.getByText("Register"));
+
+    await waitFor(() => {
+      expect(getSavedResult()).toEqual({
+        success: false,
+        errors: {
+          email: ["A user is already registered with this email."],
         },
       });
+    });
+  });
 
-      renderAuthProvider();
+  test("returns fallback error when register fails without backend data", async () => {
+    axiosResponse.get.mockRejectedValue(new Error("Not authenticated"));
 
-      await screen.findByText("Loading: false");
+    axiosRequest.post.mockRejectedValue(new Error("Network error"));
 
-      fireEvent.click(screen.getByText("Change Password"));
+    renderAuthProvider();
 
-      await waitFor(() => {
-        const result = JSON.parse(
-          document.body.getAttribute("data-result")
-        );
+    await screen.findByText("Loading: false");
 
-        expect(result).toEqual({
-          success: false,
-          errors: {
-            old_password: [
-              "Your old password was entered incorrectly.",
-            ],
-          },
-        });
+    fireEvent.click(screen.getByText("Register"));
+
+    await waitFor(() => {
+      expect(getSavedResult()).toEqual({
+        success: false,
+        errors: {
+          non_field_errors: ["Registration failed."],
+        },
       });
     });
+  });
 
-    test("returns fallback error when changePassword fails without backend error data", async () => {
-      /**
-       * Arrange:
-       * Mock authenticated initial state.
-       * Mock a failed password change request without backend error data.
-       *
-       * Act:
-       * Click the Change Password button.
-       *
-       * Assert:
-       * Confirm changePassword returns the fallback password change error.
-       */
-      axiosRequest.get.mockResolvedValue({
-        data: { email: "test@example.com" },
-      });
+  // =====================
+  // Change Password
+  // =====================
 
-      axiosRequest.post.mockRejectedValue(
-        new Error("Network error")
+  test("posts password details and returns success", async () => {
+    axiosResponse.get.mockResolvedValue({
+      data: {
+        email: "test@example.com",
+      },
+    });
+
+    axiosRequest.post.mockResolvedValue({});
+
+    renderAuthProvider();
+
+    await screen.findByText("Loading: false");
+
+    fireEvent.click(screen.getByText("Change Password"));
+
+    await waitFor(() => {
+      expect(axiosRequest.post).toHaveBeenCalledWith(
+        "/api/auth/password/change/",
+        {
+          old_password: "oldPassword123",
+          new_password1: "newPassword123",
+          new_password2: "newPassword123",
+        }
       );
+    });
 
-      renderAuthProvider();
+    expect(getSavedResult()).toEqual({
+      success: true,
+      errors: null,
+    });
+  });
 
-      await screen.findByText("Loading: false");
+  test("returns backend errors when changePassword fails", async () => {
+    axiosResponse.get.mockResolvedValue({
+      data: {
+        email: "test@example.com",
+      },
+    });
 
-      fireEvent.click(screen.getByText("Change Password"));
+    axiosRequest.post.mockRejectedValue({
+      response: {
+        data: {
+          old_password: ["Your old password was entered incorrectly."],
+        },
+      },
+    });
 
-      await waitFor(() => {
-        const result = JSON.parse(
-          document.body.getAttribute("data-result")
-        );
+    renderAuthProvider();
 
-        expect(result).toEqual({
-          success: false,
-          errors: {
-            non_field_errors: [
-              "Password change failed.",
-            ],
-          },
-        });
+    await screen.findByText("Loading: false");
+
+    fireEvent.click(screen.getByText("Change Password"));
+
+    await waitFor(() => {
+      expect(getSavedResult()).toEqual({
+        success: false,
+        errors: {
+          old_password: ["Your old password was entered incorrectly."],
+        },
+      });
+    });
+  });
+
+  test("returns fallback error when changePassword fails without backend data", async () => {
+    axiosResponse.get.mockResolvedValue({
+      data: {
+        email: "test@example.com",
+      },
+    });
+
+    axiosRequest.post.mockRejectedValue(new Error("Network error"));
+
+    renderAuthProvider();
+
+    await screen.findByText("Loading: false");
+
+    fireEvent.click(screen.getByText("Change Password"));
+
+    await waitFor(() => {
+      expect(getSavedResult()).toEqual({
+        success: false,
+        errors: {
+          non_field_errors: ["Password change failed."],
+        },
       });
     });
   });
