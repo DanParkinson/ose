@@ -1,38 +1,42 @@
 /**
- * coreApi Tests
+ * CORE API TEST CHECKLIST
+ * -----------------------
+ * Fetch Core Model List
+ * - Verify list request uses default pagination params
+ * - Verify list request uses custom pagination params
+ * - Verify list request includes search query
+ * - Verify list request includes active filters
+ * - Verify list request ignores filters with value "all"
  *
- * This test suite verifies:
+ * -----------------------
+ * Fetch Core Model Options
+ * - Verify options request is sent to endpoint
+ * - Verify options request returns response data
  *
- * 1. fetchCoreModelList
- *    - Sends GET requests to the correct endpoint
- *    - Applies default pagination params
- *    - Applies search query params
- *    - Applies filters correctly
- *    - Ignores filters with a value of "all"
- *    - Returns response.data
+ * -----------------------
+ * Create Core Model Item
+ * - Verify create request posts data to endpoint
+ * - Verify create request returns response data
  *
- * 2. fetchCoreModelOptions
- *    - Sends OPTIONS requests to the correct endpoint
- *    - Returns response.data
+ * -----------------------
+ * Update Core Model Item
+ * - Verify update request patches detail endpoint and id
+ * - Verify update request returns response data
  *
- * 3. createCoreModelItem
- *    - Sends POST requests with the correct data
- *    - Returns response.data
- *
- * 4. updateCoreModelItem
- *    - Sends PATCH requests to the correct detail endpoint
- *    - Sends the correct update data
- *    - Returns response.data
- *
- * 5. deleteCoreModelItem
- *    - Sends DELETE requests to the correct detail endpoint
- *    - Returns response.data
- *
- * Notes:
- * - axiosResponse is mocked to prevent real HTTP requests
+ * -----------------------
+ * Delete Core Model Item
+ * - Verify delete request deletes detail endpoint and id
+ * - Verify delete request returns response data
  */
 
-import { describe, test, expect, vi, beforeEach } from "vitest";
+import {
+  describe,
+  test,
+  expect,
+  vi,
+  beforeEach,
+} from "vitest";
+
 import {
   fetchCoreModelList,
   fetchCoreModelOptions,
@@ -40,6 +44,7 @@ import {
   updateCoreModelItem,
   deleteCoreModelItem,
 } from "./coreApi";
+
 import { axiosResponse } from "./axiosDefaults";
 
 vi.mock("./axiosDefaults", () => ({
@@ -57,373 +62,273 @@ describe("coreApi", () => {
     vi.clearAllMocks();
   });
 
-  describe("fetchCoreModelList", () => {
-    test("fetches a core model list using default params", async () => {
-      /**
-       * Arrange:
-       * Mock a successful GET response from the API.
-       * Provide only the required endpoint argument.
-       *
-       * Act:
-       * Call fetchCoreModelList.
-       *
-       * Assert:
-       * Confirm axiosResponse.get is called with the correct endpoint.
-       * Confirm default limit and offset params are included.
-       * Confirm search is undefined when no search query is provided.
-       * Confirm response.data is returned.
-       */
-      const mockData = {
-        count: 1,
-        results: [{ subject_id: "1", title: "Mathematics" }],
-      };
+  // =====================
+  // Fetch Core Model List
+  // =====================
 
-      axiosResponse.get.mockResolvedValue({
-        data: mockData,
-      });
+  test("fetches list using default params", async () => {
+    const mockData = {
+      count: 1,
+      results: [],
+    };
 
-      const result = await fetchCoreModelList({
-        endpoint: "/core/subjects/",
-      });
+    axiosResponse.get.mockResolvedValue({
+      data: mockData,
+    });
 
-      expect(axiosResponse.get).toHaveBeenCalledWith("/core/subjects/", {
+    const result = await fetchCoreModelList({
+      endpoint: "/core/subjects/",
+    });
+
+    expect(axiosResponse.get).toHaveBeenCalledWith(
+      "/core/subjects/",
+      {
         params: {
           limit: 20,
           offset: 0,
           search: undefined,
         },
-      });
+      }
+    );
 
-      expect(result).toEqual(mockData);
+    expect(result).toEqual(mockData);
+  });
+
+  test("fetches list using custom pagination", async () => {
+    const mockData = {
+      count: 1,
+      results: [],
+    };
+
+    axiosResponse.get.mockResolvedValue({
+      data: mockData,
     });
 
-    test("fetches a core model list with custom pagination params", async () => {
-      /**
-       * Arrange:
-       * Mock a successful GET response.
-       * Provide a custom limit and offset.
-       *
-       * Act:
-       * Call fetchCoreModelList with custom pagination values.
-       *
-       * Assert:
-       * Confirm the request includes the provided limit and offset.
-       * Confirm response.data is returned.
-       */
-      const mockData = {
-        count: 50,
-        results: [],
-      };
+    const result = await fetchCoreModelList({
+      endpoint: "/core/subjects/",
+      limit: 50,
+      offset: 100,
+    });
 
-      axiosResponse.get.mockResolvedValue({
-        data: mockData,
-      });
-
-      const result = await fetchCoreModelList({
-        endpoint: "/core/topics/",
-        limit: 10,
-        offset: 20,
-      });
-
-      expect(axiosResponse.get).toHaveBeenCalledWith("/core/topics/", {
+    expect(axiosResponse.get).toHaveBeenCalledWith(
+      "/core/subjects/",
+      {
         params: {
-          limit: 10,
-          offset: 20,
+          limit: 50,
+          offset: 100,
           search: undefined,
         },
-      });
+      }
+    );
 
-      expect(result).toEqual(mockData);
+    expect(result).toEqual(mockData);
+  });
+
+  test("fetches list using search query", async () => {
+    const mockData = {
+      count: 1,
+      results: [],
+    };
+
+    axiosResponse.get.mockResolvedValue({
+      data: mockData,
     });
 
-    test("fetches a core model list with a search query", async () => {
-      /**
-       * Arrange:
-       * Mock a successful GET response.
-       * Provide a search query.
-       *
-       * Act:
-       * Call fetchCoreModelList with searchQuery.
-       *
-       * Assert:
-       * Confirm the search query is added to the request params.
-       * Confirm response.data is returned.
-       */
-      const mockData = {
-        count: 1,
-        results: [{ subject_id: "1", title: "Mathematics" }],
-      };
+    const result = await fetchCoreModelList({
+      endpoint: "/core/subjects/",
+      searchQuery: "math",
+    });
 
-      axiosResponse.get.mockResolvedValue({
-        data: mockData,
-      });
-
-      const result = await fetchCoreModelList({
-        endpoint: "/core/subjects/",
-        searchQuery: "math",
-      });
-
-      expect(axiosResponse.get).toHaveBeenCalledWith("/core/subjects/", {
+    expect(axiosResponse.get).toHaveBeenCalledWith(
+      "/core/subjects/",
+      {
         params: {
           limit: 20,
           offset: 0,
           search: "math",
         },
-      });
+      }
+    );
 
-      expect(result).toEqual(mockData);
+    expect(result).toEqual(mockData);
+  });
+
+  test("fetches list using active filters", async () => {
+    const mockData = {
+      count: 1,
+      results: [],
+    };
+
+    axiosResponse.get.mockResolvedValue({
+      data: mockData,
     });
 
-    test("fetches a core model list with active filters", async () => {
-      /**
-       * Arrange:
-       * Mock a successful GET response.
-       * Provide filters with specific selected values.
-       *
-       * Act:
-       * Call fetchCoreModelList with active filters.
-       *
-       * Assert:
-       * Confirm each active filter is added to the request params.
-       * Confirm response.data is returned.
-       */
-      const mockData = {
-        count: 1,
-        results: [{ subject_id: "1", title: "Mathematics" }],
-      };
+    const result = await fetchCoreModelList({
+      endpoint: "/core/subjects/",
+      filters: {
+        level: "secondary",
+        language: "en",
+      },
+    });
 
-      axiosResponse.get.mockResolvedValue({
-        data: mockData,
-      });
-
-      const result = await fetchCoreModelList({
-        endpoint: "/core/subjects/",
-        filters: {
-          level: "secondary",
-          language: "en",
-          is_published: true,
-        },
-      });
-
-      expect(axiosResponse.get).toHaveBeenCalledWith("/core/subjects/", {
+    expect(axiosResponse.get).toHaveBeenCalledWith(
+      "/core/subjects/",
+      {
         params: {
           limit: 20,
           offset: 0,
           search: undefined,
           level: "secondary",
           language: "en",
-          is_published: true,
         },
-      });
+      }
+    );
 
-      expect(result).toEqual(mockData);
+    expect(result).toEqual(mockData);
+  });
+
+  test('ignores filters with value "all"', async () => {
+    const mockData = {
+      count: 1,
+      results: [],
+    };
+
+    axiosResponse.get.mockResolvedValue({
+      data: mockData,
     });
 
-    test('ignores filters with a value of "all"', async () => {
-      /**
-       * Arrange:
-       * Mock a successful GET response.
-       * Provide filters where some values are set to "all".
-       *
-       * Act:
-       * Call fetchCoreModelList with mixed filter values.
-       *
-       * Assert:
-       * Confirm filters with "all" are not included in the request params.
-       * Confirm active filters are still included.
-       * Confirm response.data is returned.
-       */
-      const mockData = {
-        count: 2,
-        results: [],
-      };
+    const result = await fetchCoreModelList({
+      endpoint: "/core/subjects/",
+      filters: {
+        level: "all",
+        language: "en",
+      },
+    });
 
-      axiosResponse.get.mockResolvedValue({
-        data: mockData,
-      });
-
-      const result = await fetchCoreModelList({
-        endpoint: "/core/subjects/",
-        filters: {
-          level: "all",
-          language: "en",
-          is_published: "all",
-        },
-      });
-
-      expect(axiosResponse.get).toHaveBeenCalledWith("/core/subjects/", {
+    expect(axiosResponse.get).toHaveBeenCalledWith(
+      "/core/subjects/",
+      {
         params: {
           limit: 20,
           offset: 0,
           search: undefined,
           language: "en",
         },
-      });
+      }
+    );
 
-      expect(result).toEqual(mockData);
-    });
+    expect(result).toEqual(mockData);
   });
 
-  describe("fetchCoreModelOptions", () => {
-    test("fetches core model options from the given endpoint", async () => {
-      /**
-       * Arrange:
-       * Mock a successful OPTIONS response.
-       * Provide the endpoint to inspect.
-       *
-       * Act:
-       * Call fetchCoreModelOptions.
-       *
-       * Assert:
-       * Confirm axiosResponse.options is called with the correct endpoint.
-       * Confirm response.data is returned.
-       */
-      const mockData = {
-        actions: {
-          POST: {
-            title: {
-              type: "string",
-              required: true,
-            },
-          },
-        },
-      };
+  // ==========================
+  // Fetch Core Model Options
+  // ==========================
 
-      axiosResponse.options.mockResolvedValue({
-        data: mockData,
-      });
+  test("fetches model options from endpoint", async () => {
+    const mockData = {
+      actions: {},
+    };
 
-      const result = await fetchCoreModelOptions({
-        endpoint: "/core/subjects/",
-      });
-
-      expect(axiosResponse.options).toHaveBeenCalledWith("/core/subjects/");
-      expect(result).toEqual(mockData);
+    axiosResponse.options.mockResolvedValue({
+      data: mockData,
     });
+
+    const result = await fetchCoreModelOptions({
+      endpoint: "/core/subjects/",
+    });
+
+    expect(
+      axiosResponse.options
+    ).toHaveBeenCalledWith(
+      "/core/subjects/"
+    );
+
+    expect(result).toEqual(mockData);
   });
 
-  describe("createCoreModelItem", () => {
-    test("creates a core model item using the given endpoint and data", async () => {
-      /**
-       * Arrange:
-       * Mock a successful POST response.
-       * Provide an endpoint and data for the new item.
-       *
-       * Act:
-       * Call createCoreModelItem.
-       *
-       * Assert:
-       * Confirm axiosResponse.post is called with the correct endpoint and data.
-       * Confirm response.data is returned.
-       */
-      const newSubject = {
-        title: "Mathematics",
-        level: "secondary",
-        language: "en",
-        is_published: true,
-        is_protected: false,
-      };
+  // =====================
+  // Create Core Model Item
+  // =====================
 
-      const mockData = {
-        subject_id: "1",
-        ...newSubject,
-      };
+  test("creates model item using endpoint and data", async () => {
+    const payload = {
+      title: "Mathematics",
+    };
 
-      axiosResponse.post.mockResolvedValue({
-        data: mockData,
-      });
+    const mockData = {
+      subject_id: "subject-1",
+      title: "Mathematics",
+    };
 
-      const result = await createCoreModelItem({
-        endpoint: "/core/subjects/",
-        data: newSubject,
-      });
-
-      expect(axiosResponse.post).toHaveBeenCalledWith(
-        "/core/subjects/",
-        newSubject
-      );
-
-      expect(result).toEqual(mockData);
+    axiosResponse.post.mockResolvedValue({
+      data: mockData,
     });
+
+    const result = await createCoreModelItem({
+      endpoint: "/core/subjects/",
+      data: payload,
+    });
+
+    expect(axiosResponse.post).toHaveBeenCalledWith(
+      "/core/subjects/",
+      payload
+    );
+
+    expect(result).toEqual(mockData);
   });
 
-  describe("updateCoreModelItem", () => {
-    test("updates a core model item using the detail endpoint, id, and data", async () => {
-      /**
-       * Arrange:
-       * Mock a successful PATCH response.
-       * Provide a detail endpoint, item id, and update data.
-       *
-       * Act:
-       * Call updateCoreModelItem.
-       *
-       * Assert:
-       * Confirm axiosResponse.patch is called with the correct detail URL and data.
-       * Confirm response.data is returned.
-       */
-      const updateData = {
-        title: "Updated Mathematics",
-        is_published: false,
-      };
+  // =====================
+  // Update Core Model Item
+  // =====================
 
-      const mockData = {
-        subject_id: "subject-1",
-        title: "Updated Mathematics",
-        level: "secondary",
-        language: "en",
-        is_published: false,
-        is_protected: false,
-      };
+  test("updates model item using detail endpoint and id", async () => {
+    const payload = {
+      title: "Updated Mathematics",
+    };
 
-      axiosResponse.patch.mockResolvedValue({
-        data: mockData,
-      });
+    const mockData = {
+      subject_id: "subject-1",
+      title: "Updated Mathematics",
+    };
 
-      const result = await updateCoreModelItem({
-        detailEndpoint: "/core/subjects/",
-        id: "subject-1",
-        data: updateData,
-      });
-
-      expect(axiosResponse.patch).toHaveBeenCalledWith(
-        "/core/subjects/subject-1/",
-        updateData
-      );
-
-      expect(result).toEqual(mockData);
+    axiosResponse.patch.mockResolvedValue({
+      data: mockData,
     });
+
+    const result = await updateCoreModelItem({
+      detailEndpoint: "/core/subjects/",
+      id: "subject-1",
+      data: payload,
+    });
+
+    expect(axiosResponse.patch).toHaveBeenCalledWith(
+      "/core/subjects/subject-1/",
+      payload
+    );
+
+    expect(result).toEqual(mockData);
   });
 
-  describe("deleteCoreModelItem", () => {
-    test("deletes a core model item using the detail endpoint and id", async () => {
-      /**
-       * Arrange:
-       * Mock a successful DELETE response.
-       * Provide a detail endpoint and item id.
-       *
-       * Act:
-       * Call deleteCoreModelItem.
-       *
-       * Assert:
-       * Confirm axiosResponse.delete is called with the correct detail URL.
-       * Confirm response.data is returned.
-       */
-      const mockData = {};
+  // =====================
+  // Delete Core Model Item
+  // =====================
 
-      axiosResponse.delete.mockResolvedValue({
-        data: mockData,
-      });
+  test("deletes model item using detail endpoint and id", async () => {
+    const mockData = {};
 
-      const result = await deleteCoreModelItem({
-        detailEndpoint: "/core/subjects/",
-        id: "subject-1",
-      });
-
-      expect(axiosResponse.delete).toHaveBeenCalledWith(
-        "/core/subjects/subject-1/"
-      );
-
-      expect(result).toEqual(mockData);
+    axiosResponse.delete.mockResolvedValue({
+      data: mockData,
     });
+
+    const result = await deleteCoreModelItem({
+      detailEndpoint: "/core/subjects/",
+      id: "subject-1",
+    });
+
+    expect(axiosResponse.delete).toHaveBeenCalledWith(
+      "/core/subjects/subject-1/"
+    );
+
+    expect(result).toEqual(mockData);
   });
 });

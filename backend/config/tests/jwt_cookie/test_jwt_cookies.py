@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import status
 
-from accounts.tests.jwt_cookie.base_jwt_cookies import (
+from config.tests.jwt_cookie.base_jwt_cookies import (
     BaseJWTCookieTestCase,
 )
 
