@@ -12,6 +12,4 @@ class BaseEmailAuthenticationTestCase(BaseAccountAPITestCase):
         self.uppercase_email = "test@EXAMPLE.COM"
         self.normalised_email = "test@example.com"
 
-        self.duplicate_email_error = (
-            "A user with this email address already exists."
-        )
+        self.duplicate_email_error = "A user with this email address already exists."

@@ -1,6 +1,7 @@
 from accounts.tests.base import BaseAccountAPITestCase
 from allauth.account.models import EmailAddress
 
+
 class BaseDJRestAuthTestCase(BaseAccountAPITestCase):
     def setUp(self):
         super().setUp()
@@ -23,7 +24,7 @@ class BaseDJRestAuthTestCase(BaseAccountAPITestCase):
             "email": email or self.email,
             "password": password or self.password,
         }
-    
+
     def create_verified_email(self, user, email=None):
         return EmailAddress.objects.create(
             user=user,

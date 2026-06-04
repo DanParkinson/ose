@@ -84,11 +84,7 @@ class PasswordResetConfirmTests(BasePasswordResetTestCase):
 
         user.refresh_from_db()
 
-        self.assertTrue(
-            user.check_password(
-                self.new_password1
-            )
-        )
+        self.assertTrue(user.check_password(self.new_password1))
 
     # =====================
     # Password Reset Validation

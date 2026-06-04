@@ -29,9 +29,7 @@ class ReactivationConfirmTests(BaseAccountLifecycleTestCase):
     # =====================
 
     def get_uid(self, user):
-        return urlsafe_base64_encode(
-            force_bytes(user.pk)
-        )
+        return urlsafe_base64_encode(force_bytes(user.pk))
 
     def get_token(self, user):
         return default_token_generator.make_token(user)
@@ -95,9 +93,7 @@ class ReactivationConfirmTests(BaseAccountLifecycleTestCase):
 
         user.refresh_from_db()
 
-        self.assertTrue(
-            user.is_active
-        )
+        self.assertTrue(user.is_active)
 
     def test_successful_reactivation_clears_deactivated_at(self):
         """
@@ -127,9 +123,7 @@ class ReactivationConfirmTests(BaseAccountLifecycleTestCase):
 
         user.refresh_from_db()
 
-        self.assertIsNone(
-            user.deactivated_at
-        )
+        self.assertIsNone(user.deactivated_at)
 
     # =====================
     # Reactivation Validation

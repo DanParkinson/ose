@@ -50,9 +50,7 @@ class CustomRegisterSerializerTests(BaseEmailAuthenticationTestCase):
         """
         serializer = CustomRegisterSerializer()
 
-        validated_email = serializer.validate_email(
-            self.email
-        )
+        validated_email = serializer.validate_email(self.email)
 
         self.assertEqual(
             validated_email,
@@ -72,9 +70,7 @@ class CustomRegisterSerializerTests(BaseEmailAuthenticationTestCase):
         serializer = CustomRegisterSerializer()
 
         with self.assertRaises(ValidationError):
-            serializer.validate_email(
-                self.email
-            )
+            serializer.validate_email(self.email)
 
     def test_duplicate_email_returns_correct_error_message(self):
         """
@@ -89,9 +85,7 @@ class CustomRegisterSerializerTests(BaseEmailAuthenticationTestCase):
         serializer = CustomRegisterSerializer()
 
         try:
-            serializer.validate_email(
-                self.email
-            )
+            serializer.validate_email(self.email)
         except ValidationError as error:
             self.assertIn(
                 self.duplicate_email_error,

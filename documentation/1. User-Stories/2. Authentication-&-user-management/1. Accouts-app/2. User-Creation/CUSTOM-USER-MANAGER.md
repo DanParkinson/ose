@@ -114,6 +114,34 @@ if extra_fields.get("is_superuser") is not True:
 
 These checks prevent incorrectly configured superuser accounts from being created.
 
+### Automatic Email Verification
+
+Superuser accounts are automatically marked as verified when they are created.
+
+After the user account is created:
+
+```py
+EmailAddress.objects.update_or_create(
+    user=user,
+    email=user.email,
+    defaults={
+        "verified": True,
+        "primary": True,
+    },
+)
+```
+
+This creates or updates the associated Allauth `EmailAddress` record and marks the email address as:
+
+```text
+Verified
+Primary
+```
+
+This ensures superuser accounts can immediately access authentication-protected areas of the platform without completing the normal email verification workflow.
+
+Because superusers are created directly by platform administrators, requiring email verification would provide no additional security benefit while adding unnecessary setup steps.
+
 ## Custom User Model Integration
 
 The custom user model uses this manager through the `objects` property.

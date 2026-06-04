@@ -36,9 +36,7 @@ class CustomAccountAdapterTests(BaseEmailVerificationTestCase):
         adapter = CustomAccountAdapter()
         context = {}
 
-        with patch(
-            "allauth.account.adapter.DefaultAccountAdapter.send_mail"
-        ):
+        with patch("allauth.account.adapter.DefaultAccountAdapter.send_mail"):
             adapter.send_mail(
                 "account/email/email_confirmation_signup",
                 self.email,

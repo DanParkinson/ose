@@ -88,9 +88,7 @@ class AccountDeactivationTests(BaseAccountLifecycleTestCase):
 
         user.refresh_from_db()
 
-        self.assertFalse(
-            user.is_active
-        )
+        self.assertFalse(user.is_active)
 
     def test_deactivation_sets_deactivated_at(self):
         """
@@ -110,9 +108,7 @@ class AccountDeactivationTests(BaseAccountLifecycleTestCase):
 
         user.refresh_from_db()
 
-        self.assertIsNotNone(
-            user.deactivated_at
-        )
+        self.assertIsNotNone(user.deactivated_at)
 
     def test_deactivation_deletes_access_cookie(self):
         """

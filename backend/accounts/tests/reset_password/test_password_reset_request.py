@@ -1,9 +1,7 @@
 from django.core import mail
 from rest_framework import status
 
-from accounts.tests.reset_password.base_reset_password import (
-    BasePasswordResetTestCase
-)
+from accounts.tests.reset_password.base_reset_password import BasePasswordResetTestCase
 
 
 class PasswordResetRequestTests(BasePasswordResetTestCase):
