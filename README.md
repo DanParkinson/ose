@@ -75,8 +75,8 @@ So that I can securely use the platform.
 |            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)| [Resend verification](/backend/accounts/tests/email_verification/test_resend_verify_email.py) |
 |            |                      | Permissions           |
 | **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)| [Auth Context](/frontend/src/context/AuthContext.jsx) |
-|            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)|
-|            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)|
+|            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)| [Public Route](/frontend/src/routes/PublicRoute.test.jsx), [Protected Route](/frontend/src/routes/ProtectedRoute.test.jsx), [Admin Route](/frontend/src/routes/AdminRoute.test.jsx) |
+|            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)| Test in DJ-Rest-Auth and Features |
 
 ### Related Documentation
 
