@@ -30,7 +30,7 @@ For more in depth documentation, the following is provided:
 ## 1. Development Environment Setup
 
 ```
-As a **Developer**, 
+As a **Developer**,
 I want an easy to install environement that works on all machines,
 So that I can quickly begin work.
 ```
@@ -62,38 +62,43 @@ So that I can securely use the platform.
 | ---------- | -------------------- | --------------------- | --------------------- | ---------------------- |
 |**US 2.1**  | Accounts App         | User Model            | [Email Authentication](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/1.%20User-Model/EMAIL-AUTHENTICATION.md) | [Custom User Model](/backend/accounts/tests/email_authentication/test_email_custom_user.py), [Registration Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
 |            |                      | User Creation         | [Custom User Manager](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/2.%20User-Creation/CUSTOM-USER-MANAGER.md) | [Custom User Manager](/backend/accounts/tests/user_creation/test_user_creation_custom_user_manager.py) |
-|            |                      | Account Lifecycle     | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)|
-|            |                      |                       | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)|
+|            |                      | Account Lifecycle     | [Account Deactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-DEACTIVATION.md)| [Account Deactivation](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py)|
+|            |                      |                       | [Account Reactivation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/3.%20Account-Lifecycle/ACCOUNT-REACTIVATION.md)| [Reactivation Request](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py), [Reactivation Confirm](/backend/accounts/tests/account_lifecycle/test_account_reactivation_confirm.py)   |
 |            |                      | API Serializers       | [Registration](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/REGISTRATION_SERIALIZER.md)| [Registration Serializer](/backend/accounts/tests/email_authentication/test_email_register_serializer.py)|
 |            |                      |                       | [User Details](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/1.%20Accouts-app/4.%20API-Serializers/USER-DETAILS-SERIALIZER.md)| [User Details Serializer](/backend/accounts/tests/user_details/test_user_details_serializer.py) |
-|**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py)|
-|            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/JWT-COOKIE-AUTH.md)|
-|            |                      |                       | [Email Verifcation](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/EMAIL-VERIFICATION.md) |
+|**US 2.2**  | Authentication System| Backend Auth          |[DJ-REST-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/DJ-REST-AUTH.md)| [Registration](/backend/accounts/tests/dj_rest_auth/test_register.py), [Login](/backend/accounts/tests/dj_rest_auth/test_login.py), [Logout](/backend/accounts/tests/dj_rest_auth/test_logout.py), [Password Reset Request](/backend/accounts/tests/reset_password/test_password_reset_request.py), [Password Reser Confirm](/backend/accounts/tests/reset_password/test_password_reset_confirm.py)|
+|            |                      |                       | [JWT-Cookie-auth](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/1.%20Backend-auth/JWT-COOKIE-AUTH.md)| [JWT Cookies](/backend/config/tests/jwt_cookie/test_jwt_cookies.py) |
+|            |                       | Email Verification | [Overview](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/OVERVIEW.md) |
+|            |                       |                    | [Mandatory Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/MANDATORY-VERIFICATION.md) | [Email verification](/backend/accounts/tests/email_verification/test_verify_email.py) |
+|            |                       |                    | [Custom Account Adapter](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/CUSTOM-ACCOUNT-ADAPTER.md) | [Account adapter](/backend/accounts/tests/email_verification/test_account_adapter.py) |
+|            |                       |                    | [Verification Email Template](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/VERIFICATION-EMAIL-TEMPLATE.md) |
+|            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)| [Resend verification](/backend/accounts/tests/email_verification/test_resend_verify_email.py) |
 |            |                      | Permissions           |
-| **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)|
-|            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)|
-|            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)|
+| **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)| [Auth Context](/frontend/src/context/AuthContext.jsx) |
+|            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)| [Public Route](/frontend/src/routes/PublicRoute.test.jsx), [Protected Route](/frontend/src/routes/ProtectedRoute.test.jsx), [Admin Route](/frontend/src/routes/AdminRoute.test.jsx) |
+|            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)| Test in DJ-Rest-Auth and Features |
 
 ### Related Documentation
 
 ## 3. Security & Application Protection
 
 ```
-As a **Developer**, 
-I want to set up a secure platform, 
-So that i dont get sued. 
+As a **Developer**,
+I want to set up a secure platform,
+So that i dont get sued.
 
 As a **User**,
-I want to use a secure platform, 
+I want to use a secure platform,
 So that I dont have to sue anyone.
 ```
 
-| User Story | Title                | Section               | Sub Section           |
-| ---------- | -------------------- | --------------------- | --------------------- |
-| **US 3.1** | Security Config      | Cross Origin Security | [CORS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CORS.md)|
+| User Story | Title                | Section               | Sub Section           | Testing |
+| ---------- | -------------------- | --------------------- | --------------------- | ------- |
+| **US 3.1** | Security Config      | Cross Origin Security | Overview              |     |
 |            |                      |                       | [CSRF](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CSRF.md)|
+|            |                      |                       | [CORS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CORS.md)|
 |            |                      | HTTPS Security        | [HTTPS Redirects](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HTTPS-REDIRECTS.md)|
-|            |                      |                       | [Secure Cookies](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/SECURE-COOKIES.md)|
+|            |                      |                       | [Secure Cookies](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/SECURE-COOKIES.md)| [JWT-cookies](/backend/config/tests/jwt_cookie/test_jwt_cookies.py) |
 |            |                      |                       | [HSTS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HSTS.md)|
 
 ### Related Documentation
@@ -102,11 +107,11 @@ So that I dont have to sue anyone.
 ## 4. System Efficiency
 
 ```
-As a **Stake Holder**, 
-I want my application to be efficient, 
+As a **Stake Holder**,
+I want my application to be efficient,
 So that i can improve performance and reduce cost
 
-As a **User**, 
+As a **User**,
 I want to have quick response for the website,
 So that I dont have to wait.
 ```
@@ -127,30 +132,30 @@ I want a dedicated, reusable system for communication between frontend & backend
 So that development is quicker.
 ```
 
-| User Story | Title                    | Section          | Sub Section           |
-| ---------- | ------------------------ | ---------------- | --------------------- |
-| **US 5.1** | Django REST Framework    | Endpoints & URLS | [Auth](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/AUTH-ENDPOINTS.md) 
-|            |                          |                  | [Account](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/ACCOUNT-ENDPOINTS.md)|
-|            |                          |                  | [Core](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/CORE-ENDPOINTS.md)|
+| User Story | Title                    | Section          | Sub Section           | Testing |
+| ---------- | ------------------------ | ---------------- | --------------------- | ----------- |
+| **US 5.1** | Django REST Framework    | Endpoints & URLS | [Auth](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/AUTH-ENDPOINTS.md) | [Auth Endpoints](/backend/config/tests/endpoints_and_urls/test_auth_endpoints.py) |
+|            |                          |                  | [Account](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/ACCOUNT-ENDPOINTS.md)| [Account Endpoints](/backend/config/tests/endpoints_and_urls/test_accounts_endpoints.py) |
+|            |                          |                  | [Core](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/CORE-ENDPOINTS.md)| [Subjects endpoints](/backend/config/tests/endpoints_and_urls/test_subjects_endpoints.py) |
 |            |                          |                  | [URL COnventions](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/1.Endpoints-&-URLS/URL-CONVENTIONS.md)
 |            |                          | Tools            | [API Tools](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/2.%20Tooling/API-TOOLING.md)
-|            |                          | Views            | [List/Create Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/LIST-CREATE-VIEWS.md)
-|            |                          |                  | [Detail Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/DETAIL-VIEWS.md)
-|            |                          | Serializers      | [Serializers](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/4.%20Serializers/SERIALIZERS.md)
-| **US 5.2** | Axios Configuration      | Axios            | [Axios Base Configuration](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/BASE-CONFIGURATION.md)
+|            |                          | Generic Views    | [List/Create Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/LIST-CREATE-VIEWS.md) |  |
+|            |                          |                  | [Detail Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/DETAIL-VIEWS.md) | |
+|            |                          | Generic Serializers | [Serializers](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/4.%20Serializers/SERIALIZERS.md) |  |
+| **US 5.2** | Axios Configuration      | Axios            | [Axios Base Configuration](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/BASE-CONFIGURATION.md) |  [Axios Tests](/frontend/src/api/axiosDefaults.test.js) |
 |            |                          |                  | [API Base URL](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/API-BASE-URL.md)
-|            |                          |                  | [Axios Request](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-REQUEST.md)
-|            |                          |                  | [Axios Response](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-RESPONSE.md)
-|            |                          |                  | [Credentials](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/CREDENTIALS.md)
-| **US 5.3** | Request Handling         | Request Lifecycle| [Interceptors](/documentation/1.%20User-Stories/5.%20API-communications/3.%20Request-handling/1.%20Request-Lifecycle/INTERCEPTORS.md)
-|            |                          |                  | [Error Handling](/documentation/1.%20User-Stories/5.%20API-communications/3.%20Request-handling/1.%20Request-Lifecycle/ERROR-HANDLING.md)
-|            |                          |                  | [Token Refresh](/documentation/1.%20User-Stories/5.%20API-communications/3.%20Request-handling/1.%20Request-Lifecycle/TOKEN-REFRESH.md)
-| **US 5.4** | API Data Management      | Data Fetching    | [CoreModels](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/CORE-MODELS.md)
-|            |                          |                  | [Core API Utlities](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/CORE-API-UTILITIES.md)
-|            |                          |                  | [useCoreModelData](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/USE-CORE-MODEL-DATA.md)
-|            |                          |                  | [Pagination](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/PAGINATION.md)
-|            |                          |                  | [Filtering](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/FILTERING.md)
-|            |                          |                  | [Searching](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/SEARCHING.md)
+|            |                          |                  | [Axios Request](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-REQUEST.md) |
+|            |                          |                  | [Axios Response](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-RESPONSE.md)|
+|            |                          |                  | [Credentials](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/CREDENTIALS.md)|
+| **US 5.3** | Request Handling         | Request Lifecycle| [Interceptors](/documentation/1.%20User-Stories/5.%20API-communications/3.%20Request-handling/1.%20Request-Lifecycle/INTERCEPTORS.md)|
+|            |                          |                  | [Error Handling](/documentation/1.%20User-Stories/5.%20API-communications/3.%20Request-handling/1.%20Request-Lifecycle/ERROR-HANDLING.md)|
+|            |                          |                  | [Token Refresh](/documentation/1.%20User-Stories/5.%20API-communications/3.%20Request-handling/1.%20Request-Lifecycle/TOKEN-REFRESH.md)|
+| **US 5.4** | API Data Management      | Data Fetching    | [CoreModels](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/CORE-MODELS.md) |
+|            |                          |                  | [Core API Utlities](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/CORE-API-UTILITIES.md) | [coreApi tests](/frontend/src/api/coreApi.test.js) |
+|            |                          |                  | [useCoreModelData](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/USE-CORE-MODEL-DATA.md) | [useCoreModelData](/frontend/src/hooks/useCoreModelData.test.jsx) |
+|            |                          |                  | [Pagination](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/PAGINATION.md) | |
+|            |                          |                  | [Filtering](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/FILTERING.md) | |
+|            |                          |                  | [Searching](/documentation/1.%20User-Stories/5.%20API-communications/4.%20API-data-management/1.%20Data-fetching/SEARCHING.md) | |
 
 ## 6. Deployment
 ```
@@ -162,7 +167,7 @@ So that replication is possible of required.
 | User Story | Title                    | Section               | Sub Section           |
 | ---------- | ------------------------ | --------------------- | --------------------- |
 | **US 6.1** | Deployment               | Render                | [Deployment Docs](/documentation/1.%20User-Stories/6.%20Deployment/DEPLOYMENT.md)|
-|            | Email Provider           | Google Workspace      | | 
+|            |                          | emails                | [Email setup](/documentation/1.%20User-Stories/6.%20Deployment/EMAIL-SETUP.md) |
 
 ## 7. Email Infrastructure
 ```
@@ -173,37 +178,53 @@ So that configuring emails later is easier.
 
 | User Story | Title                | Section               | Sub Section |
 | ---------- | -------------------- | --------------------- | ----------- |
-| **US 7.1** | Email Infrastructure | Configuration         | SMTP Configuration |
-|            |                      |                       | [Email Backend](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/EMAIL-BACKEND.md) |
-|            |                      |                       | [Default Sender](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/DEFAULT-SENDER.md) |
-|            |                      |                       | [Email Templates](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/EMAIL-TEMPLATES.md) |
-|            |                      | Email Provider        |
-|            |                      | Delivery              | [Email Sending](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Delivery/EMAIL-SENDING.md) |
-|            |                      |                       |
-| **US 7.2** | Email Templates      | Authentication Emails | Email Verification |
+| **US 7.1** | Email Infrastructure | Configuration         | [Domain](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/DOMAIN.md) |
+|            |                      |                       | [Google Workspace](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/1.%20Configuration/GOOGLE-WORKSPACE.md) |
+|            |                      | Email Authentication  | [SPF](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Email-authentication/SPF.md) |
+|            |                      |                       | [DKIM](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Email-authentication/DKIM.md) |
+|            |                      |                       | [DMARC](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/2.%20Email-authentication/DMARC.md) |
+|            |                      | Mailboxes             | [Primary Mailbox](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/3.%20Mailboxes/PRIMARY-MAILBOX.md) |
+|            |                      |                       | [Email Aliases](/documentation/1.%20User-Stories/7.%20Email-infrastructure/1.%20Email-Infrastructure/3.%20Mailboxes/EMAIL-ALIASES.md) |
+| US 7.2     | Email Delivery       | Configuration         | [SMTP Configuration](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/SMTP-CONFIGURATION.md) |
+|            |                      |                       | [Email Backend](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/EMAIL-BACKEND.md) |
+|            |                      |                       | [Default Sender](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/DEFAULT-SENDER.md) |
+|            |                      |                       | [Frontend URL Configuration](/documentation/1.%20User-Stories/7.%20Email-infrastructure/2.%20Email-delivery/1.%20Configuration/FRONTEND-URL-CONFIGURATION.md) |
 
+## 8. Core API Architecture
+
+```
+As a **Developer**,
+I want an overview of the api architecture,
+So that I can better understand the seperation of concerns
+```
+
+| Model      | View                     | Serializer       | Pagination/filter/search | Permissions   | Caching |
+| ---------- | ------------------------ | ---------------- | ------------------------ | ------------- | ------- |
+| Subject    | [List/Create](/backend/core/tests/views/list_create_views/test_subject.py)              | [Subject](/backend/core/tests/serializers/test_subject_serializer.py)          | [Subject list create](/backend/core/tests/views/list_create_views/test_subject_query_behaviour.py)                  |               | [Invalidation](/backend/core/tests/signals/test_subject_signals.py)         |
+|            | Detail                   | Subject          | Queries                  |               |         |
 ## Features
 
 ```
 As a **User**,
-I want a dedicated list of features, 
+I want a dedicated list of features,
 So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
 | ------------------------ | --------------------- | --------------------- | --------------- | ---------------- | -------------- |
-| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py)                |                   |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
-|                          |                       | Email Verification    |
-|                          |                       | Login                 |
-|                          |                       | Login                 |
-|                          |                       | Logout                |
-|                          |                       | Reset Password        |
-|                          |                       | Reactivate Request    |
-|                          |                       | Reactivate Confirm    |
+| Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py) |[Frontend](/frontend/src/components/forms/auth/RegisterForm.test.jsx) |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
+|                          |                       | Email Verification    | [backend](/backend/accounts/tests/email_verification/base_email_verification.py) | [Frontend](/frontend/src/components/forms/auth/VerifyEmailForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/EMAIL-VERIFICATION.md) |
+|                          |                       | Resend Email Verification | [backend](/backend/accounts/tests/email_verification/test_resend_verify_email.py) | [Frontend](/frontend/src/components/forms/auth/VerifyResendEmailForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESEND-EMAIL-VERIFICATION.md) |
+|                          |                       | Login                 | [Backend](/backend/accounts/tests/dj_rest_auth/test_login.py) | [Frontend](/frontend/src/components/forms/auth/LoginForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/LOGIN-MT.md) |
+|                          |                       | Logout                | [Backend](/backend/accounts/tests/dj_rest_auth/test_logout.py) | [Frontend](/frontend/src/components/forms/auth/LogoutForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/LOGOUT-MT.md) |
+|                          |                       | Reset Password request| [Backend](/backend/accounts/tests/reset_password/test_password_reset_request.py) | [Frontend](/frontend/src/components/forms/auth/ForgotPasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESET-PASSWORD-REQUEST-MT.md) |
+|                          |                       | Reset Password confirm| [Backend](/backend/accounts/tests/reset_password/test_password_reset_confirm.py) | [Frontend](/frontend/src/components/forms/auth/ResetPasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESET-PASSWORD-CONFIRM-MT.md) |
+|                          |                       | Reactivate Request    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateRequestForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-REQUEST.md) |
+|                          |                       | Reactivate Confirm    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateConfirmForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-CONFIRM-MT.md) |
 | Account Management       | Structure             | Account Sidebar       |
-|                          | Profile               | View Email            | 
+|                          | Profile               | View Email            |
 |                          | Settings              | Change Password       |
 |                          |                       | Change email          |
-|                          |                       | Deactivate Account    |
+|                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) |
 |                          |                       | Logout                |
 
 

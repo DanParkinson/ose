@@ -1,24 +1,33 @@
 /**
- * axiosDefaults Tests
+ * AXIOS DEFAULTS TEST CHECKLIST
+ * -----------------------------
+ * Global Configuration
+ * - Verify global axios baseURL is configured
+ * - Verify global POST content type is JSON
+ * - Verify global requests include credentials
  *
- * This test suite verifies:
+ * -----------------------------
+ * Custom Axios Instances
+ * - Verify axiosRequest uses the correct baseURL
+ * - Verify axiosRequest sends credentials
+ * - Verify axiosResponse uses the correct baseURL
+ * - Verify axiosResponse sends credentials
  *
- * 1. Global axios configuration is set correctly
- * 2. Custom axios instances are created with correct defaults
- * 3. Response interceptor behaviour:
- *    - Returns successful responses unchanged
- *    - Retries requests on 401 after refreshing token
- *    - Prevents retry loops using _retry flag
- *    - Does not retry login or refresh endpoints
- *    - Rejects when refresh fails
- *
- * Notes:
- * - Axios adapter is mocked to prevent real HTTP requests
- * - Interceptor handlers are accessed directly for unit testing
+ * -----------------------------
+ * Response Interceptor
+ * - Verify successful responses are returned unchanged
+ * - Verify 401 responses refresh the access token and retry the original request
+ * - Verify retried requests are marked with _retry
+ * - Verify already retried requests are rejected
+ * - Verify login endpoint errors are not retried
+ * - Verify refresh endpoint errors are not retried
+ * - Verify refresh failure rejects the request
+ * - Verify non-401 errors are rejected without refresh
  */
 
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
+
 import { axiosRequest, axiosResponse } from "./axiosDefaults";
 
 describe("axiosDefaults", () => {
@@ -26,210 +35,189 @@ describe("axiosDefaults", () => {
     vi.clearAllMocks();
   });
 
+  const getResponseInterceptor = () => {
+    return axiosResponse.interceptors.response.handlers[0];
+  };
+
+  // =====================
+  // Global Configuration
+  // =====================
+
   test("sets global axios defaults", () => {
-    /**
-     * Arrange:
-     * The axiosDefaults module is imported, which applies the global axios config.
-     *
-     * Act:
-     * Access the global axios default settings.
-     *
-     * Assert:
-     * Confirm the base URL, POST content type, and credentials setting are correct.
-     */
     expect(axios.defaults.baseURL).toBe("http://localhost:8000");
-    expect(axios.defaults.headers.post["Content-Type"]).toBe("application/json");
+
+    expect(axios.defaults.headers.post["Content-Type"]).toBe(
+      "application/json"
+    );
+
     expect(axios.defaults.withCredentials).toBe(true);
   });
 
+  // =====================
+  // Custom Axios Instances
+  // =====================
+
   test("creates axiosRequest with correct config", () => {
-    /**
-     * Arrange:
-     * The axiosRequest instance is imported from axiosDefaults.
-     *
-     * Act:
-     * Access the default config values on axiosRequest.
-     *
-     * Assert:
-     * Confirm axiosRequest uses the correct base URL and sends credentials.
-     */
     expect(axiosRequest.defaults.baseURL).toBe("http://localhost:8000");
+
     expect(axiosRequest.defaults.withCredentials).toBe(true);
   });
 
   test("creates axiosResponse with correct config", () => {
-    /**
-     * Arrange:
-     * The axiosResponse instance is imported from axiosDefaults.
-     *
-     * Act:
-     * Access the default config values on axiosResponse.
-     *
-     * Assert:
-     * Confirm axiosResponse uses the correct base URL and sends credentials.
-     */
     expect(axiosResponse.defaults.baseURL).toBe("http://localhost:8000");
+
     expect(axiosResponse.defaults.withCredentials).toBe(true);
   });
 
-  test("returns response unchanged on success", async () => {
-    /**
-     * Arrange:
-     * Get the response interceptor and create a mock successful response.
-     *
-     * Act:
-     * Pass the mock response through the interceptor success handler.
-     *
-     * Assert:
-     * Confirm the same response object is returned unchanged.
-     */
-    const interceptor = axiosResponse.interceptors.response.handlers[0];
+  // =====================
+  // Response Interceptor
+  // =====================
 
-    const mockResponse = { data: "ok" };
+  test("returns successful responses unchanged", async () => {
+    const interceptor = getResponseInterceptor();
 
-    const result = await interceptor.fulfilled(mockResponse);
+    const response = {
+      data: {
+        detail: "ok",
+      },
+    };
 
-    expect(result).toBe(mockResponse);
+    const result = await interceptor.fulfilled(response);
+
+    expect(result).toBe(response);
   });
 
-  test("retries request on 401 and refresh succeeds", async () => {
-    /**
-     * Arrange:
-     * Create a mock 401 error for a normal API request.
-     * Mock the refresh token request so it succeeds.
-     * Mock the axiosResponse adapter so the retried request does not make a real HTTP call.
-     *
-     * Act:
-     * Pass the mock error through the interceptor error handler.
-     *
-     * Assert:
-     * Confirm the refresh endpoint is called.
-     * Confirm the original request is marked as retried.
-     * Confirm the original request is retried and returns the mocked response.
-     */
-    const interceptor = axiosResponse.interceptors.response.handlers[0];
+  test("refreshes access token and retries original request on 401", async () => {
+    const interceptor = getResponseInterceptor();
 
-    const mockError = {
-      response: { status: 401 },
+    const error = {
+      response: {
+        status: 401,
+      },
       config: {
-        url: "/api/some-endpoint/",
+        url: "/api/protected/",
         _retry: false,
       },
     };
 
-    const mockPost = vi.spyOn(axiosRequest, "post").mockResolvedValue({});
+    vi.spyOn(axiosRequest, "post").mockResolvedValue({});
 
     axiosResponse.defaults.adapter = vi.fn().mockResolvedValue({
-      data: "retried",
+      data: {
+        detail: "retried",
+      },
       status: 200,
       statusText: "OK",
       headers: {},
-      config: mockError.config,
+      config: error.config,
     });
 
-    const result = await interceptor.rejected(mockError);
+    const result = await interceptor.rejected(error);
 
-    expect(mockPost).toHaveBeenCalledWith("/api/auth/token/refresh/");
-    expect(mockError.config._retry).toBe(true);
-    expect(result.data).toBe("retried");
+    expect(axiosRequest.post).toHaveBeenCalledWith(
+      "/api/auth/token/refresh/"
+    );
+
+    expect(error.config._retry).toBe(true);
+
+    expect(result.data).toEqual({
+      detail: "retried",
+    });
   });
 
-  test("does not retry if request already retried", async () => {
-    /**
-     * Arrange:
-     * Create a mock 401 error where the original request already has _retry set to true.
-     *
-     * Act:
-     * Pass the mock error through the interceptor error handler.
-     *
-     * Assert:
-     * Confirm the error is rejected immediately instead of retrying again.
-     */
-    const interceptor = axiosResponse.interceptors.response.handlers[0];
+  test("rejects already retried 401 requests", async () => {
+    const interceptor = getResponseInterceptor();
 
-    const mockError = {
-      response: { status: 401 },
+    const error = {
+      response: {
+        status: 401,
+      },
       config: {
-        url: "/api/some-endpoint/",
+        url: "/api/protected/",
         _retry: true,
       },
     };
 
-    await expect(interceptor.rejected(mockError)).rejects.toBe(mockError);
+    await expect(interceptor.rejected(error)).rejects.toBe(error);
+
+    expect(axiosRequest.post).not.toHaveBeenCalled();
   });
 
-  test("does not retry login endpoint", async () => {
-    /**
-     * Arrange:
-     * Create a mock 401 error from the login endpoint.
-     *
-     * Act:
-     * Pass the mock error through the interceptor error handler.
-     *
-     * Assert:
-     * Confirm the login error is rejected without attempting a token refresh.
-     */
-    const interceptor = axiosResponse.interceptors.response.handlers[0];
+  test("does not retry login endpoint errors", async () => {
+    const interceptor = getResponseInterceptor();
 
-    const mockError = {
-      response: { status: 401 },
+    const error = {
+      response: {
+        status: 401,
+      },
       config: {
         url: "/api/auth/login/",
         _retry: false,
       },
     };
 
-    await expect(interceptor.rejected(mockError)).rejects.toBe(mockError);
+    await expect(interceptor.rejected(error)).rejects.toBe(error);
+
+    expect(axiosRequest.post).not.toHaveBeenCalled();
   });
 
-  test("does not retry refresh endpoint", async () => {
-    /**
-     * Arrange:
-     * Create a mock 401 error from the refresh token endpoint.
-     *
-     * Act:
-     * Pass the mock error through the interceptor error handler.
-     *
-     * Assert:
-     * Confirm the refresh error is rejected without trying to refresh again.
-     */
-    const interceptor = axiosResponse.interceptors.response.handlers[0];
+  test("does not retry refresh endpoint errors", async () => {
+    const interceptor = getResponseInterceptor();
 
-    const mockError = {
-      response: { status: 401 },
+    const error = {
+      response: {
+        status: 401,
+      },
       config: {
         url: "/api/auth/token/refresh/",
         _retry: false,
       },
     };
 
-    await expect(interceptor.rejected(mockError)).rejects.toBe(mockError);
+    await expect(interceptor.rejected(error)).rejects.toBe(error);
+
+    expect(axiosRequest.post).not.toHaveBeenCalled();
   });
 
-  test("rejects if refresh request fails", async () => {
-    /**
-     * Arrange:
-     * Create a mock 401 error from a normal API request.
-     * Mock the refresh token request so it fails.
-     *
-     * Act:
-     * Pass the mock error through the interceptor error handler.
-     *
-     * Assert:
-     * Confirm the interceptor rejects with the refresh failure.
-     */
-    const interceptor = axiosResponse.interceptors.response.handlers[0];
+  test("rejects original request when refresh fails", async () => {
+    const interceptor = getResponseInterceptor();
 
-    const mockError = {
-      response: { status: 401 },
+    const error = {
+      response: {
+        status: 401,
+      },
       config: {
-        url: "/api/some-endpoint/",
+        url: "/api/protected/",
         _retry: false,
       },
     };
 
     vi.spyOn(axiosRequest, "post").mockRejectedValue("refresh failed");
 
-    await expect(interceptor.rejected(mockError)).rejects.toBe("refresh failed");
+    await expect(interceptor.rejected(error)).rejects.toBe("refresh failed");
+
+    expect(axiosRequest.post).toHaveBeenCalledWith(
+      "/api/auth/token/refresh/"
+    );
+
+    expect(error.config._retry).toBe(true);
+  });
+
+  test("rejects non-401 errors without refreshing token", async () => {
+    const interceptor = getResponseInterceptor();
+
+    const error = {
+      response: {
+        status: 403,
+      },
+      config: {
+        url: "/api/protected/",
+        _retry: false,
+      },
+    };
+
+    await expect(interceptor.rejected(error)).rejects.toBe(error);
+
+    expect(axiosRequest.post).not.toHaveBeenCalled();
   });
 });

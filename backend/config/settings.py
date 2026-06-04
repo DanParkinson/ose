@@ -92,6 +92,7 @@ else:
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
 ACCOUNT_ADAPTER = "accounts.adapter.CustomAccountAdapter"
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 
 # rest auth
 REST_AUTH = {

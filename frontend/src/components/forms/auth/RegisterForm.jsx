@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { HStack, Text, Box, VStack} from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 
 // Hooks
 import useAuth from "../../../hooks/useAuth";
@@ -12,13 +11,12 @@ import FormSubmitButton from "../base/buttons/FormSubmitButton";
 import FormFieldError from "../base/form_field/FormFieldError";
 import FormLink from "../base/navigation/FormLink";
 
-// Feedback 
+// Feedback
 import ButtonSpinner from "../../feedback/ButtonSpinner";
 import FormError from "../base/feedback/FormError";
 
 const RegisterForm = () => {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const [status, setStatus] = useState("idle");
 
   const [email, setEmail] = useState("");
@@ -129,10 +127,9 @@ const RegisterForm = () => {
 
       {status === "success" && (
         <Box
-          p={6}
         >
           <VStack gap={4} textAlign="center">
-            <Text color="text.light1" fontWeight="semibold">
+            <Text color="text.light1" fontWeight="bold">
               Your account has been created.
             </Text>
 
@@ -141,16 +138,16 @@ const RegisterForm = () => {
             </Text>
 
             <FormLink
-              text="Already verified?"
+              to="/resend-verification-email"
+              linkText="Resend verification email"
+            />
+
+            <FormLink
               to="/login"
               linkText="Login"
             />
 
-            <FormLink
-              text="Didn't receive the email?"
-              to="/resend-verification-email"
-              linkText="Resend verification email"
-            />
+
           </VStack>
         </Box>
       )}

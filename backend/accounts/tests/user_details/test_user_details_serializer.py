@@ -3,6 +3,7 @@ from accounts.tests.user_details.base_user_details import (
     BaseUserDetailsTestCase,
 )
 
+
 class UserDetailsSerializerTests(BaseUserDetailsTestCase):
     """
     USER DETAILS SERIALIZER TEST CHECKLIST

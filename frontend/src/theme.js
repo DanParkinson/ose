@@ -38,9 +38,9 @@ const buttonRecipe = defineRecipe({
         },
 
         _focusVisible: {
-          outline: "2px solid",
-          outlineColor: "focusRing",
+          outline: "2px solid white",
           outlineOffset: "2px",
+          borderRadius: "sm",
         },
       },
 
@@ -84,7 +84,7 @@ const buttonRecipe = defineRecipe({
           outlineOffset: "2px",
         },
       },
-      
+
       dashboardTitleRow: {
         w: "80%",
         justifyContent: "flex-start",
@@ -136,6 +136,14 @@ const config = defineConfig({
 
     "*::-webkit-scrollbar-thumb:hover": {
       background: "var(--chakra-colors-text-primarylight)",
+    },
+
+    "input::-ms-reveal": {
+      display: "none",
+    },
+
+    "input::-ms-clear": {
+      display: "none",
     },
   },
 

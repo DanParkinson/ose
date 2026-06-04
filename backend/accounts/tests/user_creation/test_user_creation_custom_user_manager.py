@@ -1,3 +1,5 @@
+from allauth.account.models import EmailAddress
+
 from accounts.tests.user_creation.base_user_creation import (
     BaseUserCreationTestCase,
 )
@@ -22,6 +24,10 @@ class CustomUserManagerTests(BaseUserCreationTestCase):
     - Verify create_superuser sets is_staff=True
     - Verify create_superuser sets is_superuser=True
     - Verify create_superuser sets is_active=True
+    - Verify create_superuser creates an EmailAddress record
+    - Verify create_superuser marks email address as verified
+    - Verify create_superuser marks email address as primary
+
 
     ----------------------------------
     Superuser Validation
@@ -158,6 +164,51 @@ class CustomUserManagerTests(BaseUserCreationTestCase):
         superuser = self.create_superuser(email=self.admin_email)
 
         self.assertTrue(superuser.is_active)
+
+    def test_create_superuser_creates_email_address_record(self):
+        """
+        Arrange: Create a superuser.
+        Act: Check whether an EmailAddress record exists for the superuser.
+        Assert: The superuser has a related EmailAddress record.
+        """
+        superuser = self.create_superuser(email=self.admin_email)
+
+        exists = EmailAddress.objects.filter(
+            user=superuser,
+            email=self.admin_email,
+        ).exists()
+
+        self.assertTrue(exists)
+
+    def test_create_superuser_marks_email_address_verified(self):
+        """
+        Arrange: Create a superuser.
+        Act: Retrieve the related EmailAddress record.
+        Assert: The superuser email address is marked as verified.
+        """
+        superuser = self.create_superuser(email=self.admin_email)
+
+        email_address = EmailAddress.objects.get(
+            user=superuser,
+            email=self.admin_email,
+        )
+
+        self.assertTrue(email_address.verified)
+
+    def test_create_superuser_marks_email_address_primary(self):
+        """
+        Arrange: Create a superuser.
+        Act: Retrieve the related EmailAddress record.
+        Assert: The superuser email address is marked as primary.
+        """
+        superuser = self.create_superuser(email=self.admin_email)
+
+        email_address = EmailAddress.objects.get(
+            user=superuser,
+            email=self.admin_email,
+        )
+
+        self.assertTrue(email_address.primary)
 
     # =====================
     # Superuser Validation

@@ -11,8 +11,9 @@ function Layout({ children }) {
     location.pathname.startsWith("/register") ||
     location.pathname.startsWith("/forgot-password") ||
     location.pathname.startsWith("/reset-password") ||
-    location.pathname.startsWith("/reactivate-account");
-
+    location.pathname.startsWith("/reactivate-account") ||
+    location.pathname.startsWith("/verify-email") ||
+    location.pathname.startsWith("/resend-verification-email");
   return (
     <Box
       minH="100vh"
@@ -22,7 +23,7 @@ function Layout({ children }) {
       >
       {!isAuthPage && <NavBar />}
 
-      <Box flex="1" minH={0} bg="bg.canvas">
+      <Box as="main" flex="1" minH={0} bg="bg.canvas">
         {children}
       </Box>
 

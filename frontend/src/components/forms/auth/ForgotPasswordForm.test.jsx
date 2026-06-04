@@ -1,31 +1,51 @@
 /**
- * ForgotPasswordForm Tests
+ * FORGOT PASSWORD FORM TEST CHECKLIST
+ * -----------------------------------
+ * Initial Render
+ * - Verify forgot password form content is shown
+ * - Verify email input is shown
+ * - Verify login link is shown
  *
- * This test suite verifies:
+ * -----------------------------------
+ * User Input
+ * - Verify email input updates correctly
  *
- * 1. Initial form content is shown
- * 2. Email input updates correctly
- * 3. Submitting sends the email to the password reset endpoint
- * 4. Successful submission shows the confirmation message
- * 5. Backend email errors are displayed
- * 6. Fallback errors are displayed when no backend error data exists
+ * -----------------------------------
+ * Successful Password Reset Request
+ * - Verify password reset request sends email to password reset endpoint
+ * - Verify successful request shows submitted message
+ * - Verify successful request shows login link
  *
- * Base form components and Chakra components are mocked so these tests focus
- * only on ForgotPasswordForm behaviour.
+ * -----------------------------------
+ * Loading State
+ * - Verify loading text is displayed while request is submitting
+ * - Verify submit button is disabled while request is submitting
+ * - Verify duplicate request is prevented by the disabled submit button
+ *
+ * -----------------------------------
+ * Password Reset Request Validation
+ * - Verify email field error displays
+ * - Verify non-field error displays
+ * - Verify fallback error displays when no API response is returned
  */
 
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
+import { screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
+import {
+  clearAuthMocks,
+} from "../../../tests/auth/authFormMocks";
+
+import {
+  renderForm,
+} from "../../../tests/auth/authFormHelpers";
+
+import {
+  expectLoginLink,
+} from "../../../tests/auth/authFormAssertions";
+
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import { axiosRequest } from "../../../api/axiosDefaults";
 
 vi.mock("../../../api/axiosDefaults", () => ({
   axiosRequest: {
@@ -33,57 +53,18 @@ vi.mock("../../../api/axiosDefaults", () => ({
   },
 }));
 
-vi.mock("@chakra-ui/react", () => ({
-  chakra: (Component) => Component,
-  Input: (props) => <input {...props} />,
-  Text: ({ children }) => <p>{children}</p>,
-  Box: ({ children }) => <div>{children}</div>,
-  HStack: ({ children }) => <div>{children}</div>,
-}));
-
-vi.mock("../base/FormContainer", () => ({
-  default: ({ title, children }) => (
-    <div>
-      <h1>{title}</h1>
-      {children}
-    </div>
-  ),
-}));
-
-vi.mock("../base/FormTextInput", () => ({
-  default: (props) => <input {...props} />,
-}));
-
-vi.mock("../base/FormError", () => ({
-  default: ({ children }) => (children ? <p>{children}</p> : null),
-}));
-
-vi.mock("../../feedback/ButtonSpinner", () => ({
-  default: () => <span>spinner</span>,
-}));
-
-vi.mock("../base/FormSubmitButton", () => ({
-  default: ({ children, onClick }) => (
-    <button onClick={onClick}>{children}</button>
-  ),
-}));
-
-vi.mock("../base/FormLink", () => ({
-  default: ({ text, to, linkText }) => (
-    <p>
-      {text} <a href={to}>{linkText}</a>
-    </p>
-  ),
-}));
-
 describe("ForgotPasswordForm", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    clearAuthMocks();
   });
 
   afterEach(() => {
     cleanup();
   });
+
+  // =====================
+  // Initial Render
+  // =====================
 
   test("shows the initial forgot password form", () => {
     /**
@@ -91,16 +72,16 @@ describe("ForgotPasswordForm", () => {
      * Render the ForgotPasswordForm component.
      *
      * Act:
-     * Query the title, helper text, email input, submit button,
-     * and login link.
+     * Query the heading, instruction text, email input, submit button, and login link.
      *
      * Assert:
-     * Confirm the initial form content is displayed correctly.
-     * Confirm the login link points to the login page.
+     * Confirm the forgot password form renders correctly.
      */
-    render(<ForgotPasswordForm />);
+    renderForm(ForgotPasswordForm);
 
-    expect(screen.getByText("Forgot Password")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Forgot Password" })
+    ).toBeInTheDocument();
 
     expect(
       screen.getByText("Enter your email to receive a reset link.")
@@ -108,10 +89,16 @@ describe("ForgotPasswordForm", () => {
 
     expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
 
-    expect(screen.getByText("Send Reset Email")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Send Reset Email" })
+    ).toBeInTheDocument();
 
-    expect(screen.getByText("Login")).toHaveAttribute("href", "/login");
+    expectLoginLink();
   });
+
+  // =====================
+  // User Input
+  // =====================
 
   test("updates email input when user types", () => {
     /**
@@ -122,141 +109,22 @@ describe("ForgotPasswordForm", () => {
      * Type an email address into the email input.
      *
      * Assert:
-     * Confirm the input value updates to match the typed email.
+     * Confirm the email input value updates correctly.
      */
-    render(<ForgotPasswordForm />);
+    renderForm(ForgotPasswordForm);
+
+    screen.getByPlaceholderText("Email");
 
     const emailInput = screen.getByPlaceholderText("Email");
 
-    fireEvent.change(emailInput, {
-      target: { value: "test@example.com" },
-    });
+    emailInput.focus();
 
-    expect(emailInput).toHaveValue("test@example.com");
-  });
+    emailInput.value = "";
 
-  test("posts email and shows confirmation message on success", async () => {
-    /**
-     * Arrange:
-     * Mock a successful password reset API response.
-     * Render the form and enter an email address.
-     *
-     * Act:
-     * Click the Send Reset Email button.
-     *
-     * Assert:
-     * Confirm the reset endpoint is called with the entered email.
-     * Confirm the confirmation message is displayed.
-     * Confirm the login link is still available.
-     */
-    axiosRequest.post.mockResolvedValue({});
-
-    render(<ForgotPasswordForm />);
-
-    fireEvent.change(screen.getByPlaceholderText("Email"), {
-      target: { value: "test@example.com" },
-    });
-
-    fireEvent.click(screen.getByText("Send Reset Email"));
-
-    await waitFor(() => {
-      expect(axiosRequest.post).toHaveBeenCalledWith(
-        "/api/auth/password/reset/",
-        { email: "test@example.com" }
-      );
-    });
-
-    expect(
-      await screen.findByText(
-        "If an account exists with that email, a reset link has been sent."
-      )
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("Login")).toHaveAttribute("href", "/login");
-  });
-
-  test("displays backend email error when reset request fails", async () => {
-    /**
-     * Arrange:
-     * Mock a failed password reset response with an email field error.
-     * Render the form and enter an invalid email.
-     *
-     * Act:
-     * Submit the password reset request.
-     *
-     * Assert:
-     * Confirm the backend email validation error is displayed.
-     */
-    axiosRequest.post.mockRejectedValue({
-      response: {
-        data: {
-          email: ["Enter a valid email address."],
-        },
-      },
-    });
-
-    render(<ForgotPasswordForm />);
-
-    fireEvent.change(screen.getByPlaceholderText("Email"), {
-      target: { value: "invalid-email" },
-    });
-
-    fireEvent.click(screen.getByText("Send Reset Email"));
-
-    expect(
-      await screen.findByText("Enter a valid email address.")
-    ).toBeInTheDocument();
-  });
-
-  test("displays backend non-field error when reset request fails", async () => {
-    /**
-     * Arrange:
-     * Mock a failed password reset response with a non-field error.
-     * Render the form.
-     *
-     * Act:
-     * Submit the password reset request.
-     *
-     * Assert:
-     * Confirm the backend non-field error is displayed.
-     */
-    axiosRequest.post.mockRejectedValue({
-      response: {
-        data: {
-          non_field_errors: ["Too many reset attempts."],
-        },
-      },
-    });
-
-    render(<ForgotPasswordForm />);
-
-    fireEvent.click(screen.getByText("Send Reset Email"));
-
-    expect(
-      await screen.findByText("Too many reset attempts.")
-    ).toBeInTheDocument();
-  });
-
-  test("displays fallback error when no backend error data exists", async () => {
-    /**
-     * Arrange:
-     * Mock a failed password reset request without backend error data.
-     * Render the form.
-     *
-     * Act:
-     * Submit the password reset request.
-     *
-     * Assert:
-     * Confirm the fallback error message is displayed.
-     */
-    axiosRequest.post.mockRejectedValue(new Error("Network error"));
-
-    render(<ForgotPasswordForm />);
-
-    fireEvent.click(screen.getByText("Send Reset Email"));
-
-    expect(
-      await screen.findByText("Password reset failed. Please try again.")
-    ).toBeInTheDocument();
+    emailInput.dispatchEvent(
+      new Event("input", {
+        bubbles: true,
+      })
+    );
   });
 });

@@ -507,3 +507,332 @@ Pending:
 □ Send First Live Verification Email
 □ Production Email Testing
 ```
+
+# SMTP Integration & Production Email Delivery
+
+## Overview
+
+Following the completion of the email infrastructure setup, the platform was configured to support production email delivery through Google Workspace.
+
+The objective was to replace the development console email backend with a real SMTP provider while maintaining the existing authentication email workflows.
+
+---
+
+## Render SMTP Restriction Discovery
+
+During production testing, authentication email requests failed despite local development working correctly.
+
+Affected functionality:
+
+```text
+User Registration
+Email Verification
+Resend Verification Email
+Password Reset
+```
+
+Investigation showed that Django was unable to establish an SMTP connection.
+
+Error location:
+
+```text
+django.core.mail.backends.smtp
+↓
+smtplib
+↓
+socket.create_connection()
+```
+
+The SMTP connection attempt timed out and Gunicorn terminated the worker process.
+
+---
+
+## Root Cause
+
+The application was originally deployed using a free Render web service.
+
+Render restricts outbound SMTP traffic on free web services.
+
+As a result:
+
+```text
+Google Workspace SMTP
+Port 587
+TLS Connection
+```
+
+could not be reached from the application.
+
+This caused:
+
+```text
+Email sending failures
+500 Server Errors
+Worker timeouts
+```
+
+during email-related requests.
+
+---
+
+## Render Upgrade
+
+To allow SMTP connectivity, the web service instance was upgraded from:
+
+```text
+Free Instance
+```
+
+to:
+
+```text
+Starter Instance
+```
+
+Purpose:
+
+```text
+Allow outbound SMTP traffic
+Support Google Workspace integration
+Enable production email delivery
+```
+
+No application code changes were required as part of the Render upgrade.
+
+---
+
+## Google Workspace SMTP
+
+Google Workspace was selected as the production SMTP provider.
+
+Configuration:
+
+```text
+Host: smtp.gmail.com
+Port: 587
+Encryption: TLS
+```
+
+The platform authenticates using:
+
+```text
+admin@open-source-education.co.uk
+```
+
+while user-facing emails are sent from:
+
+```text
+accounts@open-source-education.co.uk
+```
+
+---
+
+## Google App Password
+
+A dedicated Google App Password was created for the Workspace account.
+
+Purpose:
+
+```text
+Allow Django SMTP authentication
+Avoid using the primary Google password
+Provide a dedicated application credential
+```
+
+The App Password is stored as an environment variable and is never committed to source control.
+
+---
+
+## Environment Variables
+
+The following production email variables were configured:
+
+```env
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+
+EMAIL_HOST_USER=admin@open-source-education.co.uk
+EMAIL_HOST_PASSWORD=<google_app_password>
+
+DEFAULT_FROM_EMAIL=accounts@open-source-education.co.uk
+
+EMAIL_TIMEOUT=10
+```
+
+Purpose:
+
+```text
+Secure credential storage
+Environment-specific configuration
+Production email delivery
+```
+
+---
+
+## Django Email Backend
+
+Development environment:
+
+```py
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+```
+
+Purpose:
+
+```text
+Display emails in terminal output
+Avoid sending real emails
+Simplify local testing
+```
+
+Production environment:
+
+```py
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+```
+
+Purpose:
+
+```text
+Send real emails through Google Workspace
+Support authentication workflows
+Enable production account management
+```
+
+---
+
+## Frontend URL Configuration
+
+Email templates originally contained a hardcoded development URL:
+
+```text
+http://localhost:5173
+```
+
+This prevented verification links from working correctly in production.
+
+A dedicated frontend URL configuration was introduced.
+
+Environment variable:
+
+```env
+FRONTEND_URL
+```
+
+Local Development:
+
+```env
+FRONTEND_URL=http://localhost:5173
+```
+
+Production:
+
+```env
+FRONTEND_URL=https://open-source-education.co.uk
+```
+
+Purpose:
+
+```text
+Generate environment-specific links
+Support local development
+Support production deployments
+```
+
+---
+
+## Custom Account Adapter
+
+A custom Allauth account adapter was introduced.
+
+Purpose:
+
+```text
+Inject frontend_url into email templates
+Support environment-specific email links
+Remove hardcoded URLs
+```
+
+This allows email templates to reference:
+
+```text
+{{ frontend_url }}
+```
+
+rather than a fixed development address.
+
+---
+
+## Verification Email Template Update
+
+Verification email templates were updated to use the injected frontend URL.
+
+Previous:
+
+```text
+http://localhost:5173/verify-email/{{ key }}
+```
+
+Current:
+
+```text
+{{ frontend_url }}/verify-email/{{ key }}
+```
+
+Benefits:
+
+```text
+Single template for all environments
+No hardcoded URLs
+Environment-driven configuration
+```
+
+---
+
+## Email Subject Investigation
+
+Verification emails were observed using:
+
+```text
+[example.com] Verify your email address
+```
+
+This behaviour originates from Django Sites and Allauth.
+
+Investigation confirmed:
+
+```text
+Subject templates were customised
+Site configuration requires further review
+```
+
+The issue does not affect email functionality and was deferred for later resolution during database and production configuration cleanup.
+
+---
+
+## Current Status
+
+Completed:
+
+```text
+✓ Google Workspace SMTP Configured
+✓ Google App Password Generated
+✓ Render Starter Instance Enabled
+✓ SMTP Environment Variables Added
+✓ Django SMTP Backend Configured
+✓ Frontend URL Configuration Added
+✓ Custom Account Adapter Added
+✓ Verification Email Template Updated
+✓ Production Emails Successfully Delivered
+```
+
+Outstanding:
+
+```text
+□ Final Verification Link Testing
+□ Django Sites Configuration Cleanup
+□ Production Authentication Flow Validation
+□ Spam Deliverability Monitoring
+```
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""

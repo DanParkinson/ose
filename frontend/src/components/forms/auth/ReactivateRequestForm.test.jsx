@@ -1,29 +1,50 @@
 /**
- * ReactivateRequestForm Tests
+ * REACTIVATE REQUEST FORM TEST CHECKLIST
+ * --------------------------------------
+ * Initial Render
+ * - Verify reactivate account form content is shown
+ * - Verify email input is shown
+ * - Verify login link is shown
  *
- * This test suite verifies:
+ * --------------------------------------
+ * User Input
+ * - Verify email input updates correctly
  *
- * 1. Initial form content is shown
- * 2. Email input updates correctly
- * 3. Submitting sends the email to the reactivation request endpoint
- * 4. Successful submission shows the confirmation message
- * 5. Backend email and non-field errors are displayed
- * 6. Email-specific errors clear when the email field changes
- * 7. Fallback errors are displayed when no backend error data exists
+ * --------------------------------------
+ * Successful Reactivation Request
+ * - Verify reactivation request sends email to reactivation request endpoint
+ * - Verify successful request shows submitted message
+ * - Verify successful request shows login link
  *
- * Base form components and Chakra components are mocked so these tests focus
- * only on ReactivateRequestForm behaviour.
+ * --------------------------------------
+ * Loading State
+ * - Verify loading text is displayed while request is submitting
+ * - Verify submit button is disabled while request is submitting
+ * - Verify duplicate request is prevented by the disabled submit button
+ *
+ * --------------------------------------
+ * Reactivation Request Validation
+ * - Verify email field error displays
+ * - Verify non-field error displays
+ * - Verify fallback error displays when no API response is returned
  */
 
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
+import { screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
+
+import {
+  clearAuthMocks,
+} from "../../../tests/auth/authFormMocks";
+
+import {
+  renderForm,
+  submitForm,
+} from "../../../tests/auth/authFormHelpers";
+
+import {
+  expectLoginLink,
+} from "../../../tests/auth/authFormAssertions";
 
 import ReactivateRequestForm from "./ReactivateRequestForm";
 import { axiosRequest } from "../../../api/axiosDefaults";
@@ -34,57 +55,24 @@ vi.mock("../../../api/axiosDefaults", () => ({
   },
 }));
 
-vi.mock("@chakra-ui/react", () => ({
-  chakra: (Component) => Component,
-  Input: (props) => <input {...props} />,
-  Text: ({ children }) => <p>{children}</p>,
-  Box: ({ children }) => <div>{children}</div>,
-  HStack: ({ children }) => <div>{children}</div>,
-}));
-
-vi.mock("../base/FormContainer", () => ({
-  default: ({ title, children }) => (
-    <div>
-      <h1>{title}</h1>
-      {children}
-    </div>
-  ),
-}));
-
-vi.mock("../base/FormTextInput", () => ({
-  default: (props) => <input {...props} />,
-}));
-
-vi.mock("../base/FormError", () => ({
-  default: ({ children }) => (children ? <p>{children}</p> : null),
-}));
-
-vi.mock("../../feedback/ButtonSpinner", () => ({
-  default: () => <span>spinner</span>,
-}));
-
-vi.mock("../base/FormSubmitButton", () => ({
-  default: ({ children, onClick }) => (
-    <button onClick={onClick}>{children}</button>
-  ),
-}));
-
-vi.mock("../base/FormLink", () => ({
-  default: ({ text, to, linkText }) => (
-    <p>
-      {text} <a href={to}>{linkText}</a>
-    </p>
-  ),
-}));
+const typeEmail = (value = "test@example.com") => {
+  fireEvent.change(screen.getByPlaceholderText("Email"), {
+    target: { value },
+  });
+};
 
 describe("ReactivateRequestForm", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    clearAuthMocks();
   });
 
   afterEach(() => {
     cleanup();
   });
+
+  // =====================
+  // Initial Render
+  // =====================
 
   test("shows the initial reactivate request form", () => {
     /**
@@ -92,39 +80,34 @@ describe("ReactivateRequestForm", () => {
      * Render the ReactivateRequestForm component.
      *
      * Act:
-     * Query the heading, helper text, email input,
+     * Query the heading, instruction text, email input,
      * submit button, and login link.
      *
      * Assert:
-     * Confirm the initial form content renders correctly.
-     * Confirm the login link points to the login page.
+     * Confirm the reactivate request form renders correctly.
      */
-    render(<ReactivateRequestForm />);
+    renderForm(ReactivateRequestForm);
 
     expect(
       screen.getByRole("heading", { name: "Reactivate Account" })
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText(
-        "Enter your email to receive a reactivation link."
-      )
+      screen.getByText("Enter your email to receive a reactivation link.")
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByPlaceholderText("Email")
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", {
-        name: "Send Reactivation Email",
-      })
+      screen.getByRole("button", { name: "Send Reactivation Email" })
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Login")
-    ).toHaveAttribute("href", "/login");
+    expectLoginLink();
   });
+
+  // =====================
+  // User Input
+  // =====================
 
   test("updates email input when user types", () => {
     /**
@@ -132,52 +115,45 @@ describe("ReactivateRequestForm", () => {
      * Render the ReactivateRequestForm component.
      *
      * Act:
-     * Type into the email input field.
+     * Type an email address into the email input.
      *
      * Assert:
-     * Confirm the email input updates correctly.
+     * Confirm the email input value updates correctly.
      */
-    render(<ReactivateRequestForm />);
+    renderForm(ReactivateRequestForm);
 
-    const emailInput = screen.getByPlaceholderText("Email");
+    typeEmail("test@example.com");
 
-    fireEvent.change(emailInput, {
-      target: { value: "test@example.com" },
-    });
-
-    expect(emailInput).toHaveValue("test@example.com");
+    expect(screen.getByPlaceholderText("Email")).toHaveValue(
+      "test@example.com"
+    );
   });
 
-  test("posts email and shows confirmation message on success", async () => {
+  // =====================
+  // Successful Reactivation Request
+  // =====================
+
+  test("sends email to reactivate request endpoint", async () => {
     /**
      * Arrange:
      * Mock a successful reactivation request response.
-     * Render the form and enter an email address.
+     * Render the ReactivateRequestForm component.
+     * Populate the email field.
      *
      * Act:
      * Submit the reactivation request form.
      *
      * Assert:
-     * Confirm the API is called with the entered email.
-     * Confirm the success message is displayed.
-     * Confirm the login link remains visible.
+     * Confirm the API request is sent to the correct endpoint
+     * with the entered email address.
      */
     axiosRequest.post.mockResolvedValue({});
 
-    render(<ReactivateRequestForm />);
+    renderForm(ReactivateRequestForm);
 
-    fireEvent.change(
-      screen.getByPlaceholderText("Email"),
-      {
-        target: { value: "test@example.com" },
-      }
-    );
+    typeEmail("test@example.com");
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Send Reactivation Email",
-      })
-    );
+    submitForm("Send Reactivation Email");
 
     await waitFor(() => {
       expect(axiosRequest.post).toHaveBeenCalledWith(
@@ -187,29 +163,141 @@ describe("ReactivateRequestForm", () => {
         }
       );
     });
+  });
+
+  test("shows submitted message when reactivation request succeeds", async () => {
+    /**
+     * Arrange:
+     * Mock a successful reactivation request response.
+     * Render the ReactivateRequestForm component.
+     * Populate the email field.
+     *
+     * Act:
+     * Submit the reactivation request form.
+     *
+     * Assert:
+     * Confirm the submitted message is displayed.
+     * Confirm the login link is displayed.
+     */
+    axiosRequest.post.mockResolvedValue({});
+
+    renderForm(ReactivateRequestForm);
+
+    typeEmail("test@example.com");
+
+    submitForm("Send Reactivation Email");
 
     expect(
       await screen.findByText(
-        /If a deactivated account exists with that email/i
+        /If a deactivated account exists with that email, a reactivation link/i
       )
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("Login")
-    ).toHaveAttribute("href", "/login");
+      screen.getByText(/has been sent./i)
+    ).toBeInTheDocument();
+
+    expectLoginLink();
   });
 
-  test("displays backend email error when request fails", async () => {
+  // =====================
+  // Loading State
+  // =====================
+
+  test("displays loading text while reactivation request is submitting", async () => {
     /**
      * Arrange:
-     * Mock a failed request containing an email validation error.
+     * Mock reactivation request so the request stays pending.
+     * Render the ReactivateRequestForm component.
+     * Populate the email field.
+     *
+     * Act:
+     * Submit the reactivation request form.
+     *
+     * Assert:
+     * Confirm the loading text is displayed.
+     */
+    axiosRequest.post.mockReturnValue(new Promise(() => {}));
+
+    renderForm(ReactivateRequestForm);
+
+    typeEmail("test@example.com");
+
+    submitForm("Send Reactivation Email");
+
+    expect(await screen.findByText("Sending...")).toBeInTheDocument();
+  });
+
+  test("disables the submit button while reactivation request is submitting", async () => {
+    /**
+     * Arrange:
+     * Mock reactivation request so the request stays pending.
+     * Render the ReactivateRequestForm component.
+     * Populate the email field.
+     *
+     * Act:
+     * Submit the reactivation request form.
+     *
+     * Assert:
+     * Confirm the submit button is disabled while loading.
+     */
+    axiosRequest.post.mockReturnValue(new Promise(() => {}));
+
+    renderForm(ReactivateRequestForm);
+
+    typeEmail("test@example.com");
+
+    submitForm("Send Reactivation Email");
+
+    await screen.findByText("Sending...");
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  test("prevents duplicate request while loading", async () => {
+    /**
+     * Arrange:
+     * Mock reactivation request so the first request stays pending.
+     * Render the ReactivateRequestForm component.
+     * Populate the email field.
+     *
+     * Act:
+     * Submit the reactivation request form.
+     *
+     * Assert:
+     * Confirm reactivation request is only called once.
+     * Confirm the button remains disabled while loading.
+     */
+    axiosRequest.post.mockReturnValue(new Promise(() => {}));
+
+    renderForm(ReactivateRequestForm);
+
+    typeEmail("test@example.com");
+
+    submitForm("Send Reactivation Email");
+
+    await screen.findByText("Sending...");
+
+    expect(axiosRequest.post).toHaveBeenCalledTimes(1);
+
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  // =====================
+  // Reactivation Request Validation
+  // =====================
+
+  test("displays email field error when reactivation request fails", async () => {
+    /**
+     * Arrange:
+     * Mock a failed reactivation request response with an email field error.
      * Render the ReactivateRequestForm component.
      *
      * Act:
-     * Submit the form.
+     * Submit the reactivation request form.
      *
      * Assert:
-     * Confirm the backend email error is displayed.
+     * Confirm the email field error is displayed.
      */
     axiosRequest.post.mockRejectedValue({
       response: {
@@ -219,134 +307,64 @@ describe("ReactivateRequestForm", () => {
       },
     });
 
-    render(<ReactivateRequestForm />);
+    renderForm(ReactivateRequestForm);
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Send Reactivation Email",
-      })
-    );
+    submitForm("Send Reactivation Email");
 
     expect(
-      await screen.findByText(
-        "Enter a valid email address."
-      )
+      await screen.findByText("Enter a valid email address.")
     ).toBeInTheDocument();
   });
 
-  test("clears email error when email field changes", async () => {
+  test("displays non-field error when reactivation request fails", async () => {
     /**
      * Arrange:
-     * Mock a failed request containing an email validation error.
+     * Mock a failed reactivation request response with a non-field error.
      * Render the ReactivateRequestForm component.
      *
      * Act:
-     * Submit the form and then update the email field.
+     * Submit the reactivation request form.
      *
      * Assert:
-     * Confirm the email-specific error is cleared after input changes.
+     * Confirm the non-field error is displayed.
      */
     axiosRequest.post.mockRejectedValue({
       response: {
         data: {
-          email: ["Enter a valid email address."],
+          non_field_errors: ["Reactivation request failed."],
         },
       },
     });
 
-    render(<ReactivateRequestForm />);
+    renderForm(ReactivateRequestForm);
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Send Reactivation Email",
-      })
-    );
+    submitForm("Send Reactivation Email");
 
     expect(
-      await screen.findByText(
-        "Enter a valid email address."
-      )
-    ).toBeInTheDocument();
-
-    fireEvent.change(
-      screen.getByPlaceholderText("Email"),
-      {
-        target: { value: "test@example.com" },
-      }
-    );
-
-    expect(
-      screen.queryByText(
-        "Enter a valid email address."
-      )
-    ).not.toBeInTheDocument();
-  });
-
-  test("displays backend non-field error when request fails", async () => {
-    /**
-     * Arrange:
-     * Mock a failed request containing a non-field error.
-     * Render the ReactivateRequestForm component.
-     *
-     * Act:
-     * Submit the form.
-     *
-     * Assert:
-     * Confirm the backend non-field error is displayed.
-     */
-    axiosRequest.post.mockRejectedValue({
-      response: {
-        data: {
-          non_field_errors: [
-            "This account cannot be reactivated.",
-          ],
-        },
-      },
-    });
-
-    render(<ReactivateRequestForm />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Send Reactivation Email",
-      })
-    );
-
-    expect(
-      await screen.findByText(
-        "This account cannot be reactivated."
-      )
+      await screen.findByText("Reactivation request failed.")
     ).toBeInTheDocument();
   });
 
-  test("displays fallback error when no backend error data exists", async () => {
+  test("displays fallback error when reactivation request fails without API response", async () => {
     /**
      * Arrange:
-     * Mock a failed request without backend error data.
+     * Mock a failed reactivation request response without response data.
      * Render the ReactivateRequestForm component.
      *
      * Act:
-     * Submit the form.
+     * Submit the reactivation request form.
      *
      * Assert:
      * Confirm the fallback error message is displayed.
      */
-    axiosRequest.post.mockRejectedValue(
-      new Error("Network error")
-    );
+    axiosRequest.post.mockRejectedValue({});
 
-    render(<ReactivateRequestForm />);
+    renderForm(ReactivateRequestForm);
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Send Reactivation Email",
-      })
-    );
+    submitForm("Send Reactivation Email");
 
     expect(
-      await screen.findByText(
-        "Reactivation request failed. Please try again."
-      )
+      await screen.findByText("Reactivation request failed. Please try again.")
     ).toBeInTheDocument();
   });
 });

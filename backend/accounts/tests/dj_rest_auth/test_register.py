@@ -42,9 +42,7 @@ class RegisterTests(BaseDJRestAuthTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(
-            self.User.objects.filter(email=self.email).exists()
-        )
+        self.assertTrue(self.User.objects.filter(email=self.email).exists())
 
     def test_registration_does_not_require_username(self):
         """
