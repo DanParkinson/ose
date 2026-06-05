@@ -20,6 +20,7 @@
  * - Verify retried requests are marked with _retry
  * - Verify already retried requests are rejected
  * - Verify login endpoint errors are not retried
+ * - Verify user endpoint errors are not retried
  * - Verify refresh endpoint errors are not retried
  * - Verify refresh failure rejects the request
  * - Verify non-401 errors are rejected without refresh
@@ -152,6 +153,24 @@ describe("axiosDefaults", () => {
       },
       config: {
         url: "/api/auth/login/",
+        _retry: false,
+      },
+    };
+
+    await expect(interceptor.rejected(error)).rejects.toBe(error);
+
+    expect(axiosRequest.post).not.toHaveBeenCalled();
+  });
+
+   test("does not retry user endpoint errors", async () => {
+    const interceptor = getResponseInterceptor();
+
+    const error = {
+      response: {
+        status: 401,
+      },
+      config: {
+        url: "/api/auth/user/",
         _retry: false,
       },
     };

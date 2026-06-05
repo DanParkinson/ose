@@ -1,6 +1,8 @@
 import { Box, Heading, Text, Button } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
+import logo from "../../assets/images/OSE_logo.png";
+
 const HomePageHeroSection = () => {
   return (
     <Box
@@ -29,11 +31,11 @@ const HomePageHeroSection = () => {
 
       >
         <Box
-          w="52px"
-          h="52px"
-          borderRadius="lg"
-          bg="text.primarylight"
-          mb={4}
+          as="img"
+          src={logo}
+          alt="Open-Source Education logo"
+          w={{ base: "52px", md: "80px" }}
+          h="auto"
         />
 
         <Heading

@@ -1,156 +1,114 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Spinner, Box } from "@chakra-ui/react";
 
+// Routes
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import AdminRoute from "./routes/AdminRoute";
 
+// Layout
 import Layout from "./layouts/Layout";
 
-import HomePage from "./pages/Homepage/HomePage";
-import AboutPage from "./pages/about/AboutPage";
-import AdminDashboardPage from "./pages/Admin/AdminDashBoardPage";
-import NotFoundPage from "./pages/NotFoundPage";
+// Feedback
+import PageLoadingSpinner from "./components/feedback/PageLoadingSpinner";
 
-import LoginPage from "./pages/Auth/LoginPage";
-import RegisterPage from "./pages/Auth/RegisterPage";
-import AccountPage from "./pages/Account/AccountPage";
-import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
-import ReactivateRequestPage from "./pages/Auth/ReactivateRequestPage";
-import ReactivateConfirmPage from "./pages/Auth/ReactivateConfirmPage";
-import SubjectListPage from "./pages/SubjectList/SubjectListPage";
-import SubjectDashboardPage from "./pages/SubjectDashboard/SubjectDashboardPage";
-import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
-import VerifyEmailResendPage from "./pages/Auth/VerifyEmailResenPage";
+// Pages
+const HomePage = lazy(() => import("./pages/Homepage/HomePage"));
+const AboutPage = lazy(() => import("./pages/about/AboutPage"));
+const AdminDashboardPage = lazy(() => import("./pages/Admin/AdminDashBoardPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
+// Auth Pages
+const LoginPage = lazy(() => import("./pages/Auth/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/Auth/RegisterPage"));
+const AccountPage = lazy(() => import("./pages/Account/AccountPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/Auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/Auth/ResetPasswordPage"));
+const ReactivateRequestPage = lazy(() => import("./pages/Auth/ReactivateRequestPage"));
+const ReactivateConfirmPage = lazy(() => import("./pages/Auth/ReactivateConfirmPage"));
+const VerifyEmailPage = lazy(() => import("./pages/Auth/VerifyEmailPage"));
+const VerifyEmailResendPage = lazy(() => import("./pages/Auth/VerifyEmailResenPage"));
 
+const PageFallback = () => (
+  <Box minH="100vh">
+    <LoadingSpinner />
+  </Box>
+);
 
 function App() {
   return (
     <Layout>
-      <Routes>
-        <Route path="/" element={
-            <HomePage />
-        }
-        />
+      <Suspense fallback={<PageLoadingSpinner />}>
+        <Routes>
 
-        <Route
-          path="/about"
-          element={
-              <AboutPage />
-          }
-        />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/account" element={
+              <ProtectedRoute>
+                <AccountPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/dashboard" element={
+              <AdminRoute>
+                <AdminDashboardPage />
+              </AdminRoute>
+            }
+          />
 
-        <Route
-          path="/verify-email/:key"
-          element={
-            <PublicRoute>
-              <VerifyEmailPage />
-            </PublicRoute>
-          }
-        />
+          <Route path="/register" element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/login" element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/verify-email/:key" element={
+              <PublicRoute>
+                <VerifyEmailPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/resend-verification-email" element={
+              <PublicRoute>
+                <VerifyEmailResendPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/forgot-password" element={
+              <PublicRoute>
+                <ForgotPasswordPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/reset-password/:uid/:token" element={
+              <PublicRoute>
+                <ResetPasswordPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/reactivate-account" element={
+              <PublicRoute>
+                <ReactivateRequestPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/reactivate-account/:uid/:token" element={
+              <PublicRoute>
+                <ReactivateConfirmPage />
+              </PublicRoute>
+            }
+          />
 
-        <Route
-          path="/resend-verification-email"
-          element={
-            <PublicRoute>
-              <VerifyEmailResendPage />
-            </PublicRoute>
-          }
-        />
-        {/* <Route
-          path="/subjects"
-          element={
-              <SubjectListPage />
-          }
-        /> */}
-
-        {/* <Route
-          path="/subjects/:subjectSlug/:subjectId/"
-          element={<SubjectDashboardPage/>}
-        /> */}
-
-        <Route
-          path="/dashboard"
-          element={
-            <AdminRoute>
-              <AdminDashboardPage />
-            </AdminRoute>
-          }
-        />
-
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/forgot-password"
-          element={
-            <PublicRoute>
-              <ForgotPasswordPage />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/reset-password/:uid/:token"
-          element={
-            <PublicRoute>
-              <ResetPasswordPage />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/reactivate-account"
-          element={
-            <PublicRoute>
-              <ReactivateRequestPage />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/reactivate-account/:uid/:token"
-          element={
-            <PublicRoute>
-              <ReactivateConfirmPage />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute>
-              <AccountPage />
-            </ProtectedRoute>
-          }
-        />
-
-
-        <Route
-          path="*"
-          element={
-            <NotFoundPage />
-          }
-        />
-
-      </Routes>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </Layout>
   );
 }

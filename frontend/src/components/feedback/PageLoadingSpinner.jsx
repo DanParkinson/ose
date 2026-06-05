@@ -1,15 +1,17 @@
 import { Center, Spinner } from "@chakra-ui/react";
 
-const LoadingSpinner = ({ label = "Loading..." }) => {
+const PageLoadingSpinner = ({
+  label = "Loading page...",
+}) => {
   return (
     <Center
+      minH="100vh"
       w="100%"
-      h="100%"
       color="text.light4"
     >
       <Spinner
-        size="lg"
-        borderWidth="3px"
+        size="xl"
+        borderWidth="4px"
         color="text.primarylight"
         aria-label={label}
       />
@@ -17,4 +19,4 @@ const LoadingSpinner = ({ label = "Loading..." }) => {
   );
 };
 
-export default LoadingSpinner;
+export default PageLoadingSpinner;
