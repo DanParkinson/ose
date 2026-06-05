@@ -211,6 +211,8 @@ So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
 | ------------------------ | --------------------- | --------------------- | --------------- | ---------------- | -------------- |
+| Generic Pages            |                       | Homepage              |
+|                          |                       | About Us              |
 | Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py) |[Frontend](/frontend/src/components/forms/auth/RegisterForm.test.jsx) |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
 |                          |                       | Email Verification    | [backend](/backend/accounts/tests/email_verification/base_email_verification.py) | [Frontend](/frontend/src/components/forms/auth/VerifyEmailForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/EMAIL-VERIFICATION.md) |
 |                          |                       | Resend Email Verification | [backend](/backend/accounts/tests/email_verification/test_resend_verify_email.py) | [Frontend](/frontend/src/components/forms/auth/VerifyResendEmailForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESEND-EMAIL-VERIFICATION.md) |
