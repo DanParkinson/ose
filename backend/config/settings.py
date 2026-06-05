@@ -39,7 +39,13 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 SITE_ID = 1
 
-# settings
+# ==============================
+# Security Headers
+# ==============================
+
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 # Use secure HTTPS-only JWT cookies in production
 # Local development still allows HTTP
@@ -67,6 +73,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 
 # Allow the domain to be submitted to browser HSTS preload lists
 SECURE_HSTS_PRELOAD = not DEBUG
+
+
 
 # custom account setup
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None

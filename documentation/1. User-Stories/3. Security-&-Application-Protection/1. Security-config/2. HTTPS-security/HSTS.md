@@ -86,6 +86,18 @@ This value represents:
 
 Once a browser receives the HSTS policy, it will continue enforcing HTTPS for the configured duration.
 
+## Frontend Header Configuration
+
+The frontend static site also sends an HSTS header through Render.
+
+Render header:
+
+```text
+/*
+Strict-Transport-Security
+max-age=31536000; includeSubDomains; preload
+```
+
 ## Subdomain Protection
 
 The platform enables HSTS protection for all subdomains.

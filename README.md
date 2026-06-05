@@ -92,14 +92,21 @@ I want to use a secure platform,
 So that I dont have to sue anyone.
 ```
 
-| User Story | Title                | Section               | Sub Section           | Testing |
-| ---------- | -------------------- | --------------------- | --------------------- | ------- |
-| **US 3.1** | Security Config      | Cross Origin Security | Overview              |     |
-|            |                      |                       | [CSRF](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CSRF.md)|
-|            |                      |                       | [CORS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CORS.md)|
-|            |                      | HTTPS Security        | [HTTPS Redirects](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HTTPS-REDIRECTS.md)|
-|            |                      |                       | [Secure Cookies](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/SECURE-COOKIES.md)| [JWT-cookies](/backend/config/tests/jwt_cookie/test_jwt_cookies.py) |
-|            |                      |                       | [HSTS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HSTS.md)|
+| User Story | Title                | Section                   | Sub Section           |
+| ---------- | -------------------- | ------------------------- | --------------------- |
+| **US 3.1** | Security Config      | Cross Origin Security     | [CSRF](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CSRF.md)|
+|            |                      |                           | [CORS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CORS.md)|
+|            |                      | HTTPS and Cookies         | [HTTPS Redirects](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HTTPS-REDIRECTS.md)|
+|            |                      |                           |[Secure Cookies](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/SECURE-COOKIES.md)|
+|            |                      |                           |[HSTS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HSTS.md)|
+|            |                 | Backend Response Headers  | [X-Frame-Options](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/3.%20Backend-response-headers/X-FRAME-OPTIONS.md) |
+|            |                 |                           | [X-Content-Type-Options](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/3.%20Backend-response-headers/X-CONTENT-TYPE-OPTIONS.md) |
+|            |                 |                           | [Referrer-Policy](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/3.%20Backend-response-headers/REFFERER-POLICY.md) |
+|            |                 | Frontend Response Headers | [Strict-Transport-Security](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/4.%20Frontend-response-headers/STRICT-TRANSPORT-POLICY.md) |
+|            |                 |                           | [Cross-Origin-Opener-Policy](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/4.%20Frontend-response-headers/CROSS-ORIGIN-OPENER-POLICY.md) |
+|            |                 |                           | [X-Frame-Options](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/4.%20Frontend-response-headers/X-FRAME-OPTIONS.md) |
+|            |                 | Content Security Policy   | [CSP Planning](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/5.%20Content-security-policy/CSP-PLAN.md) |
+|            |                 |                           | Trusted Types |
 
 ### Related Documentation
 
