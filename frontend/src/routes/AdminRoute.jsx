@@ -1,22 +1,30 @@
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 
+import useAuth from "../hooks/useAuth";
 import LoadingSpinner from "../components/feedback/LoadingSpinner";
 
-
 const AdminRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, fetchUser } = useAuth();
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  if (loading) {
+  useEffect(() => {
+    const verifyUser = async () => {
+      await fetchUser();
+      setCheckingAuth(false);
+    };
+
+    verifyUser();
+  }, [fetchUser]);
+
+  if (loading || checkingAuth) {
     return <LoadingSpinner label="Checking permissions..." />;
   }
 
-  // Not logged in
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Logged in but not admin
   if (!user.is_staff) {
     return <Navigate to="/" replace />;
   }

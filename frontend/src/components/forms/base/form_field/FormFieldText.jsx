@@ -24,6 +24,11 @@ const FormFieldText = ({
         endElement={
           isPasswordField ? (
             <Button
+              aria-label={
+                showPassword
+                  ? "Hide password"
+                  : "Show password"
+                }
               type="button"
               variant="ghost"
               bg="transparent"

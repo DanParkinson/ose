@@ -6,6 +6,7 @@
  * - Verify user is stored when current user request succeeds
  * - Verify user is null when current user request fails
  * - Verify loading becomes false after session check
+ * - Verify fetchUser clears user and returns false when auth check fails
  *
  * ---------------------------
  * Login
@@ -70,6 +71,7 @@ const getSavedResult = () => {
 const TestConsumer = () => {
   const {
     user,
+    fetchUser,
     loading,
     login,
     logout,
@@ -113,6 +115,15 @@ const TestConsumer = () => {
         }}
       >
         Register
+      </button>
+
+      <button
+        type="button"
+        onClick={async () => {
+          saveResult(await fetchUser());
+        }}
+      >
+        Fetch User
       </button>
 
       <button
@@ -183,6 +194,30 @@ describe("AuthContext", () => {
     expect(screen.getByText("Loading: false")).toBeInTheDocument();
 
     expect(axiosResponse.get).toHaveBeenCalledWith("/api/auth/user/");
+  });
+
+  test("fetchUser clears user and returns false when auth check fails", async () => {
+    axiosResponse.get
+      .mockResolvedValueOnce({
+        data: {
+          email: "test@example.com",
+        },
+      })
+      .mockRejectedValueOnce(new Error("Refresh token expired"));
+
+    renderAuthProvider();
+
+    await screen.findByText("User: test@example.com");
+
+    fireEvent.click(screen.getByText("Fetch User"));
+
+    await waitFor(() => {
+      expect(getSavedResult()).toBe(false);
+    });
+
+    expect(screen.getByText("User: No user")).toBeInTheDocument();
+
+    expect(axiosResponse.get).toHaveBeenCalledTimes(2);
   });
 
   // =====================

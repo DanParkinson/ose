@@ -25,7 +25,7 @@ axiosResponse.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url.includes("/api/auth/login/") &&
-      !originalRequest.url.includes("/api/auth/user/") &&
+      !originalRequest.url.includes("/api/auth/registration/") &&
       !originalRequest.url.includes("/api/auth/token/refresh/")
     ) {
       originalRequest._retry = true;

@@ -19,8 +19,9 @@
  * - Verify 401 responses refresh the access token and retry the original request
  * - Verify retried requests are marked with _retry
  * - Verify already retried requests are rejected
+ * - Verify user endpoint errors can refresh and retry
  * - Verify login endpoint errors are not retried
- * - Verify user endpoint errors are not retried
+ * - Verify registration endpoint errors are not retried
  * - Verify refresh endpoint errors are not retried
  * - Verify refresh failure rejects the request
  * - Verify non-401 errors are rejected without refresh
@@ -162,7 +163,7 @@ describe("axiosDefaults", () => {
     expect(axiosRequest.post).not.toHaveBeenCalled();
   });
 
-   test("does not retry user endpoint errors", async () => {
+  test("does not retry registration endpoint errors", async () => {
     const interceptor = getResponseInterceptor();
 
     const error = {
@@ -170,7 +171,7 @@ describe("axiosDefaults", () => {
         status: 401,
       },
       config: {
-        url: "/api/auth/user/",
+        url: "/api/auth/registration/",
         _retry: false,
       },
     };
@@ -238,5 +239,45 @@ describe("axiosDefaults", () => {
     await expect(interceptor.rejected(error)).rejects.toBe(error);
 
     expect(axiosRequest.post).not.toHaveBeenCalled();
+  });
+
+  test("refreshes access token and retries user endpoint on 401", async () => {
+    const interceptor = getResponseInterceptor();
+
+    const error = {
+      response: {
+        status: 401,
+      },
+      config: {
+        url: "/api/auth/user/",
+        _retry: false,
+      },
+    };
+
+    vi.spyOn(axiosRequest, "post").mockResolvedValue({});
+
+    axiosResponse.defaults.adapter = vi.fn().mockResolvedValue({
+      data: {
+        id: 1,
+        email: "test@example.com",
+      },
+      status: 200,
+      statusText: "OK",
+      headers: {},
+      config: error.config,
+    });
+
+    const result = await interceptor.rejected(error);
+
+    expect(axiosRequest.post).toHaveBeenCalledWith(
+      "/api/auth/token/refresh/"
+    );
+
+    expect(error.config._retry).toBe(true);
+
+    expect(result.data).toEqual({
+      id: 1,
+      email: "test@example.com",
+    });
   });
 });

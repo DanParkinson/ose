@@ -6,56 +6,76 @@
 
 ## Table of Contents
 
-- [Purpose](#purpose)
-- [Route Protection Approach](#route-protection-approach)
-- [Loading State](#loading-state)
-- [Protected Route](#protected-route)
-- [Public Route](#public-route)
-- [Admin Route](#admin-route)
-- [App Routing Relationship](#app-routing-relationship)
-- [Backend Relationship](#backend-relationship)
+* [Purpose](#purpose)
+* [Route Protection Approach](#route-protection-approach)
+* [Authentication Check](#authentication-check)
+* [Loading State](#loading-state)
+* [Redirect Behaviour](#redirect-behaviour)
+* [App Routing Relationship](#app-routing-relationship)
+* [Backend Relationship](#backend-relationship)
 
 ## Purpose
 
 Protected routes control frontend page access based on the current authentication state.
 
-They are used to prevent users from seeing pages that are not appropriate for their current state, such as account pages for anonymous users or login pages for authenticated users.
+They prevent unauthenticated users from accessing pages that require an active user session.
 
 ## Route Protection Approach
 
-The frontend uses three route protection wrappers:
+`ProtectedRoute` wraps page components that should only be available to authenticated users.
 
-```text
-ProtectedRoute
-PublicRoute
-AdminRoute
-```
-
-Each wrapper reads authentication state from `useAuth()`.
+It reads authentication state from the global auth context.
 
 ```js
-const { user, loading } = useAuth();
+const { user, loading, fetchUser } = useAuth();
 ```
 
-The route wrapper then decides whether to render the page or redirect the user.
+The route then decides whether to:
+
+```text
+Show loading feedback
+Redirect to login
+Render the protected page
+```
+
+## Authentication Check
+
+When the protected route loads, it verifies the current user by calling:
+
+```js
+fetchUser();
+```
+
+This ensures the route checks the backend for the latest authentication state before deciding whether the page should render.
+
+```js
+useEffect(() => {
+  const verifyUser = async () => {
+    await fetchUser();
+    setCheckingAuth(false);
+  };
+
+  verifyUser();
+}, [fetchUser]);
+```
+
+The separate `checkingAuth` state prevents the route from making redirect decisions before the authentication check has finished.
 
 ## Loading State
 
-All route wrappers check the authentication loading state before making redirect decisions.
+While authentication is being checked, the route displays a loading spinner.
 
 ```jsx
-if (loading) {
+if (loading || checkingAuth) {
   return <LoadingSpinner label="Checking permissions..." />;
 }
 ```
 
-This prevents routes from redirecting incorrectly before the initial authentication check has finished.
+This prevents users from being redirected too early while the application is still confirming their session.
 
-## Protected Route
+## Redirect Behaviour
 
-`ProtectedRoute` is used for pages that require an authenticated user.
-
-If no user exists, the user is redirected to the login page.
+If no authenticated user exists after the check, the user is redirected to the login page.
 
 ```jsx
 if (!user) {
@@ -63,81 +83,30 @@ if (!user) {
 }
 ```
 
-If the user is authenticated, the protected page is rendered.
-
-Current protected routes include:
-
-```text
-/account
-```
-
-## Public Route
-
-`PublicRoute` is used for pages intended for unauthenticated users.
-
-If a user is already authenticated, they are redirected to the home page.
+If a user exists, the protected content is rendered.
 
 ```jsx
-if (user) {
-  return <Navigate to="/" replace />;
-}
-```
-
-Current public routes include:
-
-```text
-/login
-/register
-/forgot-password
-/reset-password/:uid/:token
-/reactivate-account
-/reactivate-account/:uid/:token
-```
-
-## Admin Route
-
-`AdminRoute` is used for staff-only pages.
-
-The route first checks whether the user is authenticated.
-
-```jsx
-if (!user) {
-  return <Navigate to="/login" replace />;
-}
-```
-
-It then checks whether the user has staff access.
-
-```jsx
-if (!user.is_staff) {
-  return <Navigate to="/" replace />;
-}
-```
-
-Current admin routes include:
-
-```text
-/dashboard
+return children;
 ```
 
 ## App Routing Relationship
 
-Protected route wrappers are used inside the main routing configuration.
+Protected routes are used inside the main routing configuration.
 
 Example:
 
 ```jsx
 <Route
-  path="/dashboard"
+  path="/account"
   element={
-    <AdminRoute>
-      <AdminDashboardPage />
-    </AdminRoute>
+    <ProtectedRoute>
+      <AccountPage />
+    </ProtectedRoute>
   }
 />
 ```
 
-This keeps route access logic separate from the page components themselves.
+This keeps authentication route logic separate from the page components themselves.
 
 Page components do not need to repeat authentication checks directly.
 
@@ -150,10 +119,9 @@ They do not replace backend permission checks.
 The frontend is responsible for:
 
 ```text
-Redirecting users
-Hiding irrelevant pages
+Redirecting unauthenticated users
 Waiting for authentication state
-Controlling route access in the UI
+Preventing protected pages from rendering too early
 ```
 
 The backend remains responsible for:
