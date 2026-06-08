@@ -28,13 +28,6 @@
  * - Verify register returns success response on success
  * - Verify register returns backend errors on failure
  * - Verify register returns fallback error when no backend data exists
- *
- * ---------------------------
- * Change Password
- * - Verify changePassword posts old and new passwords to password change endpoint
- * - Verify changePassword returns success response on success
- * - Verify changePassword returns backend errors on failure
- * - Verify changePassword returns fallback error when no backend data exists
  */
 
 import { useContext } from "react";
@@ -76,7 +69,6 @@ const TestConsumer = () => {
     login,
     logout,
     register,
-    changePassword,
   } = useContext(AuthContext);
 
   return (
@@ -124,21 +116,6 @@ const TestConsumer = () => {
         }}
       >
         Fetch User
-      </button>
-
-      <button
-        type="button"
-        onClick={async () => {
-          saveResult(
-            await changePassword(
-              "oldPassword123",
-              "newPassword123",
-              "newPassword123"
-            )
-          );
-        }}
-      >
-        Change Password
       </button>
     </div>
   );
@@ -433,98 +410,6 @@ describe("AuthContext", () => {
         success: false,
         errors: {
           non_field_errors: ["Registration failed."],
-        },
-      });
-    });
-  });
-
-  // =====================
-  // Change Password
-  // =====================
-
-  test("posts password details and returns success", async () => {
-    axiosResponse.get.mockResolvedValue({
-      data: {
-        email: "test@example.com",
-      },
-    });
-
-    axiosRequest.post.mockResolvedValue({});
-
-    renderAuthProvider();
-
-    await screen.findByText("Loading: false");
-
-    fireEvent.click(screen.getByText("Change Password"));
-
-    await waitFor(() => {
-      expect(axiosRequest.post).toHaveBeenCalledWith(
-        "/api/auth/password/change/",
-        {
-          old_password: "oldPassword123",
-          new_password1: "newPassword123",
-          new_password2: "newPassword123",
-        }
-      );
-    });
-
-    expect(getSavedResult()).toEqual({
-      success: true,
-      errors: null,
-    });
-  });
-
-  test("returns backend errors when changePassword fails", async () => {
-    axiosResponse.get.mockResolvedValue({
-      data: {
-        email: "test@example.com",
-      },
-    });
-
-    axiosRequest.post.mockRejectedValue({
-      response: {
-        data: {
-          old_password: ["Your old password was entered incorrectly."],
-        },
-      },
-    });
-
-    renderAuthProvider();
-
-    await screen.findByText("Loading: false");
-
-    fireEvent.click(screen.getByText("Change Password"));
-
-    await waitFor(() => {
-      expect(getSavedResult()).toEqual({
-        success: false,
-        errors: {
-          old_password: ["Your old password was entered incorrectly."],
-        },
-      });
-    });
-  });
-
-  test("returns fallback error when changePassword fails without backend data", async () => {
-    axiosResponse.get.mockResolvedValue({
-      data: {
-        email: "test@example.com",
-      },
-    });
-
-    axiosRequest.post.mockRejectedValue(new Error("Network error"));
-
-    renderAuthProvider();
-
-    await screen.findByText("Loading: false");
-
-    fireEvent.click(screen.getByText("Change Password"));
-
-    await waitFor(() => {
-      expect(getSavedResult()).toEqual({
-        success: false,
-        errors: {
-          non_field_errors: ["Password change failed."],
         },
       });
     });

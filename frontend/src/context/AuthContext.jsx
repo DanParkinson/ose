@@ -97,39 +97,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const changePassword = async (
-    oldPassword,
-    newPassword1,
-    newPassword2
-  ) => {
-    try {
-      await axiosRequest.post(
-        "/api/auth/password/change/",
-        {
-          old_password: oldPassword,
-          new_password1: newPassword1,
-          new_password2: newPassword2,
-        }
-      );
-
-      return {
-        success: true,
-        errors: null,
-      };
-    } catch (error) {
-      const data = error.response?.data;
-
-      return {
-        success: false,
-        errors: data || {
-          non_field_errors: [
-            "Password change failed.",
-          ],
-        },
-      };
-    }
-  };
-
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
@@ -143,7 +110,6 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         register,
-        changePassword,
         loading,
       }}
     >
