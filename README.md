@@ -230,8 +230,8 @@ So that I know what i can do
 |                          |                       | Reset Password confirm| [Backend](/backend/accounts/tests/reset_password/test_password_reset_confirm.py) | [Frontend](/frontend/src/components/forms/auth/ResetPasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESET-PASSWORD-CONFIRM-MT.md) |
 |                          |                       | Reactivate Request    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateRequestForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-REQUEST.md) |
 |                          |                       | Reactivate Confirm    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateConfirmForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-CONFIRM-MT.md) |
-| Account Management       | Structure             | Account Sidebar       |
-|                          | Profile               | View Email            |
+| Account Management       | Structure             | Account Sidebar       | | [Frontend](/frontend/src/components/structure/account/AccountSidebar.test.jsx) |
+|                          | Profile               | View Email            | | [Frontend](/frontend/src/pages/Account/AccountProfileSection.test.jsx)|
 |                          | Settings              | Change Password       |
 |                          |                       | Change email          |
 |                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) |
