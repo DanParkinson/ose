@@ -10,7 +10,7 @@ vi.mock("react-router-dom", () => ({
   Navigate: ({ to }) => <div>Redirect: {to}</div>,
 }));
 
-vi.mock("../../components/feedback/LoadingSpinner", () => ({
+vi.mock("../../components/feedback/PageLoadingSpinner", () => ({
   default: ({ label }) => <div>{label}</div>,
 }));
 

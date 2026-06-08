@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
-import LoadingSpinner from "../components/feedback/LoadingSpinner";
+import PageLoadingSpinner from "../components/feedback/PageLoadingSpinner";
 
 const AdminRoute = ({ children }) => {
   const { user, loading, fetchUser } = useAuth();
@@ -18,7 +18,7 @@ const AdminRoute = ({ children }) => {
   }, [fetchUser]);
 
   if (loading || checkingAuth) {
-    return <LoadingSpinner label="Checking permissions..." />;
+    return <PageLoadingSpinner label="Checking permissions..." />;
   }
 
   if (!user) {
