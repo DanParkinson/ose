@@ -130,6 +130,10 @@ So that I dont have to wait.
 |            |                      |          | [env var](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/ENVIRONMENT-VARIABLES.md)|
 |            |                      |          | [Operations](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/CAHCE-OPERATIONS.md)|
 |            |                      |          | [Invalidation](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/CACHE-INVALIDATION.md)|
+| **US 4.2** | API Throttling       | DRF      | [Global Throttling] |
+|            |                      |          | [Anon Throttling]   |
+|            |                      |          | [Authenticated Throttling] |
+|            |                      |          | [Per-View Throttling] |
 
 ## 5. API Communications
 
