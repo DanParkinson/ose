@@ -14,17 +14,30 @@
  * - Verify axiosResponse sends credentials
  *
  * -----------------------------
- * Response Interceptor
+ * Response Interceptor: Successful Response
  * - Verify successful responses are returned unchanged
+ *
+ * -----------------------------
+ * Response Interceptor: Refresh Eligibility
  * - Verify 401 responses refresh the access token and retry the original request
+ * - Verify user endpoint errors can refresh and retry
+ * - Verify non-401 errors are rejected without refresh
+ *
+ * -----------------------------
+ * Response Interceptor: Retry Behaviour
+ * - Verify the original request is retried after a successful refresh **
  * - Verify retried requests are marked with _retry
  * - Verify already retried requests are rejected
- * - Verify user endpoint errors can refresh and retry
+ *
+ * -----------------------------
+ * Response Interceptor: Excluded Endpoints
  * - Verify login endpoint errors are not retried
  * - Verify registration endpoint errors are not retried
  * - Verify refresh endpoint errors are not retried
+ *
+ * -----------------------------
+ * Response Interceptor: Refresh Failure
  * - Verify refresh failure rejects the request
- * - Verify non-401 errors are rejected without refresh
  */
 
 import { describe, test, expect, vi, beforeEach } from "vitest";
@@ -72,7 +85,7 @@ describe("axiosDefaults", () => {
   });
 
   // =====================
-  // Response Interceptor
+  // Response Interceptor: Successful Response
   // =====================
 
   test("returns successful responses unchanged", async () => {
@@ -87,6 +100,50 @@ describe("axiosDefaults", () => {
     const result = await interceptor.fulfilled(response);
 
     expect(result).toBe(response);
+  });
+
+  // =====================
+  // Response Interceptor: Refresh Eligibility
+  // =====================
+
+  test("refreshes access token and retries user endpoint on 401", async () => {
+    const interceptor = getResponseInterceptor();
+
+    const error = {
+      response: {
+        status: 401,
+      },
+      config: {
+        url: "/api/auth/user/",
+        _retry: false,
+      },
+    };
+
+    vi.spyOn(axiosRequest, "post").mockResolvedValue({});
+
+    axiosResponse.defaults.adapter = vi.fn().mockResolvedValue({
+      data: {
+        id: 1,
+        email: "test@example.com",
+      },
+      status: 200,
+      statusText: "OK",
+      headers: {},
+      config: error.config,
+    });
+
+    const result = await interceptor.rejected(error);
+
+    expect(axiosRequest.post).toHaveBeenCalledWith(
+      "/api/auth/token/refresh/"
+    );
+
+    expect(error.config._retry).toBe(true);
+
+    expect(result.data).toEqual({
+      id: 1,
+      email: "test@example.com",
+    });
   });
 
   test("refreshes access token and retries original request on 401", async () => {
@@ -127,6 +184,27 @@ describe("axiosDefaults", () => {
     });
   });
 
+  test("rejects non-401 errors without refreshing token", async () => {
+    const interceptor = getResponseInterceptor();
+
+    const error = {
+      response: {
+        status: 403,
+      },
+      config: {
+        url: "/api/protected/",
+        _retry: false,
+      },
+    };
+
+    await expect(interceptor.rejected(error)).rejects.toBe(error);
+
+    expect(axiosRequest.post).not.toHaveBeenCalled();
+  });
+
+  // =====================
+  // Response Interceptor: Retry Behaviour
+  // =====================
   test("rejects already retried 401 requests", async () => {
     const interceptor = getResponseInterceptor();
 
@@ -144,7 +222,9 @@ describe("axiosDefaults", () => {
 
     expect(axiosRequest.post).not.toHaveBeenCalled();
   });
-
+  // =====================
+  // Response Interceptor: Excluded Endpoints
+  // =====================
   test("does not retry login endpoint errors", async () => {
     const interceptor = getResponseInterceptor();
 
@@ -198,7 +278,9 @@ describe("axiosDefaults", () => {
 
     expect(axiosRequest.post).not.toHaveBeenCalled();
   });
-
+  // =====================
+  // Response Interceptor: Refresh Failure
+  // =====================
   test("rejects original request when refresh fails", async () => {
     const interceptor = getResponseInterceptor();
 
@@ -221,63 +303,5 @@ describe("axiosDefaults", () => {
     );
 
     expect(error.config._retry).toBe(true);
-  });
-
-  test("rejects non-401 errors without refreshing token", async () => {
-    const interceptor = getResponseInterceptor();
-
-    const error = {
-      response: {
-        status: 403,
-      },
-      config: {
-        url: "/api/protected/",
-        _retry: false,
-      },
-    };
-
-    await expect(interceptor.rejected(error)).rejects.toBe(error);
-
-    expect(axiosRequest.post).not.toHaveBeenCalled();
-  });
-
-  test("refreshes access token and retries user endpoint on 401", async () => {
-    const interceptor = getResponseInterceptor();
-
-    const error = {
-      response: {
-        status: 401,
-      },
-      config: {
-        url: "/api/auth/user/",
-        _retry: false,
-      },
-    };
-
-    vi.spyOn(axiosRequest, "post").mockResolvedValue({});
-
-    axiosResponse.defaults.adapter = vi.fn().mockResolvedValue({
-      data: {
-        id: 1,
-        email: "test@example.com",
-      },
-      status: 200,
-      statusText: "OK",
-      headers: {},
-      config: error.config,
-    });
-
-    const result = await interceptor.rejected(error);
-
-    expect(axiosRequest.post).toHaveBeenCalledWith(
-      "/api/auth/token/refresh/"
-    );
-
-    expect(error.config._retry).toBe(true);
-
-    expect(result.data).toEqual({
-      id: 1,
-      email: "test@example.com",
-    });
   });
 });

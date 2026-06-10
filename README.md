@@ -74,7 +74,7 @@ So that I can securely use the platform.
 |            |                       |                    | [Verification Email Template](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/VERIFICATION-EMAIL-TEMPLATE.md) |
 |            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)| [Resend verification](/backend/accounts/tests/email_verification/test_resend_verify_email.py) |
 |            |                      | Permissions           |
-| **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)| [Auth Context](/frontend/src/context/AuthContext.jsx) |
+| **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)| [Auth Context](/frontend/src/context/AuthContext.jsx) :white_check_mark:|
 |            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)| [Public Route](/frontend/src/routes/PublicRoute.test.jsx), [Protected Route](/frontend/src/routes/ProtectedRoute.test.jsx), [Admin Route](/frontend/src/routes/AdminRoute.test.jsx) |
 |            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)| Test in DJ-Rest-Auth and Features |
 
@@ -123,16 +123,14 @@ I want to have quick response for the website,
 So that I dont have to wait.
 ```
 
-| User Story | Title                | Section  | Sub Section           |
-| ---------- | -------------------- | -------- | --------------------- |
+| User Story | Title                | Section  | Sub Section           | Tests      |
+| ---------- | -------------------- | -------- | --------------------- | ---------- |
 | **US 4.1** | Caching              | Redis    | [Redis](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/REDIS.md) |
 |            |                      |          | [Django Config](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/DJANGO-CONFIGURATION.md)|
 |            |                      |          | [env var](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/ENVIRONMENT-VARIABLES.md)|
 |            |                      |          | [Operations](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/CAHCE-OPERATIONS.md)|
 |            |                      |          | [Invalidation](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/CACHE-INVALIDATION.md)|
-| **US 4.2** | API Throttling       | DRF      | [Global Throttling] |
-|            |                      |          | [Anon Throttling]   |
-|            |                      |          | [Authenticated Throttling] |
+| **US 4.2** | API Throttling       | DRF      | [Global Throttling](/documentation/1.%20User-Stories/4.%20System-efficiency/2.%20Thorttling/1.%20DRF/GLOBAL-THROTTLING.md) | [Settings Tests](/backend/config/tests/throttling/test_api_throttling_settings.py) |
 |            |                      |          | [Per-View Throttling] |
 
 ## 5. API Communications
