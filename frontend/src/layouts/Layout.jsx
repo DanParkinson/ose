@@ -1,7 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+
 import NavBar from "./../components/NavBar";
 import Footer from "./../components/Footer";
+import RateLimitBanner from "../components/RateLimitBanner";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -20,8 +22,19 @@ function Layout({ children }) {
       display="flex"
       flexDirection="column"
       bg="bg.dark1"
+      bgGradient="
+          radial-gradient(
+          circle at center,
+          rgba(80, 80, 80, 0.35) 0%,
+          rgba(30, 30, 30, 0.6) 40%,
+          rgba(20, 20, 20, 1) 100%
+          )
+      "
       >
       {!isAuthPage && <NavBar />}
+
+      <RateLimitBanner />
+
 
       <Box as="main" flex="1" minH={0} bg="bg.canvas">
         {children}
