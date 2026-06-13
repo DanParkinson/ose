@@ -10,6 +10,7 @@ const FormFieldText = ({
   value,
   error,
   onChange,
+  disabled,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -71,6 +72,7 @@ const FormFieldText = ({
           }
           placeholder={field.placeholder}
           value={value || ""}
+          disabled={disabled}
           onChange={(event) =>
             onChange(field.name, event.target.value)
           }
