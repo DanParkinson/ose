@@ -282,3 +282,16 @@ class EmailChangeConfirmView(APIView):
             {"detail": "Email address updated successfully."},
             status=status.HTTP_200_OK,
         )
+
+
+class EmailChangeCancelView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        request.user.pending_email = None
+        request.user.save(update_fields=["pending_email"])
+
+        return Response(
+            {"detail": "Email change request cancelled."},
+            status=status.HTTP_200_OK,
+        )

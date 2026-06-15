@@ -13,3 +13,6 @@ class BaseEmailChangeTestCase(BaseAccountAPITestCase):
 
     def get_email_change_confirm_url(self):
         return "/api/account/update-email/confirm/"
+
+    def get_email_change_cancel_url(self):
+        return "/api/account/update-email/cancel/"

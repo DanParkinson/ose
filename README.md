@@ -239,7 +239,7 @@ So that I know what i can do
 |                          |                       | Change email          |
 |                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) |
 |                          |                       | Logout                | [Backend](/backend/accounts/tests/dj_rest_auth/test_logout.py) | [Section](/frontend/src/pages/Account/AccountLogoutSection.test.jsx), [Form](/frontend/src/components/forms/auth/LogoutForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-LOGOUT-SECTION-MT.md) |
-| Utils | MAessaging | 429 alert | Throttling in system efficiency | [Frontend](/frontend/src/components/RateLimitBanner.test.jsx) :white_check_mark: | |
+| Utils | Messaging | 429 alert | Throttling in system efficiency | [Frontend](/frontend/src/components/RateLimitBanner.test.jsx) :white_check_mark: | |
 
 
 ## Architecture

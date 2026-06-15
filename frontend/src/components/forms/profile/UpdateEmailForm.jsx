@@ -2,6 +2,7 @@
 import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import FormSubmitButton from "../base/buttons/FormSubmitButton";
+import FormSubmitButtonDanger from "../base/buttons/FormSubmitButtonDanger";
 import WideFormContainer from "../base/containers/WideFormContainer";
 import FormFieldText from "../base/form_field/FormFieldText";
 import { axiosResponse } from "../../../api/axiosDefaults";
@@ -90,6 +91,27 @@ const UpdateEmailForm = () => {
         setResendLoading(false);
     };
 
+    const handleCancel = async () => {
+        try {
+            await axiosResponse.post(
+                "/api/account/update-email/cancel/"
+            );
+
+            setVerificationSent(false);
+            setResendSuccess(false);
+            setNewEmail("");
+            setErrors({});
+        } catch (error) {
+            const data = error.response?.data;
+
+            setErrors(
+                data || {
+                    non_field_errors: ["Cancel update failed."],
+                }
+            );
+        }
+    };
+
     return (
         <WideFormContainer>
             <FormFieldText
@@ -154,7 +176,11 @@ const UpdateEmailForm = () => {
                 </Text>
                 )}
 
-                <button>Cancel Update</button>
+                <FormSubmitButtonDanger
+                    onClick={handleCancel}
+                >
+                    Cancel Update
+                </FormSubmitButtonDanger>
             </>
             )}
 

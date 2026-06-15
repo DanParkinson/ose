@@ -52,12 +52,12 @@
  * -------------
  * Cancel Update
  * - Verify cancel button is displayed**
- * - Verify clicking cancel removes the verification state **
- * - Verify verification message is hidden after cancellation **
- * - Verify resend button is hidden after cancellation **
- * - Verify cancel button is hidden after cancellation **
- * - Verify update email input becomes editable again **
- * - Verify update email field remains empty after cancellation **
+ * - Verify clicking cancel removes the verification state
+ * - Verify verification message is hidden after cancellation
+ * - Verify resend button is hidden after cancellation
+ * - Verify cancel button is hidden after cancellation
+ * - Verify update email input becomes editable again
+ * - Verify update email field remains empty after cancellation
  * - Verify pending verification token is invalidated after cancellation **
  * - Verify cancel request field errors are displayed **
  * - Verify cancel request non-field errors are displayed **
@@ -111,6 +111,17 @@ vi.mock("../base/form_field/FormFieldText", () => ({
 }));
 
 vi.mock("../base/buttons/FormSubmitButton", () => ({
+    default: ({ children, disabled, onClick }) => (
+        <button
+            disabled={disabled}
+            onClick={onClick}
+        >
+            {children}
+        </button>
+    ),
+}));
+
+vi.mock("../base/buttons/FormSubmitButtonDanger", () => ({
     default: ({ children, disabled, onClick }) => (
         <button
             disabled={disabled}
@@ -1108,6 +1119,561 @@ describe("UpdateEmailForm", () => {
         expect(
             await screen.findByText(
                 /a new verification link has been sent/i
+            )
+        ).toBeInTheDocument();
+    });
+
+    // =====================
+    // Cancel update
+    // =====================
+    test("Cancel Update: cancel button is displayed while verification is pending", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         *
+         * Assert:
+         * - Confirm the cancel update button is displayed.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post.mockResolvedValue({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByText(
+                    /a verification link has been sent to your new email address/i
+                )
+            ).toBeInTheDocument();
+        });
+
+        expect(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        ).toBeInTheDocument();
+    });
+
+    test("Cancel Update: clicking cancel removes the verification state", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the verification pending state is removed.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByText(
+                    /a verification link has been sent to your new email address/i
+                )
+            ).toBeInTheDocument();
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.queryByText(
+                    /a verification link has been sent to your new email address/i
+                )
+            ).not.toBeInTheDocument();
+        });
+    });
+
+    test("Cancel Update: verification message is hidden after cancellation", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the verification message is hidden.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByText(
+            /a verification link has been sent to your new email address/i
+        );
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.queryByText(
+                    /a verification link has been sent to your new email address/i
+                )
+            ).not.toBeInTheDocument();
+        });
+    });
+
+    test("Cancel Update: resend button is hidden after cancellation", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the resend verification button is hidden.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByRole("button", {
+            name: /resend verification link/i,
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.queryByRole("button", {
+                    name: /resend verification link/i,
+                })
+            ).not.toBeInTheDocument();
+        });
+    });
+
+    test("Cancel Update: cancel button is hidden after cancellation", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the cancel update button is hidden.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByRole("button", {
+            name: /cancel update/i,
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.queryByRole("button", {
+                    name: /cancel update/i,
+                })
+            ).not.toBeInTheDocument();
+        });
+    });
+
+    test("Cancel Update: update email input becomes editable again", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the update email input is enabled again.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByPlaceholderText("Enter new email")
+            ).toBeDisabled();
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByPlaceholderText("Enter new email")
+            ).toBeEnabled();
+        });
+    });
+
+    test("Cancel Update: update email field remains empty after cancellation", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the update email field is cleared after cancellation.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByRole("button", {
+            name: /cancel update/i,
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByPlaceholderText("Enter new email")
+            ).toHaveValue("");
+        });
+    });
+
+    test("Cancel Update: clicking cancel sends cancel request", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock a successful cancel request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the cancel endpoint is called.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockResolvedValueOnce({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByRole("button", {
+            name: /cancel update/i,
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(axiosResponse.post).toHaveBeenLastCalledWith(
+                "/api/account/update-email/cancel/"
+            );
+        });
+    });
+
+    test("Cancel Update: displays cancel request field errors", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock the cancel request to return a field error.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the field error is displayed.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockRejectedValueOnce({
+                response: {
+                    data: {
+                        new_email: ["Unable to cancel email update."],
+                    },
+                },
+            });
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByRole("button", {
+            name: /cancel update/i,
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        expect(
+            await screen.findByText(
+                "Unable to cancel email update."
+            )
+        ).toBeInTheDocument();
+    });
+
+    test("Cancel Update: displays cancel request non-field errors", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Mock the cancel request to return a non-field error.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the cancel update button.
+         *
+         * Assert:
+         * - Confirm the non-field error is displayed.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockRejectedValueOnce({
+                response: {
+                    data: {
+                        non_field_errors: [
+                            "Unable to cancel email update.",
+                        ],
+                    },
+                },
+            });
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByRole("button", {
+            name: /cancel update/i,
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /cancel update/i,
+            })
+        );
+
+        expect(
+            await screen.findByText(
+                "Unable to cancel email update."
             )
         ).toBeInTheDocument();
     });
