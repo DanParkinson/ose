@@ -23,36 +23,34 @@
  * - Verify clicking submit sends the update email request
  * - Verify request is sent with the entered email address
  * - Verify request is not sent when update email is empty
- * - Verify request is not sent when update email matches current email
  * --------------------------------
  * Loading State
  * - Verify submit button is disabled while request is in progress
  * - Verify loading spinner is displayed while request is in progress
- * - Verify duplicate submissions are prevented while loading **
  * --------------------------------
  * Success Handling
  * - Verify shows verification message when verification email is sent
- * - Verify update email input is cleared after successful submission
+ * - Verify hides submit button and shows verification message after successful request
+ * - Verify keeps update email value after successful submission
  * --------------------------------
  * Error Handling
  * - Verify displays field errors
  * - Verify displays non-field errors
- * - Verify clears field error when user edits the email **
  * --------------------------------
  * Verification Pending State
- * - Verify submit button is hidden while verification is pending **
- * - Verify update email input is disabled while verification is pending **
- * - Verify current email remains unchanged until verification completes **
- * Resend Verification
+ * - Verify disables update email input while verification is pending
+ * - Verify update email input is disabled while verification is pending
+ * - Verify current email remains unchanged until verification completes
  * -------------------
- * - Verify clicking resend sends a new verification email **
- * - Verify resend button is disabled while resend request is in progress **
- * - Verify loading indicator is displayed while resend request is in progress **
- * - Verify success feedback is displayed after resend completes **
+ * Resend Verification
+ * - Verify clicking resend sends a new verification email
+ * - Verify resend button is disabled while resend request is in progress
+ * - Verify loading indicator is displayed while resend request is in progress
+ * - Verify success feedback is displayed after resend completes
  * - Verify resend field errors are displayed **
  * - Verify resend non-field errors are displayed **
- * Cancel Update
  * -------------
+ * Cancel Update
  * - Verify cancel button is displayed**
  * - Verify clicking cancel removes the verification state **
  * - Verify verification message is hidden after cancellation **
@@ -86,6 +84,7 @@ vi.mock("../../../api/axiosDefaults", () => ({
 
 vi.mock("@chakra-ui/react", () => ({
   HStack: ({ children }) => <div>{children}</div>,
+  Text: ({ children }) => <div>{children}</div>,
 }));
 
 vi.mock("../base/containers/WideFormContainer", () => ({
@@ -101,6 +100,7 @@ vi.mock("../base/form_field/FormFieldText", () => ({
             placeholder={field.placeholder}
             value={value}
             disabled={disabled}
+            readOnly={disabled}
             onChangeCapture={(event) =>
                 onChange?.(field.name, event.target.value)
             }
@@ -411,7 +411,7 @@ describe("UpdateEmailForm", () => {
 
         expect(axiosResponse.post).toHaveBeenCalledWith(
             "/api/account/update-email/", {
-                email: "new@example.com",
+                new_email: "new@example.com",
             }
         );
     });
@@ -445,9 +445,8 @@ describe("UpdateEmailForm", () => {
         );
 
         expect(axiosResponse.post).toHaveBeenCalledWith(
-            "/api/account/update-email/",
-            {
-            email: "new@example.com",
+            "/api/account/update-email/", {
+                new_email: "new@example.com",
             }
         );
     });
@@ -479,38 +478,6 @@ describe("UpdateEmailForm", () => {
 
         expect(axiosResponse.post).not.toHaveBeenCalled();
     });
-
-    test("Form Submission: request is not sent when update email matches current email", () => {
-        /**
-         * Arrange:
-         * - Mock an authenticated user.
-         * - Render the UpdateEmailForm component.
-         * Act:
-         * - Enter the same email as the current user email.
-         * - Click the submit button.
-         * Assert:
-         * - Confirm the update email request is not sent.
-         */
-
-        useAuth.mockReturnValue({
-            user: {
-            email: "test@example.com",
-            },
-        });
-
-        render(<UpdateEmailForm />);
-
-        typeUpdateEmail("test@example.com");
-
-        fireEvent.click(
-            screen.getByRole("button", {
-            name: "Send verification email",
-            })
-        );
-
-        expect(axiosResponse.post).not.toHaveBeenCalled();
-    });
-
 
   // =====================
   // Loading State
@@ -643,19 +610,68 @@ describe("UpdateEmailForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("Success Handling: update email input is cleared after successful submission", async () => {
+    test("Success Handling: hides submit button and shows verification message after successful request", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock successful update email request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Type a new email.
+         * - Click the submit button.
+         *
+         * Assert:
+         * - The send verification button is removed.
+         * - The verification message is displayed.
+         */
+        useAuth.mockReturnValue({
+            user: {
+            email: "user@example.com",
+            },
+        });
+
+        axiosResponse.post.mockResolvedValue({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("newemail@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+            name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+            screen.getByText(
+                /a verification link has been sent to your new email address/i
+            )
+            ).toBeInTheDocument();
+        });
+
+        expect(
+            screen.queryByRole("button", {
+            name: /send verification email/i,
+            })
+        ).not.toBeInTheDocument();
+    });
+
+    test("Success Handling: keeps update email value after successful submission", async () => {
         /**
          * Arrange:
          * - Mock an authenticated user.
          * - Mock a successful update email request.
          * - Render the UpdateEmailForm component.
+         *
          * Act:
-         * - Enter a valid new email address.
+         * - Enter a new email address.
          * - Click the send verification email button.
+         *
          * Assert:
-         * - Confirm the update email input is cleared after the request succeeds.
+         * - Confirm the entered email remains in the update email input.
          */
-
         useAuth.mockReturnValue({
             user: {
             email: "test@example.com",
@@ -670,15 +686,21 @@ describe("UpdateEmailForm", () => {
 
         fireEvent.click(
             screen.getByRole("button", {
-            name: "Send verification email",
+            name: /send verification email/i,
             })
         );
 
         await waitFor(() => {
             expect(
-            screen.getByPlaceholderText("Enter new email")
-            ).toHaveValue("");
+            screen.getByText(
+                /a verification link has been sent to your new email address/i
+            )
+            ).toBeInTheDocument();
         });
+
+        expect(
+            screen.getByPlaceholderText("Enter new email")
+        ).toHaveValue("new@example.com");
     });
 
     // =====================
@@ -706,7 +728,7 @@ describe("UpdateEmailForm", () => {
         axiosResponse.post.mockRejectedValue({
             response: {
             data: {
-                email: ["This email address is already in use."],
+                new_email: ["This email address is already in use."],
             },
             },
         });
@@ -767,6 +789,326 @@ describe("UpdateEmailForm", () => {
 
         expect(
             await screen.findByText("Email update failed.")
+        ).toBeInTheDocument();
+    });
+
+    // =====================
+    // Pending State
+    // =====================
+
+    test("Verification Pending State: disables update email input while verification is pending", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         *
+         * Assert:
+         * - Confirm the update email input is disabled while waiting for verification.
+         */
+        useAuth.mockReturnValue({
+            user: {
+            email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post.mockResolvedValue({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+            name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+            screen.getByText(
+                /a verification link has been sent to your new email address/i
+            )
+            ).toBeInTheDocument();
+        });
+
+        expect(
+            screen.getByPlaceholderText("Enter new email")
+        ).toBeDisabled();
+    });
+
+    test("Verification Pending State: current email remains unchanged while verification is pending", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock a successful update email request.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         *
+         * Assert:
+         * - Confirm the current email field still displays the user's existing email.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post.mockResolvedValue({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByText(
+                    /a verification link has been sent to your new email address/i
+                )
+            ).toBeInTheDocument();
+        });
+
+        expect(
+            screen.getByPlaceholderText("test@example.com")
+        ).toBeInTheDocument();
+    });
+
+    // =====================
+    // Resend verification
+    // =====================
+    test("Resend Verification: clicking resend sends a new verification email", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock successful update email requests.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Enter a new email address.
+         * - Click the send verification email button.
+         * - Click the resend verification link button.
+         *
+         * Assert:
+         * - Confirm a second update email request is sent with the same pending email.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post.mockResolvedValue({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByText(
+                    /a verification link has been sent to your new email address/i
+                )
+            ).toBeInTheDocument();
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /resend verification link/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(axiosResponse.post).toHaveBeenCalledTimes(2);
+        });
+
+        expect(axiosResponse.post).toHaveBeenLastCalledWith(
+            "/api/account/update-email/",
+            {
+                new_email: "new@example.com",
+            }
+        );
+    });
+
+    test("Resend Verification: resend button is disabled while resend request is in progress", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock the initial update email request to succeed.
+         * - Mock the resend request to remain pending.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Submit an update email request.
+         * - Click the resend verification button.
+         *
+         * Assert:
+         * - Confirm the resend button is disabled while the resend request is in progress.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockImplementationOnce(
+                () => new Promise(() => {})
+            );
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByRole("button", {
+                    name: /resend verification link/i,
+                })
+            ).toBeInTheDocument();
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /resend verification link/i,
+            })
+        );
+
+        expect(
+            screen.getByRole("button", {
+                name: /resending/i,
+            })
+        ).toBeDisabled();
+    });
+
+    test("Resend Verification: loading indicator is displayed while resend request is in progress", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock the initial update email request to succeed.
+         * - Mock the resend request to remain pending.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Submit an update email request.
+         * - Click the resend verification button.
+         *
+         * Assert:
+         * - Confirm the loading spinner is displayed while the resend request is in progress.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post
+            .mockResolvedValueOnce({})
+            .mockImplementationOnce(
+                () => new Promise(() => {})
+            );
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByRole("button", {
+                    name: /resend verification link/i,
+                })
+            ).toBeInTheDocument();
+        });
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /resend verification link/i,
+            })
+        );
+
+        expect(
+            screen.getByTestId("loading-spinner")
+        ).toBeInTheDocument();
+    });
+
+    test("Resend Verification: success feedback is displayed after resend completes", async () => {
+        /**
+         * Arrange:
+         * - Mock an authenticated user.
+         * - Mock the initial update email request to succeed.
+         * - Mock the resend request to succeed.
+         * - Render the UpdateEmailForm component.
+         *
+         * Act:
+         * - Submit an update email request.
+         * - Click the resend verification button.
+         *
+         * Assert:
+         * - Confirm resend success feedback is displayed.
+         */
+        useAuth.mockReturnValue({
+            user: {
+                email: "test@example.com",
+            },
+        });
+
+        axiosResponse.post.mockResolvedValue({});
+
+        render(<UpdateEmailForm />);
+
+        typeUpdateEmail("new@example.com");
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /send verification email/i,
+            })
+        );
+
+        await screen.findByText(
+            /a verification link has been sent to your new email address/i
+        );
+
+        fireEvent.click(
+            screen.getByRole("button", {
+                name: /resend verification link/i,
+            })
+        );
+
+        expect(
+            await screen.findByText(
+                /a new verification link has been sent/i
+            )
         ).toBeInTheDocument();
     });
 })

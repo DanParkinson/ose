@@ -151,7 +151,7 @@ So that development is quicker.
 |            |                          | Generic Views    | [List/Create Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/LIST-CREATE-VIEWS.md) |  |
 |            |                          |                  | [Detail Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/DETAIL-VIEWS.md) | |
 |            |                          | Generic Serializers | [Serializers](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/4.%20Serializers/SERIALIZERS.md) |  |
-| **US 5.2** | Axios Configuration      | Axios            | [Axios Base Configuration](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/BASE-CONFIGURATION.md) |  [Axios Tests](/frontend/src/api/axiosDefaults.test.js) |
+| **US 5.2** | Axios Configuration      | Axios            | [Axios Base Configuration](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/BASE-CONFIGURATION.md) |  [Axios Tests](/frontend/src/api/axiosDefaults.test.js) :white_check_mark: |
 |            |                          |                  | [API Base URL](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/API-BASE-URL.md)
 |            |                          |                  | [Axios Request](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-REQUEST.md) |
 |            |                          |                  | [Axios Response](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-RESPONSE.md)|
@@ -235,10 +235,11 @@ So that I know what i can do
 | Account Management       | Structure             | Account Sidebar       | N/A | [Frontend](/frontend/src/components/structure/account/AccountSidebar.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-SIDEBAR-MT.md) |
 |                          | Profile               | View Email            | N/A | [Frontend](/frontend/src/pages/Account/AccountProfileSection.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-PROFILE-SECTION-MT.md) |
 |                          | Settings              | Section Navigtation   | N/A | [Frontend](/frontend/src/pages/Account/AccountSettingsSection.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-SETTINGS-SECTION-MT.md) |
-|                          |                       | Change Password       | [backend](/backend/accounts/tests/dj_rest_auth/test_change_password.py) | [Frontend](/frontend/src/components/forms/profile/ChangePasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/CHANGE-PASSWORD-FORM-MT.md) |
+|                          |                       | Change Password       | [backend](/backend/accounts/tests/dj_rest_auth/test_change_password.py) | [Frontend](/frontend/src/components/forms/profile/ChangePasswordForm.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/CHANGE-PASSWORD-FORM-MT.md) |
 |                          |                       | Change email          |
 |                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) |
 |                          |                       | Logout                | [Backend](/backend/accounts/tests/dj_rest_auth/test_logout.py) | [Section](/frontend/src/pages/Account/AccountLogoutSection.test.jsx), [Form](/frontend/src/components/forms/auth/LogoutForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-LOGOUT-SECTION-MT.md) |
+| Utils | MAessaging | 429 alert | Throttling in system efficiency | [Frontend](/frontend/src/components/RateLimitBanner.test.jsx) :white_check_mark: | |
 
 
 ## Architecture
