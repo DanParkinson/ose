@@ -16,12 +16,6 @@ function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
 
-  const isAdmin =
-    user?.is_staff === true ||
-    user?.is_superuser === true ||
-    user?.is_admin === true ||
-    user?.admin === true;
-
   const closeMenu = () => {
     setIsOpen(false);
   };
@@ -37,13 +31,6 @@ function NavBar() {
       </AppLink>
     </>
   );
-
-  const renderAdminLinks = (handleClick) =>
-    isAdmin ? (
-      <AppLink to="/dashboard" variant="navbar" onClick={handleClick}>
-        Dashboard
-      </AppLink>
-    ) : null;
 
   const renderGuestLinks = (handleClick) =>
     !user ? (
@@ -97,7 +84,6 @@ function NavBar() {
             </HStack>
 
             <HStack gap={4} display={{ base: "none", lg: "flex" }}>
-              {renderAdminLinks()}
               {renderPublicLinks()}
 
               {user ? (
@@ -154,7 +140,7 @@ function NavBar() {
           </Flex>
 
           <VStack align="stretch" gap={6} mt={12}>
-            {renderAdminLinks(closeMenu)}
+
             {renderPublicLinks(closeMenu)}
 
             {user

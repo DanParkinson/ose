@@ -19,7 +19,7 @@ import SectionDividerHeading from "../../components/structure/SectionDividerHead
 
 
 const AccountSettingsSection = () => {
-  const [activeForm, setActiveForm] = useState("password");
+  const [activeForm, setActiveForm] = useState("updateEmail");
 
   return (
     <Box>

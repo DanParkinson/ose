@@ -1,14 +1,24 @@
-
+// React
 import { useState } from "react";
+
+// Chakra UI
+import { HStack, Text } from "@chakra-ui/react";
+
+// API
+import { axiosResponse } from "../../../api/axiosDefaults";
+
+// Hooks
 import useAuth from "../../../hooks/useAuth";
+
+// Feedback
+import ButtonSpinner from "../../feedback/ButtonSpinner";
+
+// Form Components
 import FormSubmitButton from "../base/buttons/FormSubmitButton";
 import FormSubmitButtonDanger from "../base/buttons/FormSubmitButtonDanger";
 import WideFormContainer from "../base/containers/WideFormContainer";
-import FormFieldText from "../base/form_field/FormFieldText";
-import { axiosResponse } from "../../../api/axiosDefaults";
-import { HStack, Text } from "@chakra-ui/react";
-import ButtonSpinner from "../../feedback/ButtonSpinner";
 import FormError from "../base/feedback/FormError";
+import FormFieldText from "../base/form_field/FormFieldText";
 
 const UpdateEmailForm = () => {
     const {user} = useAuth();

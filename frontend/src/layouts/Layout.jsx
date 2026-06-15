@@ -1,8 +1,12 @@
-import { Box } from "@chakra-ui/react";
+// React Router
 import { useLocation } from "react-router-dom";
 
-import NavBar from "./../components/NavBar";
-import Footer from "./../components/Footer";
+// Chakra UI
+import { Box } from "@chakra-ui/react";
+
+// Components
+import Footer from "../components/Footer";
+import NavBar from "../components/NavBar";
 import RateLimitBanner from "../components/RateLimitBanner";
 
 function Layout({ children }) {
@@ -15,6 +19,7 @@ function Layout({ children }) {
     location.pathname.startsWith("/reset-password") ||
     location.pathname.startsWith("/reactivate-account") ||
     location.pathname.startsWith("/verify-email") ||
+    location.pathname.startsWith("/update-email") ||
     location.pathname.startsWith("/resend-verification-email");
   return (
     <Box

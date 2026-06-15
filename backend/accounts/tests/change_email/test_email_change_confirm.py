@@ -1,11 +1,14 @@
+# Django
 from django.contrib.auth.tokens import default_token_generator
+from django.core import mail
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from rest_framework import status
-from django.core import mail
 
+# Third Party
 from allauth.account.models import EmailAddress
+from rest_framework import status
 
+# Local
 from accounts.tests.change_email.base_email_change import (
     BaseEmailChangeTestCase,
 )

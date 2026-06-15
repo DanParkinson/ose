@@ -11,7 +11,7 @@
  * - Verify shows Update email tab
  * ---------------------------------------
  * Default State
- * - Verify shows change password section by default
+ * - Verify shows update email section by default
  * ---------------------------------------
  * Tab Navigation
  * - Verify clicking deactivate account displays deactivate section
@@ -159,7 +159,7 @@ describe("AccountSettingsSection", () => {
   // Default State
   // =====================
 
-  test("Default State: shows change password section by default", () => {
+  test("Default State: shows update email section by default", () => {
     /**
      * Arrange:
      * Render the AccountSettingsSection component.
@@ -169,7 +169,7 @@ describe("AccountSettingsSection", () => {
     render(<AccountSettingsSection />);
 
     expect(
-      screen.getByText("Change Password Form")
+      screen.getByText("Update Email Form")
     ).toBeInTheDocument();
   });
 
