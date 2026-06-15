@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { HStack } from "@chakra-ui/react";
 
-// Hooks
-import useAuth from "../../../hooks/useAuth";
+import {axiosResponse} from "../../../api/axiosDefaults"
 
 // Form Fields
 import WideFormContainer from "../base/containers/WideFormContainer";
 import FormFieldText from "../base/form_field/FormFieldText";
 import FormSubmitButton from "../base/buttons/FormSubmitButton";
-
 
 // Feedback
 import ButtonSpinner from "../../feedback/ButtonSpinner";
@@ -16,8 +14,6 @@ import FormError from "../base/feedback/FormError";
 import FormSuccess from "../base/feedback/FormSuccess";
 
 const ChangePasswordForm = () => {
-  const { changePassword } = useAuth();
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword1, setNewPassword1] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
@@ -26,6 +22,38 @@ const ChangePasswordForm = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const changePassword = async (
+    oldPassword,
+    newPassword1,
+    newPassword2
+  ) => {
+    try {
+      await axiosResponse.post(
+        "/api/auth/password/change/",
+        {
+          old_password: oldPassword,
+          new_password1: newPassword1,
+          new_password2: newPassword2,
+        }
+      );
+
+      return {
+        success: true,
+        errors: null,
+      };
+    } catch (error) {
+      const data = error.response?.data;
+
+      return {
+        success: false,
+        errors: data || {
+          non_field_errors: [
+            "Password change failed.",
+          ],
+        },
+      };
+    }
+  };
   const handleFieldChange = (fieldName, value) => {
     if (fieldName === "old_password") {
       setCurrentPassword(value);

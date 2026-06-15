@@ -46,6 +46,7 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
     deactivated_at = models.DateTimeField(null=True, blank=True)
+    pending_email = models.EmailField(null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

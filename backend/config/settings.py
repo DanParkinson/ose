@@ -39,7 +39,13 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 SITE_ID = 1
 
-# settings
+# ==============================
+# Security Headers
+# ==============================
+
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 # Use secure HTTPS-only JWT cookies in production
 # Local development still allows HTTP
@@ -67,6 +73,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 
 # Allow the domain to be submitted to browser HSTS preload lists
 SECURE_HSTS_PRELOAD = not DEBUG
+
 
 # custom account setup
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -112,7 +119,7 @@ REST_AUTH = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -134,6 +141,15 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 20,
+    # Throttling
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
+    },
 }
 
 # ==============================

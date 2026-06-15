@@ -74,7 +74,7 @@ So that I can securely use the platform.
 |            |                       |                    | [Verification Email Template](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/VERIFICATION-EMAIL-TEMPLATE.md) |
 |            |                       |                    | [Resend Verification](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/2.%20Authentication-system/2.%20Email-verification/RESEND-VERIFICATION.md)| [Resend verification](/backend/accounts/tests/email_verification/test_resend_verify_email.py) |
 |            |                      | Permissions           |
-| **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)| [Auth Context](/frontend/src/context/AuthContext.jsx) |
+| **US 2.3** | Frontend Auth System | Frontend Auth         | [Auth Context](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTH-CONTEXT.md)| [Auth Context](/frontend/src/context/AuthContext.jsx) :white_check_mark:|
 |            |                      |                       | [Protected Routes](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/PROTECTED-ROUTES.md)| [Public Route](/frontend/src/routes/PublicRoute.test.jsx), [Protected Route](/frontend/src/routes/ProtectedRoute.test.jsx), [Admin Route](/frontend/src/routes/AdminRoute.test.jsx) |
 |            |                      |                       | [Authentication Forms](/documentation/1.%20User-Stories/2.%20Authentication-&-user-management/4.%20Frontend-auth/AUTHENTICATION-FORMS.md)| Test in DJ-Rest-Auth and Features |
 
@@ -92,14 +92,21 @@ I want to use a secure platform,
 So that I dont have to sue anyone.
 ```
 
-| User Story | Title                | Section               | Sub Section           | Testing |
-| ---------- | -------------------- | --------------------- | --------------------- | ------- |
-| **US 3.1** | Security Config      | Cross Origin Security | Overview              |     |
-|            |                      |                       | [CSRF](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CSRF.md)|
-|            |                      |                       | [CORS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CORS.md)|
-|            |                      | HTTPS Security        | [HTTPS Redirects](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HTTPS-REDIRECTS.md)|
-|            |                      |                       | [Secure Cookies](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/SECURE-COOKIES.md)| [JWT-cookies](/backend/config/tests/jwt_cookie/test_jwt_cookies.py) |
-|            |                      |                       | [HSTS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HSTS.md)|
+| User Story | Title                | Section                   | Sub Section           |
+| ---------- | -------------------- | ------------------------- | --------------------- |
+| **US 3.1** | Security Config      | Cross Origin Security     | [CSRF](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CSRF.md)|
+|            |                      |                           | [CORS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/1.%20Cross-origin-security/CORS.md)|
+|            |                      | HTTPS and Cookies         | [HTTPS Redirects](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HTTPS-REDIRECTS.md)|
+|            |                      |                           |[Secure Cookies](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/SECURE-COOKIES.md)|
+|            |                      |                           |[HSTS](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/2.%20HTTPS-security/HSTS.md)|
+|            |                 | Backend Response Headers  | [X-Frame-Options](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/3.%20Backend-response-headers/X-FRAME-OPTIONS.md) |
+|            |                 |                           | [X-Content-Type-Options](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/3.%20Backend-response-headers/X-CONTENT-TYPE-OPTIONS.md) |
+|            |                 |                           | [Referrer-Policy](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/3.%20Backend-response-headers/REFFERER-POLICY.md) |
+|            |                 | Frontend Response Headers | [Strict-Transport-Security](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/4.%20Frontend-response-headers/STRICT-TRANSPORT-POLICY.md) |
+|            |                 |                           | [Cross-Origin-Opener-Policy](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/4.%20Frontend-response-headers/CROSS-ORIGIN-OPENER-POLICY.md) |
+|            |                 |                           | [X-Frame-Options](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/4.%20Frontend-response-headers/X-FRAME-OPTIONS.md) |
+|            |                 | Content Security Policy   | [CSP Planning](/documentation/1.%20User-Stories/3.%20Security-&-Application-Protection/1.%20Security-config/5.%20Content-security-policy/CSP-PLAN.md) |
+|            |                 |                           | Trusted Types |
 
 ### Related Documentation
 
@@ -116,13 +123,15 @@ I want to have quick response for the website,
 So that I dont have to wait.
 ```
 
-| User Story | Title                | Section  | Sub Section           |
-| ---------- | -------------------- | -------- | --------------------- |
+| User Story | Title                | Section  | Sub Section           | Tests      |
+| ---------- | -------------------- | -------- | --------------------- | ---------- |
 | **US 4.1** | Caching              | Redis    | [Redis](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/REDIS.md) |
 |            |                      |          | [Django Config](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/DJANGO-CONFIGURATION.md)|
 |            |                      |          | [env var](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/ENVIRONMENT-VARIABLES.md)|
 |            |                      |          | [Operations](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/CAHCE-OPERATIONS.md)|
 |            |                      |          | [Invalidation](/documentation/1.%20User-Stories/4.%20System-efficiency/1.%20Caching/1.%20Redis/CACHE-INVALIDATION.md)|
+| **US 4.2** | API Throttling       | DRF      | [Global Throttling](/documentation/1.%20User-Stories/4.%20System-efficiency/2.%20Thorttling/1.%20DRF/GLOBAL-THROTTLING.md) | [Settings Tests](/backend/config/tests/throttling/test_api_throttling_settings.py) |
+|            |                      |          | [Per-View Throttling] |
 
 ## 5. API Communications
 
@@ -142,7 +151,7 @@ So that development is quicker.
 |            |                          | Generic Views    | [List/Create Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/LIST-CREATE-VIEWS.md) |  |
 |            |                          |                  | [Detail Views](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/3.%20Views/DETAIL-VIEWS.md) | |
 |            |                          | Generic Serializers | [Serializers](/documentation/1.%20User-Stories/5.%20API-communications/1.%20Django-REST-framework/4.%20Serializers/SERIALIZERS.md) |  |
-| **US 5.2** | Axios Configuration      | Axios            | [Axios Base Configuration](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/BASE-CONFIGURATION.md) |  [Axios Tests](/frontend/src/api/axiosDefaults.test.js) |
+| **US 5.2** | Axios Configuration      | Axios            | [Axios Base Configuration](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/BASE-CONFIGURATION.md) |  [Axios Tests](/frontend/src/api/axiosDefaults.test.js) :white_check_mark: |
 |            |                          |                  | [API Base URL](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/API-BASE-URL.md)
 |            |                          |                  | [Axios Request](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-REQUEST.md) |
 |            |                          |                  | [Axios Response](/documentation/1.%20User-Stories/5.%20API-communications/2.%20Axios-configuration/1.%20Axios/AXIOS-RESPONSE.md)|
@@ -211,8 +220,9 @@ So that I know what i can do
 ```
 | Feature                  | Section               | Sub Section           | Backend testing | Frontend Testing | Manual Testing |
 | ------------------------ | --------------------- | --------------------- | --------------- | ---------------- | -------------- |
-| Generic Pages            |                       | Homepage              |
+| Pages                    | Public                | Homepage              |
 |                          |                       | About Us              |
+|                          | Protected             | Account               |                 | [Frontend](/frontend/src/pages/Account/AccountPage.test.jsx)     |                |
 | Authentication           | Auth                  | Register              | [Backend](/backend/accounts/tests/dj_rest_auth/test_register.py) |[Frontend](/frontend/src/components/forms/auth/RegisterForm.test.jsx) |[Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/REGISTRATION-MT.md)|
 |                          |                       | Email Verification    | [backend](/backend/accounts/tests/email_verification/base_email_verification.py) | [Frontend](/frontend/src/components/forms/auth/VerifyEmailForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/EMAIL-VERIFICATION.md) |
 |                          |                       | Resend Email Verification | [backend](/backend/accounts/tests/email_verification/test_resend_verify_email.py) | [Frontend](/frontend/src/components/forms/auth/VerifyResendEmailForm.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESEND-EMAIL-VERIFICATION.md) |
@@ -222,12 +232,14 @@ So that I know what i can do
 |                          |                       | Reset Password confirm| [Backend](/backend/accounts/tests/reset_password/test_password_reset_confirm.py) | [Frontend](/frontend/src/components/forms/auth/ResetPasswordForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/1.%20Authentication/RESET-PASSWORD-CONFIRM-MT.md) |
 |                          |                       | Reactivate Request    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateRequestForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-REQUEST.md) |
 |                          |                       | Reactivate Confirm    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_reactivation_request.py) | [Frontend](/frontend/src/components/forms/auth/ReactivateConfirmForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/REACTIVATE-ACCOUNT-CONFIRM-MT.md) |
-| Account Management       | Structure             | Account Sidebar       |
-|                          | Profile               | View Email            |
-|                          | Settings              | Change Password       |
-|                          |                       | Change email          |
-|                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) |
-|                          |                       | Logout                |
+| Account Management       | Structure             | Account Sidebar       | N/A | [Frontend](/frontend/src/components/structure/account/AccountSidebar.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-SIDEBAR-MT.md) |
+|                          | Profile               | View Email            | N/A | [Frontend](/frontend/src/pages/Account/AccountProfileSection.test.jsx)| [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-PROFILE-SECTION-MT.md) |
+|                          | Settings              | Section Navigtation   | N/A | [Frontend](/frontend/src/pages/Account/AccountSettingsSection.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-SETTINGS-SECTION-MT.md) :white_check_mark: |
+|                          |                       | Change Password       | [backend](/backend/accounts/tests/dj_rest_auth/test_change_password.py) :white_check_mark: | [Frontend](/frontend/src/components/forms/profile/ChangePasswordForm.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/CHANGE-PASSWORD-FORM-MT.md) :white_check_mark: |
+|                          |                       | Change email          | [Request](/backend/accounts/tests/change_email/test_email_change_request.py) :white_check_mark: [Confirm](/backend/accounts/tests/change_email/test_email_change_confirm.py) :white_check_mark: [Cancel](/backend/accounts/tests/change_email/test_email_change_cancel.py) :white_check_mark: | [Request](/frontend/src/components/forms/profile/UpdateEmailForm.test.jsx) :white_check_mark: [Confirm](/frontend/src/components/forms/auth/UpdateEmailConfirmForm.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/UPDATE_EMAIL-MT.md) :white_check_mark: |
+|                          |                       | Deactivate account    | [Backend](/backend/accounts/tests/account_lifecycle/test_account_deactivation.py) :white_check_mark: | [Frontend](/frontend/src/components/forms/profile/DeactivateAccountForm.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/DEACTIVATE-ACCOUNT-MT.md) :white_check_mark: |
+|                          |                       | Logout                | [Backend](/backend/accounts/tests/dj_rest_auth/test_logout.py) :white_check_mark: | [Section](/frontend/src/pages/Account/AccountLogoutSection.test.jsx) :white_check_mark:, [Form](/frontend/src/components/forms/auth/LogoutForm.test.jsx) :white_check_mark: | [Manual](/documentation/3.%20Manual-testing/1.%20Features/2.%20Account-management/ACCOUNT-LOGOUT-SECTION-MT.md) :white_check_mark: |
+| Utils | Messaging | 429 alert | Throttling in system efficiency | [Frontend](/frontend/src/components/RateLimitBanner.test.jsx) :white_check_mark: | |
 
 
 ## Architecture

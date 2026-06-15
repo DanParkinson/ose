@@ -9,14 +9,17 @@ import { useState } from "react";
 // Forms
 import ChangePasswordForm from "../../components/forms/profile/ChangePasswordForm";
 import DeactivateAccountForm from "../../components/forms/profile/DeactivateAccountForm";
+import UpdateEmailForm from "../../components/forms/profile/UpdateEmailForm";
+
 // Buttons
 import TabButton from "../../components/buttons/TabButton";
 
 // Sections
 import SectionDividerHeading from "../../components/structure/SectionDividerHeading";
 
+
 const AccountSettingsSection = () => {
-  const [activeForm, setActiveForm] = useState("password");
+  const [activeForm, setActiveForm] = useState("updateEmail");
 
   return (
     <Box>
@@ -50,6 +53,14 @@ const AccountSettingsSection = () => {
             gap={4}
           >
             <TabButton
+              active={activeForm === "updateEmail"}
+              onClick={() =>
+                setActiveForm("updateEmail")
+              }
+            >
+              Update Email
+            </TabButton>
+            <TabButton
               active={activeForm === "password"}
               onClick={() =>
                 setActiveForm("password")
@@ -57,7 +68,7 @@ const AccountSettingsSection = () => {
             >
               Change Password
             </TabButton>
-            
+
             <TabButton
               active={activeForm === "deactivate"}
               onClick={() =>
@@ -82,6 +93,15 @@ const AccountSettingsSection = () => {
                 <DeactivateAccountForm />
               </>
             )}
+
+            {activeForm === "updateEmail" && (
+              <>
+                <SectionDividerHeading title="Update Email" />
+                <UpdateEmailForm />
+              </>
+            )}
+
+
           </Box>
         </Stack>
       </Box>

@@ -16,7 +16,6 @@ import PageLoadingSpinner from "./components/feedback/PageLoadingSpinner";
 // Pages
 const HomePage = lazy(() => import("./pages/Homepage/HomePage"));
 const AboutPage = lazy(() => import("./pages/about/AboutPage"));
-const AdminDashboardPage = lazy(() => import("./pages/Admin/AdminDashBoardPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 // Auth Pages
@@ -29,6 +28,7 @@ const ReactivateRequestPage = lazy(() => import("./pages/Auth/ReactivateRequestP
 const ReactivateConfirmPage = lazy(() => import("./pages/Auth/ReactivateConfirmPage"));
 const VerifyEmailPage = lazy(() => import("./pages/Auth/VerifyEmailPage"));
 const VerifyEmailResendPage = lazy(() => import("./pages/Auth/VerifyEmailResenPage"));
+const UpdateEmailConfirmPage = lazy(() => import("./pages/Auth/UpdateEmailConfirmPage"));
 
 const PageFallback = () => (
   <Box minH="100vh">
@@ -50,13 +50,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/dashboard" element={
-              <AdminRoute>
-                <AdminDashboardPage />
-              </AdminRoute>
-            }
-          />
-
           <Route path="/register" element={
               <PublicRoute>
                 <RegisterPage />
@@ -103,6 +96,14 @@ function App() {
               <PublicRoute>
                 <ReactivateConfirmPage />
               </PublicRoute>
+            }
+          />
+          <Route
+            path="/update-email/:uid/:token"
+            element={
+              <ProtectedRoute>
+                <UpdateEmailConfirmPage />
+              </ProtectedRoute>
             }
           />
 

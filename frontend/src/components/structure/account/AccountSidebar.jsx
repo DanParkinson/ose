@@ -79,7 +79,7 @@ const AccountSidebar = ({
           <Button
             width="100%"
             justifyContent="space-between"
-            bg="bg.dark5"
+            bg="bg.dark1"
             color="text.light4"
             borderRadius="md"
             fontWeight="semibold"

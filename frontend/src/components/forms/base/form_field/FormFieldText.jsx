@@ -10,6 +10,7 @@ const FormFieldText = ({
   value,
   error,
   onChange,
+  disabled,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,6 +25,11 @@ const FormFieldText = ({
         endElement={
           isPasswordField ? (
             <Button
+              aria-label={
+                showPassword
+                  ? "Hide password"
+                  : "Show password"
+                }
               type="button"
               variant="ghost"
               bg="transparent"
@@ -66,6 +72,7 @@ const FormFieldText = ({
           }
           placeholder={field.placeholder}
           value={value || ""}
+          disabled={disabled}
           onChange={(event) =>
             onChange(field.name, event.target.value)
           }

@@ -1,14 +1,25 @@
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 
-import LoadingSpinner from "../components/feedback/LoadingSpinner";
+import useAuth from "../hooks/useAuth";
+import PageLoadingSpinner from "../components/feedback/PageLoadingSpinner";
 
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, fetchUser } = useAuth();
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  if (loading) {
-    return <LoadingSpinner label="Checking permissions..." />;
+  useEffect(() => {
+    const verifyUser = async () => {
+      await fetchUser();
+      setCheckingAuth(false);
+    };
+
+    verifyUser();
+  }, [fetchUser]);
+
+  if (loading || checkingAuth) {
+    return <PageLoadingSpinner label="Checking permissions..." />;
   }
 
   if (!user) {
@@ -17,5 +28,6 @@ const ProtectedRoute = ({ children }) => {
 
   return children;
 };
+
 
 export default ProtectedRoute;

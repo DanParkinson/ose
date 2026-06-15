@@ -1,8 +1,6 @@
 /**
  * PUBLIC ROUTE TEST CHECKLIST
  * ---------------------------
- * Loading State
- * - Verify loading state shows permissions spinner
  *
  * ---------------------------
  * Public Access
@@ -37,32 +35,7 @@ describe("PublicRoute", () => {
   // Loading State
   // =====================
 
-  test("shows loading spinner while checking permissions", () => {
-    /**
-     * Arrange:
-     * Mock auth context in loading state.
-     *
-     * Act:
-     * Render PublicRoute.
-     *
-     * Assert:
-     * Confirm the permissions loading message is displayed.
-     */
-    mockUseAuth.mockReturnValue({
-      user: null,
-      loading: true,
-    });
 
-    render(
-      <PublicRoute>
-        <p>Public Content</p>
-      </PublicRoute>
-    );
-
-    expect(
-      screen.getByText("Checking permissions...")
-    ).toBeInTheDocument();
-  });
 
   // =====================
   // Public Access

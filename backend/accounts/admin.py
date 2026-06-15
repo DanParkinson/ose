@@ -7,14 +7,20 @@ from .models import CustomUser
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
-    list_display = ("email", "is_staff", "is_superuser", "is_active")
+    list_display = (
+        "email",
+        "pending_email",
+        "is_staff",
+        "is_superuser",
+        "is_active",
+    )
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
 
     ordering = ("email",)
-    search_fields = ("email",)
+    search_fields = ("email", "pending_email")
 
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("email", "pending_email", "password")}),
         ("Personal info", {"fields": ()}),
         (
             "Permissions",
