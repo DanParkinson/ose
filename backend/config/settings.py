@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import dj_database_url
+import sys
 
 # ==============================
 # Base Directory
@@ -322,3 +323,10 @@ CACHES = {
         },
     }
 }
+
+
+
+# ==============================
+# Rate limit for testing disabled
+# ==============================
+TEST_RUNNER = "config.test_runner.NoThrottleTestRunner"

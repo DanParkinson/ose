@@ -1,6 +1,19 @@
 from django.conf import settings
 from django.test import SimpleTestCase
+from django.test import override_settings
 
+@override_settings(
+    REST_FRAMEWORK={
+        "DEFAULT_THROTTLE_CLASSES": [
+            "rest_framework.throttling.AnonRateThrottle",
+            "rest_framework.throttling.UserRateThrottle",
+        ],
+        "DEFAULT_THROTTLE_RATES": {
+            "anon": "100/hour",
+            "user": "1000/hour",
+        },
+    }
+)
 
 class ThrottlingSettingsTests(SimpleTestCase):
     """
